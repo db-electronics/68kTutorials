@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ -d /out ]
+if test -d out
 then
 	echo "cleaning out directory"
 	rm -r out/*
