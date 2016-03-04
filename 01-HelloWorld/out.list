@@ -1,0 +1,1038 @@
+000000                  	include 'init.asm'
+                        	; ******************************************************************
+                        	; Sega Megadrive ROM header
+                        	; ******************************************************************
+000000 00FFE000         	dc.l   0x00FFE000      ; Initial stack pointer value
+000004 00000200         	dc.l   EntryPoint      ; Start of program
+000008 000002F2         	dc.l   Exception       ; Bus error
+00000C 000002F2         	dc.l   Exception       ; Address error
+000010 000002F2         	dc.l   Exception       ; Illegal instruction
+000014 000002F2         	dc.l   Exception       ; Division by zero
+000018 000002F2         	dc.l   Exception       ; CHK exception
+00001C 000002F2         	dc.l   Exception       ; TRAPV exception
+000020 000002F2         	dc.l   Exception       ; Privilege violation
+000024 000002F2         	dc.l   Exception       ; TRACE exception
+000028 000002F2         	dc.l   Exception       ; Line-A emulator
+00002C 000002F2         	dc.l   Exception       ; Line-F emulator
+000030 000002F2         	dc.l   Exception       ; Unused (reserved)
+000034 000002F2         	dc.l   Exception       ; Unused (reserved)
+000038 000002F2         	dc.l   Exception       ; Unused (reserved)
+00003C 000002F2         	dc.l   Exception       ; Unused (reserved)
+000040 000002F2         	dc.l   Exception       ; Unused (reserved)
+000044 000002F2         	dc.l   Exception       ; Unused (reserved)
+000048 000002F2         	dc.l   Exception       ; Unused (reserved)
+00004C 000002F2         	dc.l   Exception       ; Unused (reserved)
+000050 000002F2         	dc.l   Exception       ; Unused (reserved)
+000054 000002F2         	dc.l   Exception       ; Unused (reserved)
+000058 000002F2         	dc.l   Exception       ; Unused (reserved)
+00005C 000002F2         	dc.l   Exception       ; Unused (reserved)
+000060 000002F2         	dc.l   Exception       ; Spurious exception
+000064 000002F2         	dc.l   Exception       ; IRQ level 1
+000068 000002F2         	dc.l   Exception       ; IRQ level 2
+00006C 000002F2         	dc.l   Exception       ; IRQ level 3
+000070 000002F0         	dc.l   HBlankInterrupt ; IRQ level 4 (horizontal retrace interrupt)
+000074 000002F2         	dc.l   Exception       ; IRQ level 5
+000078 000002F0         	dc.l   VBlankInterrupt ; IRQ level 6 (vertical retrace interrupt)
+00007C 000002F2         	dc.l   Exception       ; IRQ level 7
+000080 000002F2         	dc.l   Exception       ; TRAP #00 exception
+000084 000002F2         	dc.l   Exception       ; TRAP #01 exception
+000088 000002F2         	dc.l   Exception       ; TRAP #02 exception
+00008C 000002F2         	dc.l   Exception       ; TRAP #03 exception
+000090 000002F2         	dc.l   Exception       ; TRAP #04 exception
+000094 000002F2         	dc.l   Exception       ; TRAP #05 exception
+000098 000002F2         	dc.l   Exception       ; TRAP #06 exception
+00009C 000002F2         	dc.l   Exception       ; TRAP #07 exception
+0000A0 000002F2         	dc.l   Exception       ; TRAP #08 exception
+0000A4 000002F2         	dc.l   Exception       ; TRAP #09 exception
+0000A8 000002F2         	dc.l   Exception       ; TRAP #10 exception
+0000AC 000002F2         	dc.l   Exception       ; TRAP #11 exception
+0000B0 000002F2         	dc.l   Exception       ; TRAP #12 exception
+0000B4 000002F2         	dc.l   Exception       ; TRAP #13 exception
+0000B8 000002F2         	dc.l   Exception       ; TRAP #14 exception
+0000BC 000002F2         	dc.l   Exception       ; TRAP #15 exception
+0000C0 000002F2         	dc.l   Exception       ; Unused (reserved)
+0000C4 000002F2         	dc.l   Exception       ; Unused (reserved)
+0000C8 000002F2         	dc.l   Exception       ; Unused (reserved)
+0000CC 000002F2         	dc.l   Exception       ; Unused (reserved)
+0000D0 000002F2         	dc.l   Exception       ; Unused (reserved)
+0000D4 000002F2         	dc.l   Exception       ; Unused (reserved)
+0000D8 000002F2         	dc.l   Exception       ; Unused (reserved)
+0000DC 000002F2         	dc.l   Exception       ; Unused (reserved)
+0000E0 000002F2         	dc.l   Exception       ; Unused (reserved)
+0000E4 000002F2         	dc.l   Exception       ; Unused (reserved)
+0000E8 000002F2         	dc.l   Exception       ; Unused (reserved)
+0000EC 000002F2         	dc.l   Exception       ; Unused (reserved)
+0000F0 000002F2         	dc.l   Exception       ; Unused (reserved)
+0000F4 000002F2         	dc.l   Exception       ; Unused (reserved)
+0000F8 000002F2         	dc.l   Exception       ; Unused (reserved)
+0000FC 000002F2         	dc.l   Exception       ; Unused (reserved)
+
+000100 534547412047454E 	dc.b "SEGA GENESIS    "									; Console name
+000108 4553495320202020
+000110 2843295345474120 	dc.b "(C)SEGA 1992.SEP"									; Copyrght holder and release date
+000118 313939322E534550
+000120 594F55522047414D 	dc.b "YOUR GAME HERE                                  "	; Domestic name
+000128 4520484552452020
+000130 2020202020202020
+000138 2020202020202020
+000140 2020202020202020
+000148 2020202020202020
+000150 594F55522047414D 	dc.b "YOUR GAME HERE                                  "	; International name
+000158 4520484552452020
+000160 2020202020202020
+000168 2020202020202020
+000170 2020202020202020
+000178 2020202020202020
+000180 474D205858585858 	dc.b "GM XXXXXXXX-XX"									; Version number
+000188 5858582D5858
+00018E 0000             	dc.w 0x0000												; Checksum
+000190 4A20202020202020 	dc.b "J               "									; I/O support
+000198 2020202020202020
+0001A0 00000000         	dc.l 0x00000000											; Start address of ROM
+0001A4 00000BE8         	dc.l __end												; End address of ROM
+0001A8 00FF0000         	dc.l 0x00FF0000											; Start address of RAM
+0001AC 00FFFFFF         	dc.l 0x00FFFFFF											; End address of RAM
+0001B0 00000000         	dc.l 0x00000000											; SRAM enabled
+0001B4 00000000         	dc.l 0x00000000											; Unused
+0001B8 00000000         	dc.l 0x00000000											; Start address of SRAM
+0001BC 00000000         	dc.l 0x00000000											; End address of SRAM
+0001C0 00000000         	dc.l 0x00000000											; Unused
+0001C4 00000000         	dc.l 0x00000000											; Unused
+0001C8 2020202020202020 	dc.b "                                        "			; Notes (unused)
+0001D0 2020202020202020
+0001D8 2020202020202020
+0001E0 2020202020202020
+0001E8 2020202020202020
+0001F0 4A55452020202020 	dc.b "JUE             "									; Country codes
+0001F8 2020202020202020
+
+000200                  EntryPoint:           ; Entry point address set in ROM header
+
+                        ; ************************************
+                        ; Test reset button
+                        ; ************************************
+000200 4A79 00A10008    	tst.w 0x00A10008  ; Test mystery reset (expansion port reset?)
+000206 6600 00E2        	bne Main          ; Branch if Not Equal (to zero) - to Main
+00020A 4A79 00A1000C    	tst.w 0x00A1000C  ; Test reset button
+000210 6600 00D8        	bne Main          ; Branch if Not Equal (to zero) - to Main
+
+                        ; ************************************
+                        ; Clear RAM
+                        ; ************************************
+000214 203C 00000000    	move.l #0x00000000, d0     ; Place a 0 into d0, ready to copy to each longword of RAM
+00021A 207C 00000000    	move.l #0x00000000, a0     ; Starting from address 0x0, clearing backwards
+000220 223C 00003FFF    	move.l #0x00003FFF, d1     ; Clearing 64k's worth of longwords (minus 1, for the loop to be correct)
+000226                  .Clear:
+000226 2100             	move.l d0, -(a0)           ; Decrement the address by 1 longword, before moving the zero from d0 to it
+000228 51C9 FFFC        	dbra d1, .Clear            ; Decrement d0, repeat until depleted
+                        	
+                        ; ************************************
+                        ; Write TMSS
+                        ; ************************************
+00022C 1039 00A10001    	move.b 0x00A10001, d0      ; Move Megadrive hardware version to d0
+000232 0200 000F        	andi.b #0x0F, d0           ; The version is stored in last four bits, so mask it with 0F
+000236 6700 000C        	beq .Skip                  ; If version is equal to 0, skip TMSS signature
+00023A 23FC 53454741    	move.l #'SEGA', 0x00A14000 ; Move the string "SEGA" to 0xA14000
+000240 00A14000
+000244                  .Skip:
+
+                        ; ************************************
+                        ; Init Z80
+                        ; ************************************
+000244 33FC 0100 00A1   	move.w #0x0100, 0x00A11100    ; Request access to the Z80 bus, by writing 0x0100 into the BUSREQ port
+00024A 1100
+00024C 33FC 0100 00A1   	move.w #0x0100, 0x00A11200    ; Hold the Z80 in a reset state, by writing 0x0100 into the RESET port
+000252 1200
+
+000254                  .Wait:
+000254 0839 0000 00A1   	btst #0x0, 0x00A11100      ; Test bit 0 of A11100 to see if the 68k has access to the Z80 bus yet
+00025A 1100
+00025C 66F6             	bne .Wait                  ; If we don't yet have control, branch back up to Wait
+                        	
+00025E 207C 000002F6    	move.l #Z80Data, a0        ; Load address of data into a0
+000264 227C 00A00000    	move.l #0x00A00000, a1     ; Copy Z80 RAM address to a1
+00026A 203C 00000029    	move.l #0x29, d0           ; 42 bytes of init data
+000270                  .CopyZ80:
+000270 12D8             	move.b (a0)+, (a1)+        ; Copy data, and increment the source/dest addresses
+000272 51C8 FFFC        	dbra d0, .CopyZ80
+
+000276 33FC 0000 00A1   	move.w #0x0000, 0x00A11200    ; Release reset state
+00027C 1200
+00027E 33FC 0000 00A1   	move.w #0x0000, 0x00A11100    ; Release control of bus
+000284 1100
+
+                        ; ************************************
+                        ; Init PSG
+                        ; ************************************
+000286 207C 00000320    	move.l #PSGData, a0        ; Load address of PSG data into a0
+00028C 203C 00000003    	move.l #0x03, d0           ; 4 bytes of data
+000292                  .CopyPSG:
+000292 13D8 00C00011    	move.b (a0)+, 0x00C00011   ; Copy data to PSG RAM
+000298 51C8 FFF8        	dbra d0, .CopyPSG
+                        	
+                        ; ************************************
+                        ; Init VDP
+                        ; ************************************
+00029C 207C 00000324    	move.l #VDPRegisters, a0   ; Load address of register table into a0
+0002A2 203C 00000018    	move.l #0x18, d0           ; 24 registers to write
+0002A8 223C 00008000    	move.l #0x00008000, d1     ; 'Set register 0' command (and clear the rest of d1 ready)
+
+0002AE                  .CopyVDP:
+0002AE 1218             	move.b (a0)+, d1           ; Move register value to lower byte of d1
+0002B0 33C1 00C00004    	move.w d1, 0x00C00004      ; Write command and value to VDP control port
+0002B6 D27C 0100        	add.w #0x0100, d1          ; Increment register #
+0002BA 51C8 FFF2        	dbra d0, .CopyVDP
+
+                        ; ************************************
+                        ; Init control ports
+                        ; ************************************
+0002BE 13FC 0000 00A1   	move.b #0x00, 0x000A10009  ; Controller port 1 CTRL
+0002C4 0009
+0002C6 13FC 0000 00A1   	move.b #0x00, 0x000A1000B  ; Controller port 2 CTRL
+0002CC 000B
+0002CE 13FC 0000 00A1   	move.b #0x00, 0x000A1000D  ; EXP port CTRL
+0002D4 000D
+
+                        ; ************************************
+                        ; Cleanup
+                        ; ************************************
+0002D6 207C 00FF0000    	move.l #0x00FF0000, a0     ; Move address of first byte of ram (contains zero, RAM has been cleared) to a0
+0002DC 4CD0 FEFF        	movem.l (a0), d0-d7/a1-a7  ; Multiple move zero to all registers
+0002E0 207C 00000000    	move.l #0x00000000, a0     ; Clear a0
+
+                        	; Init status register (no trace, A7 is Interrupt Stack Pointer, no interrupts, clear condition code bits)
+0002E6 46FC 2700        	move #0x2700, sr
+
+                        ; ************************************
+                        ; Main
+                        ; ************************************
+0002EA                  Main:
+0002EA 4EF9 000003E4    	jmp __main ; Begin external main
+
+0002F0                  HBlankInterrupt:
+0002F0                  VBlankInterrupt:
+0002F0 4E75                rts   ; Return from Subroutine
+
+0002F2                  Exception:
+0002F2 4E72 2700           stop #$2700 ; Halt CPU
+
+0002F6                  Z80Data:
+0002F6 AF01D91F            dc.w 0xaf01, 0xd91f
+0002FA 11270021            dc.w 0x1127, 0x0021
+0002FE 2600F977            dc.w 0x2600, 0xf977
+000302 EDB0DDE1            dc.w 0xedb0, 0xdde1
+000306 FDE1ED47            dc.w 0xfde1, 0xed47
+00030A ED4FD1E1            dc.w 0xed4f, 0xd1e1
+00030E F108D9C1            dc.w 0xf108, 0xd9c1
+000312 D1E1F1F9            dc.w 0xd1e1, 0xf1f9
+000316 F3ED5636            dc.w 0xf3ed, 0x5636
+00031A E9E98104            dc.w 0xe9e9, 0x8104
+00031E 8F01                dc.w 0x8f01
+
+000320                  PSGData:
+000320 9FBFDFFF            dc.w 0x9fbf, 0xdfff
+
+000324                  VDPRegisters:
+000324 20                  dc.b 0x20 ; 0: Horiz. interrupt on, plus bit 2 (unknown, but docs say it needs to be on)
+000325 74                  dc.b 0x74 ; 1: Vert. interrupt on, display on, DMA on, V28 mode (40 cells vertically), + bit 2
+000326 30                  dc.b 0x30 ; 2: Pattern table for Scroll Plane A at 0xC000 (bits 3-5)
+000327 40                  dc.b 0x40 ; 3: Pattern table for Window Plane at 0x10000 (bits 1-5)
+000328 05                  dc.b 0x05 ; 4: Pattern table for Scroll Plane B at 0xA000 (bits 0-2)
+000329 70                  dc.b 0x70 ; 5: Sprite table at 0xE000 (bits 0-6)
+00032A 00                  dc.b 0x00 ; 6: Unused
+00032B 00                  dc.b 0x00 ; 7: Background colour - bits 0-3 = colour, bits 4-5 = palette
+00032C 00                  dc.b 0x00 ; 8: Unused
+00032D 00                  dc.b 0x00 ; 9: Unused
+00032E 00                  dc.b 0x00 ; 10: Frequency of Horiz. interrupt in Rasters (number of lines travelled by the beam)
+00032F 08                  dc.b 0x08 ; 11: External interrupts on, V/H scrolling on
+000330 81                  dc.b 0x81 ; 12: Shadows and highlights off, interlace off, H40 mode (64 cells horizontally)
+000331 34                  dc.b 0x34 ; 13: Horiz. scroll table at 0xD000 (bits 0-5)
+000332 00                  dc.b 0x00 ; 14: Unused
+000333 00                  dc.b 0x00 ; 15: Autoincrement off
+000334 01                  dc.b 0x01 ; 16: Vert. scroll 32, Horiz. scroll 64
+000335 00                  dc.b 0x00 ; 17: Window Plane X pos 0 left (pos in bits 0-4, left/right in bit 7)
+000336 00                  dc.b 0x00 ; 18: Window Plane Y pos 0 up (pos in bits 0-4, up/down in bit 7)
+000337 00                  dc.b 0x00 ; 19: DMA length lo byte
+000338 00                  dc.b 0x00 ; 20: DMA length hi byte
+000339 00                  dc.b 0x00 ; 21: DMA source address lo byte
+00033A 00                  dc.b 0x00 ; 22: DMA source address mid byte
+00033B 00                  dc.b 0x00 ; 23: DMA source address hi byte, memory-to-VRAM mode (bits 6-7)
+00033C                  	include 'globals.asm'
+       = C00004         vdp_control				equ 0x00C00004
+       = C00000         vdp_data				equ 0x00C00000
+
+       = 000000         vdp_write_palettes		equ 0xF0000000
+       = 000000         vdp_write_tiles			equ 0x40000000
+       = 000003         vdp_write_plane_a		equ 0x40000003
+       = 000000         vdp_write_sprite_tiles	equ 0x60000000
+       = 000003         vdp_write_sprite_table	equ 0x60000003
+00033C                  	include 'text.asm'
+00033C                  	include 'charmap.asm'
+       = 000020         ASCIIStart: equ 0x20 ; First ASCII code in table
+
+00033C                  ASCIIMap:
+00033C 00               	dc.b 0x00	; SPACE (ASCII code 0x20)
+00033D 28               	dc.b 0x28   ; ! Exclamation mark
+00033E 2B               	dc.b 0x2B   ; " Double quotes
+00033F 2E               	dc.b 0x2E   ; # Hash
+000340 00               	dc.b 0x00	; UNUSED
+000341 00               	dc.b 0x00	; UNUSED
+000342 00               	dc.b 0x00	; UNUSED
+000343 2C               	dc.b 0x2C   ; ' Single quote
+000344 29               	dc.b 0x29   ; ( Open parenthesis
+000345 2A               	dc.b 0x2A   ; ) Close parenthesis
+000346 00               	dc.b 0x00	; UNUSED
+000347 2F               	dc.b 0x2F   ; + Plus
+000348 26               	dc.b 0x26   ; , Comma
+000349 30               	dc.b 0x30   ; - Minus
+00034A 25               	dc.b 0x25   ; . Full stop
+00034B 31               	dc.b 0x31   ; / Slash or divide
+00034C 1B               	dc.b 0x1B   ; 0 Zero
+00034D 1C               	dc.b 0x1C   ; 1 One
+00034E 1D               	dc.b 0x1D   ; 2 Two
+00034F 1E               	dc.b 0x1E   ; 3 Three
+000350 1F               	dc.b 0x1F   ; 4 Four
+000351 20               	dc.b 0x20   ; 5 Five
+000352 21               	dc.b 0x21   ; 6 Six
+000353 22               	dc.b 0x22   ; 7 Seven
+000354 23               	dc.b 0x23   ; 8 Eight
+000355 24               	dc.b 0x24   ; 9 Nine
+000356 2D               	dc.b 0x2D   ; : Colon
+000357 00               	dc.b 0x00	; UNUSED
+000358 00               	dc.b 0x00	; UNUSED
+000359 00               	dc.b 0x00	; UNUSED
+00035A 00               	dc.b 0x00	; UNUSED
+00035B 27               	dc.b 0x27   ; ? Question mark
+00035C 00               	dc.b 0x00	; UNUSED
+00035D 01               	dc.b 0x01	; A
+00035E 02               	dc.b 0x02   ; B
+00035F 03               	dc.b 0x03	; C
+000360 04               	dc.b 0x04   ; D
+000361 05               	dc.b 0x05	; E
+000362 06               	dc.b 0x06	; F
+000363 07               	dc.b 0x07	; G
+000364 08               	dc.b 0x08	; H
+000365 09               	dc.b 0x09	; I
+000366 0A               	dc.b 0x0A	; J
+000367 0B               	dc.b 0x0B	; K
+000368 0C               	dc.b 0x0C	; L
+000369 0D               	dc.b 0x0D	; M
+00036A 0E               	dc.b 0x0E	; N
+00036B 0F               	dc.b 0x0F	; O
+00036C 10               	dc.b 0x10	; P
+00036D 11               	dc.b 0x11	; Q
+00036E 12               	dc.b 0x12	; R
+00036F 13               	dc.b 0x13	; S
+000370 14               	dc.b 0x14	; T
+000371 15               	dc.b 0x15	; U
+000372 16               	dc.b 0x16	; V
+000373 17               	dc.b 0x17	; W
+000374 18               	dc.b 0x18	; X
+000375 19               	dc.b 0x19	; Y
+000376 1A               	dc.b 0x1A	; Z (ASCII code 0x5A)
+
+                        	; Align 8 bytes
+000377  (000001)        	ALIGN	8
+
+000378                  LoadFont:
+                           ; a0 - Font address (l)
+                           ; d0 - VRAM address (w)
+                           ; d1 - Num chars (w)
+
+000378 4840                swap     d0                   ; Shift VRAM addr to upper word
+00037A D0BC 40000000       add.l    #vdp_write_tiles, d0 ; VRAM write cmd + VRAM destination address
+000380 23C0 00C00004       move.l   d0, vdp_control      ; Send address to VDP cmd port
+
+000386 5301                subq.b   #0x1, d1             ; Num chars - 1
+000388                  .CharCopy:
+000388 343C 0007           move.w   #0x07, d2            ; 8 longwords in tile
+00038C                  .LongCopy:
+00038C 23D8 00C00000       move.l   (a0)+, vdp_data      ; Copy one line of tile to VDP data port
+000392 51CA FFF8           dbra     d2, .LongCopy
+000396 51C9 FFF0           dbra     d1, .CharCopy
+
+00039A 4E75                rts
+
+00039C                  DrawTextPlaneA:
+                        	; a0 (l) - String address
+                        	; d0 (w) - First tile ID of font
+                        	; d1 (bb)- XY coord (in tiles)
+                        	; d2 (b) - Palette
+
+00039C 4283             	clr.l    d3                     ; Clear d3 ready to work with
+00039E 1601             	move.b   d1, d3                 ; Move Y coord (lower byte of d1) to d3
+0003A0 C6FC 0040        	mulu.w   #0x0040, d3            ; Multiply Y by line width (H40 mode - 64 lines horizontally) to get Y offset
+0003A4 E099             	ror.l    #0x8, d1               ; Shift X coord from upper to lower byte of d1
+0003A6 D601             	add.b    d1, d3                 ; Add X coord to offset
+0003A8 C6FC 0002        	mulu.w   #0x2, d3               ; Convert to words
+0003AC 4843             	swap     d3                     ; Shift address offset to upper word
+0003AE D6BC 40000003    	add.l    #vdp_write_plane_a, d3 ; Add PlaneA write cmd + address
+0003B4 23C3 00C00004    	move.l   d3, vdp_control        ; Send to VDP control port
+
+0003BA 4283             	clr.l    d3                     ; Clear d3 ready to work with again
+0003BC 1602             	move.b   d2, d3                 ; Move palette ID (lower byte of d2) to d3
+0003BE E19B             	rol.l    #0x8, d3               ; Shift palette ID to bits 14 and 15 of d3
+0003C0 EB9B             	rol.l    #0x5, d3               ; Can only rol bits up to 8 places in one instruction
+
+0003C2 43F8 033C        	lea      ASCIIMap, a1           ; Load address of ASCII map into a1
+
+0003C6                  .CharCopy:
+0003C6 1418             	move.b   (a0)+, d2              ; Move ASCII byte to lower byte of d2
+0003C8 B43C 0000        	cmp.b    #0x0, d2               ; Test if byte is zero (string terminator)
+0003CC 6714             	beq.b    .Done                  ; If byte was zero, branch to end
+
+0003CE 943C 0020        	sub.b    #ASCIIStart, d2        ; Subtract first ASCII code to get table entry index
+0003D2 1631 2000        	move.b   (a1,d2.w), d3          ; Move tile ID from table (index in lower word of d2) to lower byte of d3
+0003D6 D640             	add.w    d0, d3                 ; Offset tile ID by first tile ID in font
+0003D8 33C3 00C00000    	move.w   d3, vdp_data           ; Move palette and pattern IDs to VDP data port
+0003DE 4EF8 03C6        	jmp      .CharCopy              ; Next character
+
+0003E2                  .Done:
+0003E2 4E75             	rts
+
+0003E4                  __main:
+
+0003E4 33FC 8F02 00C0   	move.w #0x8F02, vdp_control     ; Set autoincrement to 2 bytes
+0003EA 0004
+
+                        ; ************************************
+                        ; Move palettes to CRAM
+                        ; ************************************
+0003EC 23FC F0000000    	move.l #vdp_write_palettes, vdp_control ; Set up VDP to write to CRAM address 0x0000
+0003F2 00C00004
+
+0003F6 41F9 000004C2    	lea Palettes, a0  ; Load address of Palettes into a0
+0003FC 203C 0000001F    	move.l #0x1F, d0  ; 128 bytes of data (4 palettes, 32 longwords, minus 1 for counter) in palettes
+
+000402                  .ColourLoop:
+000402 23D8 00C00000    	move.l (a0)+, vdp_data ; Move data to VDP data port, and increment source address
+000408 51C8 FFF8        	dbra d0, .ColourLoop
+
+                        ; ************************************
+                        ; Load font
+                        ; ************************************
+00040C 41F9 000005A8        lea        PixelFont, a0       ; Move font address to a0
+000412 203C 00000100        move.l    #PixelFontVRAM, d0   ; Move VRAM dest address to d0
+000418 223C 00000032        move.l    #PixelFontSizeT, d1  ; Move number of characters (font size in tiles) to d1
+00041E 4EB8 0378            jsr        LoadFont            ; Jump to subroutine
+
+                        ; ************************************
+                        ; Draw text
+                        ; ************************************
+000422 41F9 00000542    	lea		String1, a0		     ; String address
+000428 203C 00000008    	move.l	#PixelFontTileID, d0 ; First tile id
+00042E 323C 0501        	move.w	#0x0501, d1			 ; XY (5, 1)
+000432 243C 00000000    	move.l	#0x0, d2			 ; Palette 0
+000438 4EB8 039C        	jsr		DrawTextPlaneA       ; Call draw text subroutine
+
+00043C 41F9 00000550    	lea		String2, a0		     ; String address
+000442 203C 00000008    	move.l	#PixelFontTileID, d0 ; First tile id
+000448 323C 0502        	move.w	#0x0502, d1			 ; XY (5, 2)
+00044C 243C 00000001    	move.l	#0x1, d2			 ; Palette 1
+000452 4EB8 039C        	jsr		DrawTextPlaneA       ; Call draw text subroutine
+
+000456 41F9 0000055E    	lea		String3, a0		     ; String address
+00045C 203C 00000008    	move.l	#PixelFontTileID, d0 ; First tile id
+000462 323C 0503        	move.w	#0x0503, d1			 ; XY (5, 3)
+000466 243C 00000002    	move.l	#0x2, d2			 ; Palette 2
+00046C 4EB8 039C        	jsr		DrawTextPlaneA       ; Call draw text subroutine
+
+000470 41F9 00000569    	lea		String4, a0		     ; String address
+000476 203C 00000008    	move.l	#PixelFontTileID, d0 ; First tile id
+00047C 323C 0504        	move.w	#0x0504, d1			 ; XY (5, 4)
+000480 243C 00000003    	move.l	#0x3, d2			 ; Palette 3
+000486 4EB8 039C        	jsr		DrawTextPlaneA       ; Call draw text subroutine
+
+00048A 41F9 00000577    	lea		String5, a0		     ; String address
+000490 203C 00000008    	move.l	#PixelFontTileID, d0 ; First tile id
+000496 323C 0106        	move.w	#0x0106, d1			 ; XY (1, 6)
+00049A 243C 00000003    	move.l	#0x3, d2			 ; Palette 3
+0004A0 4EB8 039C        	jsr		DrawTextPlaneA       ; Call draw text subroutine
+                        	
+0004A4 41F9 00000591    	lea		String6, a0		     ; String address
+0004AA 203C 00000008    	move.l	#PixelFontTileID, d0 ; First tile id
+0004B0 323C 0107        	move.w	#0x0107, d1			 ; XY (1, 7)
+0004B4 243C 00000003    	move.l	#0x3, d2			 ; Palette 3
+0004BA 4EB8 039C        	jsr		DrawTextPlaneA       ; Call draw text subroutine
+
+0004BE 4E72 2700        	stop #$2700 ; Halt CPU
+
+0004C2                  Palettes:
+0004C2 0000             	dc.w 0x0000 ; Colour 0 - Transparent
+0004C4 000E             	dc.w 0x000E ; Colour 1 - Red
+0004C6 0000             	dc.w 0x0000
+0004C8 0000             	dc.w 0x0000
+0004CA 0000             	dc.w 0x0000
+0004CC 0000             	dc.w 0x0000
+0004CE 0000             	dc.w 0x0000
+0004D0 0000             	dc.w 0x0000
+0004D2 0000             	dc.w 0x0000
+0004D4 0000             	dc.w 0x0000
+0004D6 0000             	dc.w 0x0000
+0004D8 0000             	dc.w 0x0000
+0004DA 0000             	dc.w 0x0000
+0004DC 0000             	dc.w 0x0000
+0004DE 0000             	dc.w 0x0000
+0004E0 0000             	dc.w 0x0000
+
+0004E2 0000             	dc.w 0x0000 ; Colour 0 - Transparent
+0004E4 00E0             	dc.w 0x00E0 ; Colour 1 - Green
+0004E6 0000             	dc.w 0x0000
+0004E8 0000             	dc.w 0x0000
+0004EA 0000             	dc.w 0x0000
+0004EC 0000             	dc.w 0x0000
+0004EE 0000             	dc.w 0x0000
+0004F0 0000             	dc.w 0x0000
+0004F2 0000             	dc.w 0x0000
+0004F4 0000             	dc.w 0x0000
+0004F6 0000             	dc.w 0x0000
+0004F8 0000             	dc.w 0x0000
+0004FA 0000             	dc.w 0x0000
+0004FC 0000             	dc.w 0x0000
+0004FE 0000             	dc.w 0x0000
+000500 0000             	dc.w 0x0000
+
+000502 0000             	dc.w 0x0000 ; Colour 0 - Transparent
+000504 0E00             	dc.w 0x0E00 ; Colour 1 - Blue
+000506 0000             	dc.w 0x0000
+000508 0000             	dc.w 0x0000
+00050A 0000             	dc.w 0x0000
+00050C 0000             	dc.w 0x0000
+00050E 0000             	dc.w 0x0000
+000510 0000             	dc.w 0x0000
+000512 0000             	dc.w 0x0000
+000514 0000             	dc.w 0x0000
+000516 0000             	dc.w 0x0000
+000518 0000             	dc.w 0x0000
+00051A 0000             	dc.w 0x0000
+00051C 0000             	dc.w 0x0000
+00051E 0000             	dc.w 0x0000
+000520 0000             	dc.w 0x0000
+
+000522 0000             	dc.w 0x0000 ; Colour 0 - Transparent
+000524 0EEE             	dc.w 0x0EEE ; Colour 1 - White
+000526 0000             	dc.w 0x0000
+000528 0000             	dc.w 0x0000
+00052A 0000             	dc.w 0x0000
+00052C 0000             	dc.w 0x0000
+00052E 0000             	dc.w 0x0000
+000530 0000             	dc.w 0x0000
+000532 0000             	dc.w 0x0000
+000534 0000             	dc.w 0x0000
+000536 0000             	dc.w 0x0000
+000538 0000             	dc.w 0x0000
+00053A 0000             	dc.w 0x0000
+00053C 0000             	dc.w 0x0000
+00053E 0000             	dc.w 0x0000
+000540 0000             	dc.w 0x0000
+
+                        	; Text strings (zero terminated)
+000542                  String1:
+000542 4142434445464748 	dc.b "ABCDEFGHIJKLM",0
+00054A 494A4B4C4D00
+000550                  String2:
+000550 4E4F505152535455 	dc.b "NOPQRSTUVWXYZ",0
+000558 565758595A00
+00055E                  String3:
+00055E 3031323334353637 	dc.b "0123456789",0
+000566 383900
+000569                  String4:
+000569 2C2E3F2128292227 	dc.b ",.?!()""':#+-/",0
+000571 3A232B2D2F00
+000577                  String5:
+000577 5448452051554943 	dc.b "THE QUICK BROWN FOX JUMPS",0
+00057F 4B2042524F574E20
+000587 464F58204A554D50
+00058F 5300
+000591                  String6:
+000591 4F56455220544845 	dc.b "OVER THE LAZY DOG",0
+000599 204C415A5920444F
+0005A1 4700
+
+                        	; Include art assets
+0005A3                  	include 'fonts/pixelfont.asm'
+                        	; Align 8 bytes
+0005A3  (000005)        	ALIGN 8
+
+0005A8                  PixelFont: ; Font start address
+
+0005A8 00000000         	dc.l	$00000000
+0005AC 00000000         	dc.l	$00000000
+0005B0 00000000         	dc.l	$00000000
+0005B4 00000000         	dc.l	$00000000
+0005B8 00000000         	dc.l	$00000000
+0005BC 00000000         	dc.l	$00000000
+0005C0 00000000         	dc.l	$00000000
+0005C4 00000000         	dc.l	$00000000
+
+0005C8 01111100         	dc.l	$01111100
+0005CC 11000110         	dc.l	$11000110
+0005D0 10111010         	dc.l	$10111010
+0005D4 10000010         	dc.l	$10000010
+0005D8 10111010         	dc.l	$10111010
+0005DC 10101010         	dc.l	$10101010
+0005E0 11101110         	dc.l	$11101110
+0005E4 00000000         	dc.l	$00000000
+                        	
+0005E8 11111100         	dc.l	$11111100
+0005EC 10000110         	dc.l	$10000110
+0005F0 10111010         	dc.l	$10111010
+0005F4 10000110         	dc.l	$10000110
+0005F8 10111010         	dc.l	$10111010
+0005FC 10000110         	dc.l	$10000110
+000600 11111100         	dc.l	$11111100
+000604 00000000         	dc.l	$00000000
+                        	
+000608 01111110         	dc.l	$01111110
+00060C 11000010         	dc.l	$11000010
+000610 10111110         	dc.l	$10111110
+000614 10100000         	dc.l	$10100000
+000618 10111110         	dc.l	$10111110
+00061C 11000010         	dc.l	$11000010
+000620 01111110         	dc.l	$01111110
+000624 00000000         	dc.l	$00000000
+                        	
+000628 11111100         	dc.l	$11111100
+00062C 10000110         	dc.l	$10000110
+000630 10111010         	dc.l	$10111010
+000634 10101010         	dc.l	$10101010
+000638 10111010         	dc.l	$10111010
+00063C 10000110         	dc.l	$10000110
+000640 11111100         	dc.l	$11111100
+000644 00000000         	dc.l	$00000000
+                        	
+000648 11111110         	dc.l	$11111110
+00064C 10000010         	dc.l	$10000010
+000650 10111110         	dc.l	$10111110
+000654 10001000         	dc.l	$10001000
+000658 10111110         	dc.l	$10111110
+00065C 10000010         	dc.l	$10000010
+000660 11111110         	dc.l	$11111110
+000664 00000000         	dc.l	$00000000
+                        	
+000668 11111110         	dc.l	$11111110
+00066C 10000010         	dc.l	$10000010
+000670 10111110         	dc.l	$10111110
+000674 10001000         	dc.l	$10001000
+000678 10111000         	dc.l	$10111000
+00067C 10100000         	dc.l	$10100000
+000680 11100000         	dc.l	$11100000
+000684 00000000         	dc.l	$00000000
+                        	
+000688 01111110         	dc.l	$01111110
+00068C 11000010         	dc.l	$11000010
+000690 10111110         	dc.l	$10111110
+000694 10100010         	dc.l	$10100010
+000698 10111010         	dc.l	$10111010
+00069C 11000010         	dc.l	$11000010
+0006A0 01111110         	dc.l	$01111110
+0006A4 00000000         	dc.l	$00000000
+                        	
+0006A8 11101110         	dc.l	$11101110
+0006AC 10101010         	dc.l	$10101010
+0006B0 10111010         	dc.l	$10111010
+0006B4 10000010         	dc.l	$10000010
+0006B8 10111010         	dc.l	$10111010
+0006BC 10101010         	dc.l	$10101010
+0006C0 11101110         	dc.l	$11101110
+0006C4 00000000         	dc.l	$00000000
+                        	
+0006C8 11111110         	dc.l	$11111110
+0006CC 10000010         	dc.l	$10000010
+0006D0 11101110         	dc.l	$11101110
+0006D4 00101000         	dc.l	$00101000
+0006D8 11101110         	dc.l	$11101110
+0006DC 10000010         	dc.l	$10000010
+0006E0 11111110         	dc.l	$11111110
+0006E4 00000000         	dc.l	$00000000
+                        	
+0006E8 00001110         	dc.l	$00001110
+0006EC 00001010         	dc.l	$00001010
+0006F0 00001010         	dc.l	$00001010
+0006F4 11101010         	dc.l	$11101010
+0006F8 10111010         	dc.l	$10111010
+0006FC 11000110         	dc.l	$11000110
+000700 01111100         	dc.l	$01111100
+000704 00000000         	dc.l	$00000000
+                        	
+000708 11101110         	dc.l	$11101110
+00070C 10111010         	dc.l	$10111010
+000710 10110110         	dc.l	$10110110
+000714 10001100         	dc.l	$10001100
+000718 10110110         	dc.l	$10110110
+00071C 10111010         	dc.l	$10111010
+000720 11101110         	dc.l	$11101110
+000724 00000000         	dc.l	$00000000
+
+000728 11100000         	dc.l	$11100000
+00072C 10100000         	dc.l	$10100000
+000730 10100000         	dc.l	$10100000
+000734 10100000         	dc.l	$10100000
+000738 10111110         	dc.l	$10111110
+00073C 10000010         	dc.l	$10000010
+000740 11111110         	dc.l	$11111110
+000744 00000000         	dc.l	$00000000
+                        	
+000748 11101110         	dc.l	$11101110
+00074C 10111010         	dc.l	$10111010
+000750 10010010         	dc.l	$10010010
+000754 10101010         	dc.l	$10101010
+000758 10111010         	dc.l	$10111010
+00075C 10101010         	dc.l	$10101010
+000760 11101110         	dc.l	$11101110
+000764 00000000         	dc.l	$00000000
+                        	
+000768 11101110         	dc.l	$11101110
+00076C 10111010         	dc.l	$10111010
+000770 10011010         	dc.l	$10011010
+000774 10101010         	dc.l	$10101010
+000778 10110010         	dc.l	$10110010
+00077C 10111010         	dc.l	$10111010
+000780 11101110         	dc.l	$11101110
+000784 00000000         	dc.l	$00000000
+                        	
+000788 01111100         	dc.l	$01111100
+00078C 11000110         	dc.l	$11000110
+000790 10111010         	dc.l	$10111010
+000794 10101010         	dc.l	$10101010
+000798 10111010         	dc.l	$10111010
+00079C 11000110         	dc.l	$11000110
+0007A0 01111100         	dc.l	$01111100
+0007A4 00000000         	dc.l	$00000000
+                        	
+0007A8 11111100         	dc.l	$11111100
+0007AC 10000110         	dc.l	$10000110
+0007B0 10111010         	dc.l	$10111010
+0007B4 10000110         	dc.l	$10000110
+0007B8 10111100         	dc.l	$10111100
+0007BC 10100000         	dc.l	$10100000
+0007C0 11100000         	dc.l	$11100000
+0007C4 00000000         	dc.l	$00000000
+                        	
+0007C8 01111100         	dc.l	$01111100
+0007CC 11000110         	dc.l	$11000110
+0007D0 10111010         	dc.l	$10111010
+0007D4 10101010         	dc.l	$10101010
+0007D8 10110110         	dc.l	$10110110
+0007DC 11001010         	dc.l	$11001010
+0007E0 01111110         	dc.l	$01111110
+0007E4 00000000         	dc.l	$00000000
+                        	
+0007E8 11111100         	dc.l	$11111100
+0007EC 10000110         	dc.l	$10000110
+0007F0 10111010         	dc.l	$10111010
+0007F4 10000110         	dc.l	$10000110
+0007F8 10110110         	dc.l	$10110110
+0007FC 10111010         	dc.l	$10111010
+000800 11101110         	dc.l	$11101110
+000804 00000000         	dc.l	$00000000
+                        	
+000808 01111110         	dc.l	$01111110
+00080C 11000010         	dc.l	$11000010
+000810 10111110         	dc.l	$10111110
+000814 11000110         	dc.l	$11000110
+000818 11111010         	dc.l	$11111010
+00081C 10000110         	dc.l	$10000110
+000820 11111100         	dc.l	$11111100
+000824 00000000         	dc.l	$00000000
+                        	
+000828 11111110         	dc.l	$11111110
+00082C 10000010         	dc.l	$10000010
+000830 11101110         	dc.l	$11101110
+000834 00101000         	dc.l	$00101000
+000838 00101000         	dc.l	$00101000
+00083C 00101000         	dc.l	$00101000
+000840 00111000         	dc.l	$00111000
+000844 00000000         	dc.l	$00000000
+                        	
+000848 11101110         	dc.l	$11101110
+00084C 10101010         	dc.l	$10101010
+000850 10101010         	dc.l	$10101010
+000854 10101010         	dc.l	$10101010
+000858 10111010         	dc.l	$10111010
+00085C 11000110         	dc.l	$11000110
+000860 01111100         	dc.l	$01111100
+000864 00000000         	dc.l	$00000000
+                        	
+000868 11101110         	dc.l	$11101110
+00086C 10101010         	dc.l	$10101010
+000870 10111010         	dc.l	$10111010
+000874 11010110         	dc.l	$11010110
+000878 01010100         	dc.l	$01010100
+00087C 01101100         	dc.l	$01101100
+000880 00111000         	dc.l	$00111000
+000884 00000000         	dc.l	$00000000
+                        	
+000888 11101110         	dc.l	$11101110
+00088C 10101010         	dc.l	$10101010
+000890 10111010         	dc.l	$10111010
+000894 10101010         	dc.l	$10101010
+000898 10010010         	dc.l	$10010010
+00089C 10111010         	dc.l	$10111010
+0008A0 11101110         	dc.l	$11101110
+0008A4 00000000         	dc.l	$00000000
+                        	
+0008A8 11101110         	dc.l	$11101110
+0008AC 10111010         	dc.l	$10111010
+0008B0 11010110         	dc.l	$11010110
+0008B4 01101100         	dc.l	$01101100
+0008B8 11010110         	dc.l	$11010110
+0008BC 10111010         	dc.l	$10111010
+0008C0 11101110         	dc.l	$11101110
+0008C4 00000000         	dc.l	$00000000
+                        	
+0008C8 11101110         	dc.l	$11101110
+0008CC 10111010         	dc.l	$10111010
+0008D0 11010110         	dc.l	$11010110
+0008D4 01101100         	dc.l	$01101100
+0008D8 00101000         	dc.l	$00101000
+0008DC 00101000         	dc.l	$00101000
+0008E0 00111000         	dc.l	$00111000
+0008E4 00000000         	dc.l	$00000000
+                        	
+0008E8 11111110         	dc.l	$11111110
+0008EC 10000010         	dc.l	$10000010
+0008F0 11110110         	dc.l	$11110110
+0008F4 01101100         	dc.l	$01101100
+0008F8 11011110         	dc.l	$11011110
+0008FC 10000010         	dc.l	$10000010
+000900 11111110         	dc.l	$11111110
+000904 00000000         	dc.l	$00000000
+                        	
+000908 01111100         	dc.l	$01111100
+00090C 11000110         	dc.l	$11000110
+000910 10110010         	dc.l	$10110010
+000914 10101010         	dc.l	$10101010
+000918 10011010         	dc.l	$10011010
+00091C 11000110         	dc.l	$11000110
+000920 01111100         	dc.l	$01111100
+000924 00000000         	dc.l	$00000000
+                        	
+000928 01111000         	dc.l	$01111000
+00092C 01001000         	dc.l	$01001000
+000930 01101000         	dc.l	$01101000
+000934 00101000         	dc.l	$00101000
+000938 01101100         	dc.l	$01101100
+00093C 01000100         	dc.l	$01000100
+000940 01111100         	dc.l	$01111100
+000944 00000000         	dc.l	$00000000
+                        	
+000948 11111100         	dc.l	$11111100
+00094C 10000110         	dc.l	$10000110
+000950 11111010         	dc.l	$11111010
+000954 11000110         	dc.l	$11000110
+000958 10111110         	dc.l	$10111110
+00095C 10000010         	dc.l	$10000010
+000960 11111110         	dc.l	$11111110
+000964 00000000         	dc.l	$00000000
+                        	
+000968 11111100         	dc.l	$11111100
+00096C 10000110         	dc.l	$10000110
+000970 11111010         	dc.l	$11111010
+000974 00100110         	dc.l	$00100110
+000978 11111010         	dc.l	$11111010
+00097C 10000110         	dc.l	$10000110
+000980 11111100         	dc.l	$11111100
+000984 00000000         	dc.l	$00000000
+                        	
+000988 11101110         	dc.l	$11101110
+00098C 10101010         	dc.l	$10101010
+000990 10111010         	dc.l	$10111010
+000994 10000010         	dc.l	$10000010
+000998 11111010         	dc.l	$11111010
+00099C 00001010         	dc.l	$00001010
+0009A0 00001110         	dc.l	$00001110
+0009A4 00000000         	dc.l	$00000000
+                        	
+0009A8 11111110         	dc.l	$11111110
+0009AC 10000010         	dc.l	$10000010
+0009B0 10111110         	dc.l	$10111110
+0009B4 10000110         	dc.l	$10000110
+0009B8 11111010         	dc.l	$11111010
+0009BC 10000110         	dc.l	$10000110
+0009C0 11111100         	dc.l	$11111100
+0009C4 00000000         	dc.l	$00000000
+                        	
+0009C8 01111100         	dc.l	$01111100
+0009CC 11000100         	dc.l	$11000100
+0009D0 10111100         	dc.l	$10111100
+0009D4 10000110         	dc.l	$10000110
+0009D8 10111010         	dc.l	$10111010
+0009DC 11000110         	dc.l	$11000110
+0009E0 01111100         	dc.l	$01111100
+0009E4 00000000         	dc.l	$00000000
+                        	
+0009E8 11111110         	dc.l	$11111110
+0009EC 10000010         	dc.l	$10000010
+0009F0 11111010         	dc.l	$11111010
+0009F4 00110110         	dc.l	$00110110
+0009F8 01101100         	dc.l	$01101100
+0009FC 01011000         	dc.l	$01011000
+000A00 01110000         	dc.l	$01110000
+000A04 00000000         	dc.l	$00000000
+                        	
+000A08 01111100         	dc.l	$01111100
+000A0C 11000110         	dc.l	$11000110
+000A10 10111010         	dc.l	$10111010
+000A14 11000110         	dc.l	$11000110
+000A18 10111010         	dc.l	$10111010
+000A1C 11000110         	dc.l	$11000110
+000A20 01111100         	dc.l	$01111100
+000A24 00000000         	dc.l	$00000000
+                        	
+000A28 01111100         	dc.l	$01111100
+000A2C 11000110         	dc.l	$11000110
+000A30 10111010         	dc.l	$10111010
+000A34 11000010         	dc.l	$11000010
+000A38 01111010         	dc.l	$01111010
+000A3C 01000110         	dc.l	$01000110
+000A40 01111100         	dc.l	$01111100
+000A44 00000000         	dc.l	$00000000
+
+000A48 00000000         	dc.l	$00000000
+000A4C 00000000         	dc.l	$00000000
+000A50 00000000         	dc.l	$00000000
+000A54 00000000         	dc.l	$00000000
+000A58 00000000         	dc.l	$00000000
+000A5C 11000000         	dc.l	$11000000
+000A60 11000000         	dc.l	$11000000
+000A64 00000000         	dc.l	$00000000
+                        	
+000A68 00000000         	dc.l	$00000000
+000A6C 00000000         	dc.l	$00000000
+000A70 00000000         	dc.l	$00000000
+000A74 00000000         	dc.l	$00000000
+000A78 11100000         	dc.l	$11100000
+000A7C 10100000         	dc.l	$10100000
+000A80 10100000         	dc.l	$10100000
+000A84 11100000         	dc.l	$11100000
+                        	
+000A88 01111100         	dc.l	$01111100
+000A8C 11000110         	dc.l	$11000110
+000A90 10111010         	dc.l	$10111010
+000A94 11100110         	dc.l	$11100110
+000A98 00111100         	dc.l	$00111100
+000A9C 00101000         	dc.l	$00101000
+000AA0 00111000         	dc.l	$00111000
+000AA4 00000000         	dc.l	$00000000
+                        	
+000AA8 11100000         	dc.l	$11100000
+000AAC 10100000         	dc.l	$10100000
+000AB0 10100000         	dc.l	$10100000
+000AB4 10100000         	dc.l	$10100000
+000AB8 11100000         	dc.l	$11100000
+000ABC 10100000         	dc.l	$10100000
+000AC0 11100000         	dc.l	$11100000
+000AC4 00000000         	dc.l	$00000000
+                        	
+000AC8 01110000         	dc.l	$01110000
+000ACC 11010000         	dc.l	$11010000
+000AD0 10110000         	dc.l	$10110000
+000AD4 10100000         	dc.l	$10100000
+000AD8 10110000         	dc.l	$10110000
+000ADC 11010000         	dc.l	$11010000
+000AE0 01110000         	dc.l	$01110000
+000AE4 00000000         	dc.l	$00000000
+                        	
+000AE8 11100000         	dc.l	$11100000
+000AEC 10110000         	dc.l	$10110000
+000AF0 11010000         	dc.l	$11010000
+000AF4 01010000         	dc.l	$01010000
+000AF8 11010000         	dc.l	$11010000
+000AFC 10110000         	dc.l	$10110000
+000B00 11100000         	dc.l	$11100000
+000B04 00000000         	dc.l	$00000000
+                        	
+000B08 11111000         	dc.l	$11111000
+000B0C 10101000         	dc.l	$10101000
+000B10 10101000         	dc.l	$10101000
+000B14 11111000         	dc.l	$11111000
+000B18 00000000         	dc.l	$00000000
+000B1C 00000000         	dc.l	$00000000
+000B20 00000000         	dc.l	$00000000
+000B24 00000000         	dc.l	$00000000
+                        	
+000B28 11100000         	dc.l	$11100000
+000B2C 10100000         	dc.l	$10100000
+000B30 10100000         	dc.l	$10100000
+000B34 11100000         	dc.l	$11100000
+000B38 00000000         	dc.l	$00000000
+000B3C 00000000         	dc.l	$00000000
+000B40 00000000         	dc.l	$00000000
+000B44 00000000         	dc.l	$00000000
+                        	
+000B48 00000000         	dc.l	$00000000
+000B4C 11100000         	dc.l	$11100000
+000B50 10100000         	dc.l	$10100000
+000B54 11100000         	dc.l	$11100000
+000B58 10100000         	dc.l	$10100000
+000B5C 11100000         	dc.l	$11100000
+000B60 00000000         	dc.l	$00000000
+000B64 00000000         	dc.l	$00000000
+                        	
+000B68 01111100         	dc.l	$01111100
+000B6C 11010110         	dc.l	$11010110
+000B70 10000010         	dc.l	$10000010
+000B74 11010110         	dc.l	$11010110
+000B78 10000010         	dc.l	$10000010
+000B7C 11010110         	dc.l	$11010110
+000B80 01111100         	dc.l	$01111100
+000B84 00000000         	dc.l	$00000000
+                        	
+000B88 00111000         	dc.l	$00111000
+000B8C 00101000         	dc.l	$00101000
+000B90 11101110         	dc.l	$11101110
+000B94 10000010         	dc.l	$10000010
+000B98 11101110         	dc.l	$11101110
+000B9C 00101000         	dc.l	$00101000
+000BA0 00111000         	dc.l	$00111000
+000BA4 00000000         	dc.l	$00000000
+                        	
+000BA8 00000000         	dc.l	$00000000
+000BAC 00000000         	dc.l	$00000000
+000BB0 11111110         	dc.l	$11111110
+000BB4 10000010         	dc.l	$10000010
+000BB8 11111110         	dc.l	$11111110
+000BBC 00000000         	dc.l	$00000000
+000BC0 00000000         	dc.l	$00000000
+000BC4 00000000         	dc.l	$00000000
+                        	
+000BC8 00011100         	dc.l	$00011100
+000BCC 00110100         	dc.l	$00110100
+000BD0 01101100         	dc.l	$01101100
+000BD4 11011000         	dc.l	$11011000
+000BD8 10110000         	dc.l	$10110000
+000BDC 11100000         	dc.l	$11100000
+000BE0 00000000         	dc.l	$00000000
+000BE4 00000000         	dc.l	$00000000
+
+000BE8                  PixelFontEnd                                 ; Font end address
+       = 000640         PixelFontSizeB: equ (PixelFontEnd-PixelFont) ; Font size in bytes
+       = 000320         PixelFontSizeW: equ (PixelFontSizeB/2)       ; Font size in words
+       = 000190         PixelFontSizeL: equ (PixelFontSizeB/4)       ; Font size in longs
+       = 000032         PixelFontSizeT: equ (PixelFontSizeB/32)      ; Font size in tiles
+       = 000100         PixelFontVRAM:  equ 0x0100                   ; Dest address in VRAM
+       = 000008         PixelFontTileID: equ (PixelFontVRAM/32)      ; ID of first tile
+
+000BE8                  __end    ; Very last line, end of ROM address
+
+00000 Total Error(s)
+
+ASCIIMAP           0000033C    ASCIISTART         00000020 E  DRAWTEXTPLANEA     0000039C
+DRAWTEXTPLANEA.CHARCOPY                       000003C6    
+DRAWTEXTPLANEA.DONE                           000003E2    ENTRYPOINT         00000200
+ENTRYPOINT.CLEAR   00000226    ENTRYPOINT.COPYPSG 00000292    ENTRYPOINT.COPYVDP 000002AE
+ENTRYPOINT.COPYZ80 00000270    ENTRYPOINT.SKIP    00000244    ENTRYPOINT.WAIT    00000254
+EXCEPTION          000002F2    HBLANKINTERRUPT    000002F0    LOADFONT           00000378
+LOADFONT.CHARCOPY  00000388    LOADFONT.LONGCOPY  0000038C    MAIN               000002EA
+PALETTES           000004C2    PIXELFONT          000005A8    PIXELFONTEND       00000BE8
+PIXELFONTSIZEB     00000640 E  PIXELFONTSIZEL     00000190 E  PIXELFONTSIZET     00000032 E
+PIXELFONTSIZEW     00000320 E  PIXELFONTTILEID    00000008 E  PIXELFONTVRAM      00000100 E
+PSGDATA            00000320    STRING1            00000542    STRING2            00000550
+STRING3            0000055E    STRING4            00000569    STRING5            00000577
+STRING6            00000591    VBLANKINTERRUPT    000002F0    VDPREGISTERS       00000324
+VDP_CONTROL        00C00004 E  VDP_DATA           00C00000 E  VDP_WRITE_PALETTES FFFFFFFFF0000000 E
+VDP_WRITE_PLANE_A  40000003 E  VDP_WRITE_SPRITE_TABLE                        60000003 E
+VDP_WRITE_SPRITE_TILES                        60000000 E  VDP_WRITE_TILES    40000000 E
+Z80DATA            000002F6    __END              00000BE8    __MAIN             000003E4
+__MAIN.COLOURLOOP  00000402
