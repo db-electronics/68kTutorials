@@ -35,6 +35,7 @@ IO_EXPSCTRL				equ 0x00A1001E
 ; Z80 Addresses
 ; ************************************
 Z80_MEMSPACE			equ 0x00A00000
+Z80_RAM					equ 0x00A00000
 Z80_BUSREQ				equ	0x00A11100
 Z80_RESET				equ 0x00A11200
 
