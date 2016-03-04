@@ -1,30 +1,29 @@
 	include 'init.asm'
-	include 'globals.asm'
 	include 'text.asm'
 
 __main:
 
-	move.w #0x8F02, vdp_control     ; Set autoincrement to 2 bytes
+	move.w #0x8F02, VDP_CTRL     ; Set autoincrement to 2 bytes
 
 ; ************************************
 ; Move palettes to CRAM
 ; ************************************
-	move.l #vdp_write_palettes, vdp_control ; Set up VDP to write to CRAM address 0x0000
+	move.l 	#vdp_write_palettes, VDP_CTRL ; Set up VDP to write to CRAM address 0x0000
 
-	lea Palettes, a0  ; Load address of Palettes into a0
-	move.l #0x1F, d0  ; 128 bytes of data (4 palettes, 32 longwords, minus 1 for counter) in palettes
+	lea 	Palettes, a0  ; Load address of Palettes into a0
+	move.l 	#0x1F, d0  ; 128 bytes of data (4 palettes, 32 longwords, minus 1 for counter) in palettes
 
 .ColourLoop:
-	move.l (a0)+, vdp_data ; Move data to VDP data port, and increment source address
-	dbra d0, .ColourLoop
+	move.l 	(a0)+, VDP_DATA ; Move data to VDP data port, and increment source address
+	dbra 	d0, .ColourLoop
 
 ; ************************************
 ; Load font
 ; ************************************
-    lea        PixelFont, a0       ; Move font address to a0
-    move.l    #PixelFontVRAM, d0   ; Move VRAM dest address to d0
-    move.l    #PixelFontSizeT, d1  ; Move number of characters (font size in tiles) to d1
-    jsr        LoadFont            ; Jump to subroutine
+    lea     PixelFont, a0       ; Move font address to a0
+    move.l  #PixelFontVRAM, d0   ; Move VRAM dest address to d0
+    move.l  #PixelFontSizeT, d1  ; Move number of characters (font size in tiles) to d1
+    jsr     LoadFont            ; Jump to subroutine
 
 ; ************************************
 ; Draw text
