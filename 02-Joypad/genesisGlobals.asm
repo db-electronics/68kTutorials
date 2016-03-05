@@ -23,22 +23,22 @@ vdp_write_sprite_table	equ 0x60000003
 ; ************************************
 ; I/O Addresses
 ; ************************************
-IO_VERSIONNO			equ 0x00A10000
-IO_CTRL1DATA			equ 0x00A10003
-IO_CTRL2DATA			equ 0x00A10005
-IO_EXPDATA				equ 0x00A10006
-IO_CTRL1CTRL			equ 0x00A10008
-IO_CTRL2CTRL			equ 0x00A1000A
-IO_EXPCTRL				equ 0x00A1000C
-IO_CTRL1TX				equ 0x00A1000E
-IO_CTRL1RX				equ 0x00A10010
-IO_CTRL1SCTRL			equ 0x00A10012
-IO_CTRL2TX				equ 0x00A10014
-IO_CTRL2RX				equ 0x00A10016
-IO_CTRL2SCTRL			equ 0x00A10018
-IO_EXPTX				equ 0x00A1001A
-IO_EXPRX				equ 0x00A1001C
-IO_EXPSCTRL				equ 0x00A1001E
+IO_VERSIONNO			equ 0x00A10001
+IO_DATA_1				equ 0x00A10003		; byte reads
+IO_DATA_2				equ 0x00A10005		; byte reads
+IO_DATA_EXP				equ 0x00A10007
+IO_CTRL_1				equ 0x00A10009
+IO_CTRL_2				equ 0x00A1000B
+IO_CTRL_EXP				equ 0x00A1000D
+IO_TXDATA_1				equ 0x00A1000F
+IO_RXDATA_1				equ 0x00A10011
+IO_SCTRL_1				equ 0x00A10013
+IO_TXDATA_2				equ 0x00A10015
+IO_RXDATA_2				equ 0x00A10017
+IO_SCTRL_2				equ 0x00A10019
+IO_TXDATA_3				equ 0x00A1001B
+IO_RXDATA_3				equ 0x00A1001D
+IO_SCTRL_EXP			equ 0x00A1001F
 
 ; ************************************
 ; Z80 Addresses
@@ -61,7 +61,7 @@ CTRL_TMSS				equ 0x00A14000
 M68K_RAM				equ 0x00FF0000
 
 ; ************************************
-; JOY bit numbers
+; JOY bit numbers 	SACBRLDU
 ; ************************************
 JOY_UP           		equ 0
 JOY_DOWN         		equ 1
@@ -71,4 +71,5 @@ JOY_A            		equ 6
 JOY_B            		equ 4
 JOY_C            		equ 5
 JOY_START        		equ 7
+
 

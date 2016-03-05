@@ -71,10 +71,10 @@
 ; size    012345678901234567890123456789012345678901234567
 	dc.b "SEGA GENESIS    "									; Console name - 16
 	dc.b "(C)db   2016.MAR"									; Copyright holder and release date - 16
-	dc.b "YOUR GAME HERE                                  "	; Domestic name - 48
-	dc.b "YOUR GAME HERE                                  "	; International name - 48
-	dc.b "GM XXXXXXXX-XX"									; Version number - 48
-	dc.w 0x0000												; Checksum
+	dc.b "DB JOYPAD TUTORIAL                              "	; Domestic name - 48
+	dc.b "DB JOYPAD TUTORIAL                              "	; International name - 48
+	dc.b "GM JPTUTORIAL-01"									; Version number - 48
+	dc.w 0x1234												; Checksum
 	dc.b "J               "									; I/O support - 16
 	dc.l 0x00000000											; Start address of ROM
 	dc.l __end												; End address of ROM
@@ -94,38 +94,38 @@ EntryPoint:           ; Entry point address set in ROM header
 ; ************************************
 ; Test reset button
 ; ************************************
-	tst.w 	0x00A10008  ; Test mystery reset (expansion port reset?)
-	bne.w 	Main          ; Branch if Not Equal (to zero) - to Main
-	tst.w 	0x00A1000C  ; Test reset button
-	bne.w 	Main          ; Branch if Not Equal (to zero) - to Main
+	tst.w 	0x00A10008  			; Test mystery reset (expansion port reset?)
+	bne.w 	Main          			; Branch if Not Equal (to zero) - to Main
+	tst.w 	IO_EXPCTRL  			; Test reset button
+	bne.w 	Main          			; Branch if Not Equal (to zero) - to Main
 
 ; ************************************
 ; Clear RAM
 ; ************************************
-	move.l 	#0x00000000, d0     ; Place a 0 into d0, ready to copy to each longword of RAM
-	move.l 	#0x00000000, a0     ; Starting from address 0x0, clearing backwards
-	move.l 	#0x00003FFF, d1     ; Clearing 64k's worth of longwords (minus 1, for the loop to be correct)
+	move.l 	#0x00000000, d0     	; Place a 0 into d0, ready to copy to each longword of RAM
+	move.l 	#0x00000000, a0     	; Starting from address 0x0, clearing backwards
+	move.l 	#0x00003FFF, d1     	; Clearing 64k's worth of longwords (minus 1, for the loop to be correct)
 .Clear:
-	move.l 	d0, -(a0)           ; Decrement the address by 1 longword, before moving the zero from d0 to it
-	dbra 	d1, .Clear          ; Decrement d0, repeat until depleted
+	move.l 	d0, -(a0)           	; Decrement the address by 1 longword, before moving the zero from d0 to it
+	dbra 	d1, .Clear          	; Decrement d0, repeat until depleted
 	
 ; ************************************
 ; Write TMSS
 ; ************************************
-	move.b 	0x00A10001, d0      ; Move Megadrive hardware version to d0
-	andi.b 	#0x0F, d0           ; The version is stored in last four bits, so mask it with 0F
-	beq.s 	.Skip               ; If version is equal to 0, skip TMSS signature
-	move.l 	#'SEGA', TMSS_REG 	; Move the string "SEGA" to 0xA14000
+	move.b 	0x00A10001, d0      	; Move Megadrive hardware version to d0
+	andi.b 	#0x0F, d0           	; The version is stored in last four bits, so mask it with 0F
+	beq.s 	.Skip               	; If version is equal to 0, skip TMSS signature
+	move.l 	#'SEGA', CTRL_TMSS 		; Move the string "SEGA" to 0xA14000
 .Skip:
 
 ; ************************************
 ; Init Z80
 ; ************************************
-	move.w 	#0x0100, Z80_BUSREQ    	; Request access to the Z80 bus, by writing 0x0100 into the BUSREQ port
-	move.w 	#0x0100, Z80_RESET    	; Hold the Z80 in a reset state, by writing 0x0100 into the RESET port
+	move.w 	#0x0100, CTRL_Z80BUSREQ ; Request access to the Z80 bus, by writing 0x0100 into the BUSREQ port
+	move.w 	#0x0100, CTRL_Z80RESET  ; Hold the Z80 in a reset state, by writing 0x0100 into the RESET port
 
 .Wait:
-	btst 	#0x0, Z80_BUSREQ      	; Test bit 0 of A11100 to see if the 68k has access to the Z80 bus yet
+	btst 	#0x0, CTRL_Z80BUSREQ    ; Test bit 0 of A11100 to see if the 68k has access to the Z80 bus yet
 	bne.s 	.Wait                  	; If we don't yet have control, branch back up to Wait
 	
 	move.l 	#Z80Data, a0        	; Load address of data into a0
@@ -135,8 +135,8 @@ EntryPoint:           ; Entry point address set in ROM header
 	move.b 	(a0)+, (a1)+        	; Copy data, and increment the source/dest addresses
 	dbra 	d0, .CopyZ80
 
-	move.w 	#0x0000, Z80_RESET    	; Release reset state
-	move.w	#0x0000, Z80_BUSREQ    	; Release control of bus
+	move.w 	#0x0000, CTRL_Z80RESET  ; Release reset state
+	move.w	#0x0000, CTRL_Z80BUSREQ ; Release control of bus
 
 ; ************************************
 ; Init PSG
@@ -161,36 +161,38 @@ EntryPoint:           ; Entry point address set in ROM header
 	dbra 	d0, .CopyVDP
 
 ; ************************************
-; Init control ports
+; Init IO Ports
 ; ************************************
-	move.b 	#0x00, 0x000A10009  ; Controller port 1 CTRL
-	move.b 	#0x00, 0x000A1000B  ; Controller port 2 CTRL
-	move.b 	#0x00, 0x000A1000D  ; EXP port CTRL
+	move.b 	#0x00, IO_CTRL_1	  	; Controller port 1 CTRL
+	move.b 	#0x00, IO_CTRL_2	 	; Controller port 2 CTRL
+	move.b 	#0x00, IO_CTRL_EXP 		; EXP port CTRL
+	move.b	#0x40, IO_DATA_1		; Idle with TH = '1'
+	move.b	#0x40, IO_DATA_2		; Idle with TH = '1'	
 
 ; ************************************
 ; Cleanup
 ; ************************************
-	move.l 	#0x00FF0000, a0     ; Move address of first byte of ram (contains zero, RAM has been cleared) to a0
-	movem.l (a0), d0-d7/a1-a7  ; Multiple move zero to all registers
-	move.l 	#0x00000000, a0     ; Clear a0
+	move.l 	#0x00FF0000, a0     	; Move address of first byte of ram (contains zero, RAM has been cleared) to a0
+	movem.l (a0), d0-d7/a1-a7  		; Multiple move zero to all registers
+	move.l 	#0x00000000, a0     	; Clear a0
 
-	; Init status register (no trace, A7 is Interrupt Stack Pointer, no interrupts, clear condition code bits)
-	move 	#0x2700, sr
+	; Init status register (no trace, supervisor mode, all interrupt levels enabled, clear condition code bits)
+	move 	#0x2000, sr
 
 ; ************************************
 ; Main
 ; ************************************
 Main:
-	jmp __main 					; Begin external main
+	jmp __main 						; Begin external main
 
 HBlankInterrupt:
 	rts
 VBlankInterrupt:
-	addi.l	#1, d7				; increment d7 as Vint counter
+	addi.l	#1, d7					; increment d7 as Vint counter
    	rts
 
 Exception:
-   	stop #$2700 ; Halt CPU
+   	stop #$2700 					; Halt CPU
    
 Z80Data:
    	dc.w 0xaf01, 0xd91f
@@ -209,8 +211,8 @@ PSGData:
    	dc.w 0x9fbf, 0xdfff
    
 VDPRegisters:
-   	dc.b 0x20 ; 0: Horiz. interrupt on, plus bit 2 (unknown, but docs say it needs to be on)
-   	dc.b 0x74 ; 1: Vert. interrupt on, display on, DMA on, V28 mode (40 cells vertically), + bit 2
+	dc.b 0x14 ; 0: Horiz. interrupt on, display on
+	dc.b 0x74 ; 1: Vert. interrupt on, screen blank off, DMA on, V28 mode (40 cells vertically), Genesis mode on
    	dc.b 0x30 ; 2: Pattern table for Scroll Plane A at 0xC000 (bits 3-5)
    	dc.b 0x40 ; 3: Pattern table for Window Plane at 0x10000 (bits 1-5)
    	dc.b 0x05 ; 4: Pattern table for Scroll Plane B at 0xA000 (bits 0-2)
@@ -232,4 +234,4 @@ VDPRegisters:
    	dc.b 0x00 ; 20: DMA length hi byte
    	dc.b 0x00 ; 21: DMA source address lo byte
    	dc.b 0x00 ; 22: DMA source address mid byte
-   dc.b 0x00 ; 23: DMA source address hi byte, memory-to-VRAM mode (bits 6-7)
+   	dc.b 0x00 ; 23: DMA source address hi byte, memory-to-VRAM mode (bits 6-7)
