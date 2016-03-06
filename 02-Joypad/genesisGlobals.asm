@@ -1,64 +1,64 @@
 ; ************************************
 ; VDP Addresses
 ; ************************************
-VDP_DATA				equ 0x00C00000
-VDP_CTRL				equ 0x00C00004
-VDP_HVCOUNTER			equ 0x00C00008
-VDP_PSG					equ 0x00C00011
+VDP_DATA				equ $00C00000
+VDP_CTRL				equ $00C00004
+VDP_HVCOUNTER			equ $00C00008
+VDP_PSG					equ $00C00011
 
 ; VDP Control Masks
-VDP_VSRAM_WRITE			equ 0x40000010
-VDP_VSRAM_READ			equ 0x00000010
-VDP_CRAM_WRITE			equ 0xC0000000
-VDP_CRAM_READ			equ 0x00000020
-VDP_VRAM_WRITE			equ 0x40000000
-VDP_VRAM_READ			equ 0x00000000
+VDP_VSRAM_WRITE			equ $40000010
+VDP_VSRAM_READ			equ $00000010
+VDP_CRAM_WRITE			equ $C0000000
+VDP_CRAM_READ			equ $00000020
+VDP_VRAM_WRITE			equ $40000000
+VDP_VRAM_READ			equ $00000000
 
-vdp_write_palettes		equ 0xF0000000
-vdp_write_tiles			equ 0x40000000
-vdp_write_plane_a		equ 0x40000003
-vdp_write_sprite_tiles	equ 0x60000000
-vdp_write_sprite_table	equ 0x60000003
+vdp_write_palettes		equ $F0000000
+vdp_write_tiles			equ $40000000
+vdp_write_plane_a		equ $40000003
+vdp_write_sprite_tiles	equ $60000000
+vdp_write_sprite_table	equ $60000003
 
 ; ************************************
 ; I/O Addresses
 ; ************************************
-IO_VERSIONNO			equ 0x00A10001
-IO_DATA_1				equ 0x00A10003		; byte reads
-IO_DATA_2				equ 0x00A10005		; byte reads
-IO_DATA_EXP				equ 0x00A10007
-IO_CTRL_1				equ 0x00A10009
-IO_CTRL_2				equ 0x00A1000B
-IO_CTRL_EXP				equ 0x00A1000D
-IO_TXDATA_1				equ 0x00A1000F
-IO_RXDATA_1				equ 0x00A10011
-IO_SCTRL_1				equ 0x00A10013
-IO_TXDATA_2				equ 0x00A10015
-IO_RXDATA_2				equ 0x00A10017
-IO_SCTRL_2				equ 0x00A10019
-IO_TXDATA_3				equ 0x00A1001B
-IO_RXDATA_3				equ 0x00A1001D
-IO_SCTRL_EXP			equ 0x00A1001F
+IO_VERSIONNO			equ $00A10001
+IO_DATA_1				equ $00A10003		; byte reads
+IO_DATA_2				equ $00A10005		; byte reads
+IO_DATA_EXP				equ $00A10007
+IO_CTRL_1				equ $00A10009
+IO_CTRL_2				equ $00A1000B
+IO_CTRL_EXP				equ $00A1000D
+IO_TXDATA_1				equ $00A1000F
+IO_RXDATA_1				equ $00A10011
+IO_SCTRL_1				equ $00A10013
+IO_TXDATA_2				equ $00A10015
+IO_RXDATA_2				equ $00A10017
+IO_SCTRL_2				equ $00A10019
+IO_TXDATA_3				equ $00A1001B
+IO_RXDATA_3				equ $00A1001D
+IO_SCTRL_EXP			equ $00A1001F
 
 ; ************************************
 ; Z80 Addresses
 ; ************************************
-Z80_MEMSPACE			equ 0x00A00000
-Z80_RAM					equ 0x00A00000
+Z80_MEMSPACE			equ $00A00000
+Z80_RAM					equ $00A00000
 
 ; ************************************
 ; CTRL Addresses
 ; ************************************
-CTRL_MEMMODE			equ 0x00A11000
-CTRL_Z80BUSREQ			equ	0x00A11100
-CTRL_Z80RESET			equ 0x00A11200
-CTRL_TIME				equ 0x00A13000
-CTRL_TMSS				equ 0x00A14000
+CTRL_MEMMODE			equ $00A11000
+CTRL_Z80BUSREQ			equ	$00A11100
+CTRL_Z80RESET			equ $00A11200
+CTRL_TIME				equ $00A13000
+CTRL_TMSS				equ $00A14000
 
 ; ************************************
 ; Other Addresses
 ; ************************************
-M68K_RAM				equ 0x00FF0000
+M68K_RAM				equ $00FF0000
 
 ; ************************************
 ; JOY bit numbers 	SACBRLDU

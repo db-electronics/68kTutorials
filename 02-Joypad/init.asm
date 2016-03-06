@@ -1,9 +1,7 @@
-	include 'genesisGlobals.asm'
-
 ; ******************************************************************
 ; Sega Megadrive ROM header
 ; ******************************************************************
-	dc.l   0x00FFE000      ; Initial stack pointer value
+	dc.l   $00FFE000      	; Initial stack pointer value
 	dc.l   EntryPoint      ; Start of program
 	dc.l   Exception       ; Bus error
 	dc.l   Exception       ; Address error
@@ -74,18 +72,18 @@
 	dc.b "DB JOYPAD TUTORIAL                              "	; Domestic name - 48
 	dc.b "DB JOYPAD TUTORIAL                              "	; International name - 48
 	dc.b "GM JPTUTORIAL-01"									; Version number - 48
-	dc.w 0x1234												; Checksum
+	dc.w $1234												; Checksum
 	dc.b "J               "									; I/O support - 16
-	dc.l 0x00000000											; Start address of ROM
+	dc.l $00000000											; Start address of ROM
 	dc.l __end												; End address of ROM
-	dc.l 0x00FF0000											; Start address of RAM
-	dc.l 0x00FFFFFF											; End address of RAM
-	dc.l 0x00000000											; SRAM enabled
-	dc.l 0x00000000											; Unused
-	dc.l 0x00000000											; Start address of SRAM
-	dc.l 0x00000000											; End address of SRAM
-	dc.l 0x00000000											; Unused
-	dc.l 0x00000000											; Unused
+	dc.l $00FF0000											; Start address of RAM
+	dc.l $00FFFFFF											; End address of RAM
+	dc.l $00000000											; SRAM enabled
+	dc.l $00000000											; Unused
+	dc.l $00000000											; Start address of SRAM
+	dc.l $00000000											; End address of SRAM
+	dc.l $00000000											; Unused
+	dc.l $00000000											; Unused
 	dc.b "                                        "			; Notes (unused)
 	dc.b "JUE             "									; Country codes
 
@@ -94,90 +92,94 @@ EntryPoint:           ; Entry point address set in ROM header
 ; ************************************
 ; Test reset button
 ; ************************************
-	tst.w 	0x00A10008  			; Test mystery reset (expansion port reset?)
+	tst.w 	$00A10008  				; Test mystery reset (expansion port reset?)
 	bne.w 	Main          			; Branch if Not Equal (to zero) - to Main
-	tst.w 	IO_EXPCTRL  			; Test reset button
+	tst.w 	IO_CTRL_EXP  			; Test reset button
 	bne.w 	Main          			; Branch if Not Equal (to zero) - to Main
 
 ; ************************************
 ; Clear RAM
 ; ************************************
-	move.l 	#0x00000000, d0     	; Place a 0 into d0, ready to copy to each longword of RAM
-	move.l 	#0x00000000, a0     	; Starting from address 0x0, clearing backwards
-	move.l 	#0x00003FFF, d1     	; Clearing 64k's worth of longwords (minus 1, for the loop to be correct)
+	move.l 	#$00000000, D0     		; Place a 0 into d0, ready to copy to each longword of RAM
+	move.l 	#$00000000, A0     		; Starting from address $0, clearing backwards
+	move.l 	#$00003FFF, D1     		; Clearing 64k's worth of longwords (minus 1, for the loop to be correct)
 .Clear:
-	move.l 	d0, -(a0)           	; Decrement the address by 1 longword, before moving the zero from d0 to it
-	dbra 	d1, .Clear          	; Decrement d0, repeat until depleted
+	move.l 	D0, -(A0)           	; Decrement the address by 1 longword, before moving the zero from d0 to it
+	dbra 	D1, .Clear          	; Decrement d0, repeat until depleted
 	
 ; ************************************
 ; Write TMSS
 ; ************************************
-	move.b 	0x00A10001, d0      	; Move Megadrive hardware version to d0
-	andi.b 	#0x0F, d0           	; The version is stored in last four bits, so mask it with 0F
-	beq.s 	.Skip               	; If version is equal to 0, skip TMSS signature
-	move.l 	#'SEGA', CTRL_TMSS 		; Move the string "SEGA" to 0xA14000
-.Skip:
+	move.b 	IO_VERSIONNO, D0      	; Move Megadrive hardware version to d0
+	andi.b 	#$0F, D0           		; The version is stored in last four bits, so mask it with 0F
+	beq.s 	.SkipTMSS              	; If version is equal to 0, skip TMSS signature
+	move.l 	#'SEGA', CTRL_TMSS 		; Move the string "SEGA" to $A14000
+.SkipTMSS:
 
 ; ************************************
 ; Init Z80
 ; ************************************
-	move.w 	#0x0100, CTRL_Z80BUSREQ ; Request access to the Z80 bus, by writing 0x0100 into the BUSREQ port
-	move.w 	#0x0100, CTRL_Z80RESET  ; Hold the Z80 in a reset state, by writing 0x0100 into the RESET port
+	move.w 	#$0100, CTRL_Z80BUSREQ 	; Request access to the Z80 bus, by writing $0100 into the BUSREQ port
+	move.w 	#$0100, CTRL_Z80RESET  	; Hold the Z80 in a reset state, by writing $0100 into the RESET port
 
-.Wait:
-	btst 	#0x0, CTRL_Z80BUSREQ    ; Test bit 0 of A11100 to see if the 68k has access to the Z80 bus yet
-	bne.s 	.Wait                  	; If we don't yet have control, branch back up to Wait
+.WaitZ80:
+	btst 	#$0, CTRL_Z80BUSREQ    	; Test bit 0 of A11100 to see if the 68k has access to the Z80 bus yet
+	bne.s 	.WaitZ80                ; If we don't yet have control, branch back up to Wait
 	
-	move.l 	#Z80Data, a0        	; Load address of data into a0
-	move.l 	#Z80_RAM, a1     		; Copy Z80 RAM address to a1
-	move.l 	#42, d0           		; 42 bytes of init data
+	move.l 	#Z80Data, A0        	; Load address of data into a0
+	move.l 	#Z80_RAM, A1     		; Copy Z80 RAM address to a1
+	move.l 	#Z80DataEnd-Z80Data, D0 ; Auto-calculate size of transfer using labels
 .CopyZ80:
-	move.b 	(a0)+, (a1)+        	; Copy data, and increment the source/dest addresses
-	dbra 	d0, .CopyZ80
+	move.b 	(A0)+, (A1)+        	; Copy data, and increment the source/dest addresses
+	dbra 	D0, .CopyZ80
 
-	move.w 	#0x0000, CTRL_Z80RESET  ; Release reset state
-	move.w	#0x0000, CTRL_Z80BUSREQ ; Release control of bus
+	move.w 	#$0000, CTRL_Z80RESET  ; Release reset state
+	move.w	#$0000, CTRL_Z80BUSREQ ; Release control of bus
 
 ; ************************************
 ; Init PSG
 ; ************************************
-	move.l 	#PSGData, a0        	; Load address of PSG data into a0
-	move.l 	#0x03, d0           	; 4 bytes of data
+	move.l 	#PSGData, A0        	; Load address of PSG data into a0
+	move.l 	#$03, D0           		; 4 bytes of data
 .CopyPSG:
-	move.b 	(a0)+, VDP_PSG   		; Copy data to PSG RAM
-	dbra 	d0, .CopyPSG
+	move.b 	(A0)+, VDP_PSG   		; Copy data to PSG RAM
+	dbra 	D0, .CopyPSG
 	
 ; ************************************
 ; Init VDP
+;	DO 		- iterations
+;	D1.uw 	- register number in VDP
+;	D1.lw 	- register value
+;	A0 		- pointer to VDP register value array 
 ; ************************************
-	move.l 	#VDPRegisters, a0   	; Load address of register table into a0
-	move.l 	#0x18, d0           	; 24 registers to write
-	move.l 	#0x00008000, d1     	; 'Set register 0' command (and clear the rest of d1 ready)
+	move.l 	#VDPRegisters, A0   	; Load address of register table into a0
+	move.l 	#24, D0           		; 24 registers to write
+	move.l 	#$00008000, d1     		; 'Set register 0' command (and clear the rest of d1 ready)
 
 .CopyVDP:
-	move.b 	(a0)+, d1           	; Move register value to lower byte of d1
-	move.w 	d1, VDP_CTRL     		; Write command and value to VDP control port
-	add.w 	#0x0100, d1          	; Increment register #
-	dbra 	d0, .CopyVDP
+	move.b 	(A0)+, D1           	; Move register value to lower byte of d1
+	move.w 	D1, VDP_CTRL     		; Write command and value to VDP control port
+	add.w 	#$0100, D1          	; Increment register #
+	dbra 	D0, .CopyVDP
 
 ; ************************************
 ; Init IO Ports
 ; ************************************
-	move.b 	#0x00, IO_CTRL_1	  	; Controller port 1 CTRL
-	move.b 	#0x00, IO_CTRL_2	 	; Controller port 2 CTRL
-	move.b 	#0x00, IO_CTRL_EXP 		; EXP port CTRL
-	move.b	#0x40, IO_DATA_1		; Idle with TH = '1'
-	move.b	#0x40, IO_DATA_2		; Idle with TH = '1'	
+	move.b 	#$40, IO_CTRL_1	  		; Controller port 1 CTRL, TH = output
+	move.b 	#$40, IO_CTRL_2	 		; Controller port 2 CTRL, TH = output
+	move.b 	#$00, IO_CTRL_EXP 		; EXP port CTRL
+	move.b	#$40, IO_DATA_1			; Idle with TH = '1'
+	move.b	#$40, IO_DATA_2			; Idle with TH = '1'	
 
 ; ************************************
 ; Cleanup
 ; ************************************
-	move.l 	#0x00FF0000, a0     	; Move address of first byte of ram (contains zero, RAM has been cleared) to a0
-	movem.l (a0), d0-d7/a1-a7  		; Multiple move zero to all registers
-	move.l 	#0x00000000, a0     	; Clear a0
+	move.l 	#$00FF0000, A0     		; Move address of first byte of ram (contains zero, RAM has been cleared) to a0
+	movem.l (A0), D0-D7/A1-A7  		; Multiple move zero to all registers
+	move.l 	#$00000000, A0     		; Clear a0
 
 	; Init status register (no trace, supervisor mode, all interrupt levels enabled, clear condition code bits)
-	move 	#0x2000, sr
+	move 	#$2000, SR
 
 ; ************************************
 ; Main
@@ -188,50 +190,63 @@ Main:
 HBlankInterrupt:
 	rts
 VBlankInterrupt:
-	addi.l	#1, d7					; increment d7 as Vint counter
+	addi.l	#1, D7					; increment d7 as Vint counter
+   	rts
+
+WaitVBlankStart:
+   	move.w 	VDP_CTRL, D0 			; Move VDP status word to d0
+   	andi.w 	#$0008, D0    			; AND with bit 4 (vblank), result in status register
+	bne.s	WaitVBlankStart 		; Branch if not equal (to zero)
+   	rts
+ 
+WaitVBlankEnd:
+   	move.w 	VDP_CTRL, D0 			; Move VDP status word to d0
+   	andi.w 	#$0008, D0     			; AND with bit 4 (vblank), result in status register
+   	beq.s	WaitVBlankEnd   		; Branch if equal (to zero)
    	rts
 
 Exception:
    	stop #$2700 					; Halt CPU
    
 Z80Data:
-   	dc.w 0xaf01, 0xd91f
-   	dc.w 0x1127, 0x0021
-   	dc.w 0x2600, 0xf977
-   	dc.w 0xedb0, 0xdde1
-   	dc.w 0xfde1, 0xed47
-   	dc.w 0xed4f, 0xd1e1
-   	dc.w 0xf108, 0xd9c1
-   	dc.w 0xd1e1, 0xf1f9
-   	dc.w 0xf3ed, 0x5636
-   	dc.w 0xe9e9, 0x8104
-   	dc.w 0x8f01
+   	dc.w $af01, $d91f
+   	dc.w $1127, $0021
+   	dc.w $2600, $f977
+   	dc.w $edb0, $dde1
+   	dc.w $fde1, $ed47
+   	dc.w $ed4f, $d1e1
+   	dc.w $f108, $d9c1
+   	dc.w $d1e1, $f1f9
+   	dc.w $f3ed, $5636
+   	dc.w $e9e9, $8104
+   	dc.w $8f01
+Z80DataEnd:
 
 PSGData:
-   	dc.w 0x9fbf, 0xdfff
+   	dc.w $9fbf, $dfff
    
 VDPRegisters:
-	dc.b 0x14 ; 0: Horiz. interrupt on, display on
-	dc.b 0x74 ; 1: Vert. interrupt on, screen blank off, DMA on, V28 mode (40 cells vertically), Genesis mode on
-   	dc.b 0x30 ; 2: Pattern table for Scroll Plane A at 0xC000 (bits 3-5)
-   	dc.b 0x40 ; 3: Pattern table for Window Plane at 0x10000 (bits 1-5)
-   	dc.b 0x05 ; 4: Pattern table for Scroll Plane B at 0xA000 (bits 0-2)
-   	dc.b 0x70 ; 5: Sprite table at 0xE000 (bits 0-6)
-   	dc.b 0x00 ; 6: Unused
-   	dc.b 0x00 ; 7: Background colour - bits 0-3 = colour, bits 4-5 = palette
-   	dc.b 0x00 ; 8: Unused
-   	dc.b 0x00 ; 9: Unused
-   	dc.b 0x00 ; 10: Frequency of Horiz. interrupt in Rasters (number of lines travelled by the beam)
-   	dc.b 0x08 ; 11: External interrupts on, V/H scrolling on
-   	dc.b 0x81 ; 12: Shadows and highlights off, interlace off, H40 mode (64 cells horizontally)
-   	dc.b 0x34 ; 13: Horiz. scroll table at 0xD000 (bits 0-5)
-   	dc.b 0x00 ; 14: Unused
-   	dc.b 0x00 ; 15: Autoincrement off
-   	dc.b 0x01 ; 16: Vert. scroll 32, Horiz. scroll 64
-   	dc.b 0x00 ; 17: Window Plane X pos 0 left (pos in bits 0-4, left/right in bit 7)
-   	dc.b 0x00 ; 18: Window Plane Y pos 0 up (pos in bits 0-4, up/down in bit 7)
-   	dc.b 0x00 ; 19: DMA length lo byte
-   	dc.b 0x00 ; 20: DMA length hi byte
-   	dc.b 0x00 ; 21: DMA source address lo byte
-   	dc.b 0x00 ; 22: DMA source address mid byte
-   	dc.b 0x00 ; 23: DMA source address hi byte, memory-to-VRAM mode (bits 6-7)
+	dc.b $04 ; 0: Horiz. interrupt off, display on
+	dc.b $74 ; 1: Vert. interrupt on, screen blank off, DMA on, V28 mode (40 cells vertically), Genesis mode on
+   	dc.b $30 ; 2: Pattern table for Scroll Plane A at $C000 (bits 3-5)
+   	dc.b $40 ; 3: Pattern table for Window Plane at $10000 (bits 1-5)
+   	dc.b $05 ; 4: Pattern table for Scroll Plane B at $A000 (bits 0-2)
+   	dc.b $70 ; 5: Sprite table at $E000 (bits 0-6)
+   	dc.b $00 ; 6: Unused
+   	dc.b $00 ; 7: Background colour - bits 0-3 = colour, bits 4-5 = palette
+   	dc.b $00 ; 8: Unused
+   	dc.b $00 ; 9: Unused
+   	dc.b $00 ; 10: Frequency of Horiz. interrupt in Rasters (number of lines travelled by the beam)
+   	dc.b $00 ; 11: External interrupts off, V/H scrolling on
+   	dc.b $81 ; 12: Shadows and highlights off, interlace off, H40 mode (64 cells horizontally)
+   	dc.b $34 ; 13: Horiz. scroll table at $D000 (bits 0-5)
+   	dc.b $00 ; 14: Unused
+   	dc.b $00 ; 15: Autoincrement off
+   	dc.b $01 ; 16: Vert. scroll 32, Horiz. scroll 64
+   	dc.b $00 ; 17: Window Plane X pos 0 left (pos in bits 0-4, left/right in bit 7)
+   	dc.b $00 ; 18: Window Plane Y pos 0 up (pos in bits 0-4, up/down in bit 7)
+   	dc.b $00 ; 19: DMA length lo byte
+   	dc.b $00 ; 20: DMA length hi byte
+   	dc.b $00 ; 21: DMA source address lo byte
+   	dc.b $00 ; 22: DMA source address mid byte
+   	dc.b $00 ; 23: DMA source address hi byte, memory-to-VRAM mode (bits 6-7)
