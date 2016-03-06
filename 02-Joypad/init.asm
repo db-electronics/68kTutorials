@@ -71,7 +71,7 @@
 	dc.b "(C)db   2016.MAR"									; Copyright holder and release date - 16
 	dc.b "DB JOYPAD TUTORIAL                              "	; Domestic name - 48
 	dc.b "DB JOYPAD TUTORIAL                              "	; International name - 48
-	dc.b "GM JPTUTORIAL-01"									; Version number - 48
+	dc.b "GM JPTUTORL-01"									; Version number - 48
 	dc.w $1234												; Checksum
 	dc.b "J               "									; I/O support - 16
 	dc.l $00000000											; Start address of ROM
@@ -189,9 +189,17 @@ Main:
 
 HBlankInterrupt:
 	rts
+
 VBlankInterrupt:
-	addi.l	#1, D7					; increment d7 as Vint counter
+	addi.l	#1, vintcounter			; increment vint counter
+	move.l	A6, -(SP)				; push A6
+	lea		vintvector, A6			; get soft vintvector from ram
+									; test if vector is null
+	move.l	(SP)+, A6				; restore A6
    	rts
+
+Exception:
+   	stop #$2700 					; Halt CPU
 
 WaitVBlankStart:
    	move.w 	VDP_CTRL, D0 			; Move VDP status word to d0
@@ -205,9 +213,6 @@ WaitVBlankEnd:
    	beq.s	WaitVBlankEnd   		; Branch if equal (to zero)
    	rts
 
-Exception:
-   	stop #$2700 					; Halt CPU
-   
 Z80Data:
    	dc.w $af01, $d91f
    	dc.w $1127, $0021
