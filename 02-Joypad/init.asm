@@ -87,24 +87,25 @@
 	dc.b "                                        "			; Notes (unused)
 	dc.b "JUE             "									; Country codes
 
-EntryPoint:           ; Entry point address set in ROM header
+	ORG		$00000200
+EntryPoint:           				; Entry point address set in ROM header
 
 ; ************************************
 ; Test reset button
 ; ************************************
 	tst.w 	$00A10008  				; Test mystery reset (expansion port reset?)
 	bne.w 	Main          			; Branch if Not Equal (to zero) - to Main
-	tst.w 	IO_CTRL_EXP  			; Test reset button
+	tst.w 	$00A1000C	  			; Test reset button
 	bne.w 	Main          			; Branch if Not Equal (to zero) - to Main
 
 ; ************************************
 ; Clear RAM
 ; ************************************
-	move.l 	#$00000000, D0     		; Place a 0 into d0, ready to copy to each longword of RAM
-	move.l 	#$00000000, A0     		; Starting from address $0, clearing backwards
-	move.l 	#$00003FFF, D1     		; Clearing 64k's worth of longwords (minus 1, for the loop to be correct)
+	clr.l	D0						; Place a 0 into d0, ready to copy to each longword of RAM
+	move.l	M68K_RAM, A0			; A0 points to beginning of RAM
+	move.l 	#$00004000, D1     		; Clearing 64k's worth of longwords
 .Clear:
-	move.l 	D0, -(A0)           	; Decrement the address by 1 longword, before moving the zero from d0 to it
+	move.l 	D0, (A0)+           	; Post-inc faster than Pre-dec (as last tutorial)
 	dbra 	D1, .Clear          	; Decrement d0, repeat until depleted
 	
 ; ************************************
@@ -125,7 +126,15 @@ EntryPoint:           ; Entry point address set in ROM header
 .WaitZ80:
 	btst 	#$0, CTRL_Z80BUSREQ    	; Test bit 0 of A11100 to see if the 68k has access to the Z80 bus yet
 	bne.s 	.WaitZ80                ; If we don't yet have control, branch back up to Wait
-	
+
+	; clear the Z80's 8KB of RAM
+	move.w	#$2000, D0				; 8KB of Z80 RAM to clear
+	move.l	#Z80_RAM, A1			; A1 points to Z80 RAM
+.ClearZ80
+	clr.b	(A1)+					; clear bytes, $00 is Z80 nop
+	dbra	D0, .ClearZ80				
+
+	; load simple program to Z80
 	move.l 	#Z80Data, A0        	; Load address of data into a0
 	move.l 	#Z80_RAM, A1     		; Copy Z80 RAM address to a1
 	move.l 	#Z80DataEnd-Z80Data, D0 ; Auto-calculate size of transfer using labels
@@ -139,12 +148,12 @@ EntryPoint:           ; Entry point address set in ROM header
 ; ************************************
 ; Init PSG
 ; ************************************
-	move.l 	#PSGData, A0        	; Load address of PSG data into a0
-	move.l 	#$03, D0           		; 4 bytes of data
-.CopyPSG:
-	move.b 	(A0)+, VDP_PSG   		; Copy data to PSG RAM
-	dbra 	D0, .CopyPSG
-	
+	move.l 	VDP_PSG, A0        		; Load address of PSG data into a0
+	move.b	$9F, (A0)				; mutes all PSG channels
+	move.b	$BF, (A0)
+	move.b	$DF, (A0)
+	move.b	$FF, (A0)
+
 ; ************************************
 ; Init VDP
 ;	DO 		- iterations
@@ -174,9 +183,9 @@ EntryPoint:           ; Entry point address set in ROM header
 ; ************************************
 ; Cleanup
 ; ************************************
-	move.l 	#$00FF0000, A0     		; Move address of first byte of ram (contains zero, RAM has been cleared) to a0
+	move.l 	#$00FF0000, A0     		; A0 points to $00 value in RAM (has been cleared)
 	movem.l (A0), D0-D7/A1-A7  		; Multiple move zero to all registers
-	move.l 	#$00000000, A0     		; Clear a0
+	sub.l	A0, A0					; Clear A0
 
 	; Init status register (no trace, supervisor mode, all interrupt levels enabled, clear condition code bits)
 	move 	#$2000, SR
@@ -191,11 +200,7 @@ HBlankInterrupt:
 	rts
 
 VBlankInterrupt:
-	addi.l	#1, vintcounter			; increment vint counter
-	move.l	A6, -(SP)				; push A6
-	lea		vintvector, A6			; get soft vintvector from ram
-									; test if vector is null
-	move.l	(SP)+, A6				; restore A6
+	addq.l	#1, vintcounter			; increment vint counter
    	rts
 
 Exception:
@@ -226,9 +231,6 @@ Z80Data:
    	dc.w $e9e9, $8104
    	dc.w $8f01
 Z80DataEnd:
-
-PSGData:
-   	dc.w $9fbf, $dfff
    
 VDPRegisters:
 	dc.b $04 ; 0: Horiz. interrupt off, display on
@@ -255,3 +257,4 @@ VDPRegisters:
    	dc.b $00 ; 21: DMA source address lo byte
    	dc.b $00 ; 22: DMA source address mid byte
    	dc.b $00 ; 23: DMA source address hi byte, memory-to-VRAM mode (bits 6-7)
+VDPRegistersEnd:
