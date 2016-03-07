@@ -1,93 +1,6 @@
-; ******************************************************************
-; Sega Megadrive ROM header
-; ******************************************************************
-	dc.l   $00FFE000      	; Initial stack pointer value
-	dc.l   EntryPoint      ; Start of program
-	dc.l   Exception       ; Bus error
-	dc.l   Exception       ; Address error
-	dc.l   Exception       ; Illegal instruction
-	dc.l   Exception       ; Division by zero
-	dc.l   Exception       ; CHK exception
-	dc.l   Exception       ; TRAPV exception
-	dc.l   Exception       ; Privilege violation
-	dc.l   Exception       ; TRACE exception
-	dc.l   Exception       ; Line-A emulator
-	dc.l   Exception       ; Line-F emulator
-	dc.l   Exception       ; Unused (reserved)
-	dc.l   Exception       ; Unused (reserved)
-	dc.l   Exception       ; Unused (reserved)
-	dc.l   Exception       ; Unused (reserved)
-	dc.l   Exception       ; Unused (reserved)
-	dc.l   Exception       ; Unused (reserved)
-	dc.l   Exception       ; Unused (reserved)
-	dc.l   Exception       ; Unused (reserved)
-	dc.l   Exception       ; Unused (reserved)
-	dc.l   Exception       ; Unused (reserved)
-	dc.l   Exception       ; Unused (reserved)
-	dc.l   Exception       ; Unused (reserved)
-	dc.l   Exception       ; Spurious exception
-	dc.l   Exception       ; IRQ level 1
-	dc.l   Exception       ; IRQ level 2
-	dc.l   Exception       ; IRQ level 3
-	dc.l   HBlankInterrupt ; IRQ level 4 (horizontal retrace interrupt)
-	dc.l   Exception       ; IRQ level 5
-	dc.l   VBlankInterrupt ; IRQ level 6 (vertical retrace interrupt)
-	dc.l   Exception       ; IRQ level 7
-	dc.l   Exception       ; TRAP #00 exception
-	dc.l   Exception       ; TRAP #01 exception
-	dc.l   Exception       ; TRAP #02 exception
-	dc.l   Exception       ; TRAP #03 exception
-	dc.l   Exception       ; TRAP #04 exception
-	dc.l   Exception       ; TRAP #05 exception
-	dc.l   Exception       ; TRAP #06 exception
-	dc.l   Exception       ; TRAP #07 exception
-	dc.l   Exception       ; TRAP #08 exception
-	dc.l   Exception       ; TRAP #09 exception
-	dc.l   Exception       ; TRAP #10 exception
-	dc.l   Exception       ; TRAP #11 exception
-	dc.l   Exception       ; TRAP #12 exception
-	dc.l   Exception       ; TRAP #13 exception
-	dc.l   Exception       ; TRAP #14 exception
-	dc.l   Exception       ; TRAP #15 exception
-	dc.l   Exception       ; Unused (reserved)
-	dc.l   Exception       ; Unused (reserved)
-	dc.l   Exception       ; Unused (reserved)
-	dc.l   Exception       ; Unused (reserved)
-	dc.l   Exception       ; Unused (reserved)
-	dc.l   Exception       ; Unused (reserved)
-	dc.l   Exception       ; Unused (reserved)
-	dc.l   Exception       ; Unused (reserved)
-	dc.l   Exception       ; Unused (reserved)
-	dc.l   Exception       ; Unused (reserved)
-	dc.l   Exception       ; Unused (reserved)
-	dc.l   Exception       ; Unused (reserved)
-	dc.l   Exception       ; Unused (reserved)
-	dc.l   Exception       ; Unused (reserved)
-	dc.l   Exception       ; Unused (reserved)
-	dc.l   Exception       ; Unused (reserved)
 
-; size    012345678901234567890123456789012345678901234567
-	dc.b "SEGA GENESIS    "									; Console name - 16
-	dc.b "(C)db   2016.MAR"									; Copyright holder and release date - 16
-	dc.b "DB JOYPAD TUTORIAL                              "	; Domestic name - 48
-	dc.b "DB JOYPAD TUTORIAL                              "	; International name - 48
-	dc.b "GM JPTUTORL-01"									; Version number - 48
-	dc.w $1234												; Checksum
-	dc.b "J               "									; I/O support - 16
-	dc.l $00000000											; Start address of ROM
-	dc.l __end												; End address of ROM
-	dc.l $00FF0000											; Start address of RAM
-	dc.l $00FFFFFF											; End address of RAM
-	dc.l $00000000											; SRAM enabled
-	dc.l $00000000											; Unused
-	dc.l $00000000											; Start address of SRAM
-	dc.l $00000000											; End address of SRAM
-	dc.l $00000000											; Unused
-	dc.l $00000000											; Unused
-	dc.b "                                        "			; Notes (unused)
-	dc.b "JUE             "									; Country codes
-
-	ORG		$00000200
+	ORG		$00000200				; header section should get us to $200
+									; but ORG in case we made a mistake (ASMX will complain)
 EntryPoint:           				; Entry point address set in ROM header
 
 ; ************************************
@@ -122,10 +35,6 @@ EntryPoint:           				; Entry point address set in ROM header
 ; ************************************
 	Z80Reset_m
 	Z80Request_m
-
-.WaitZ80:
-	btst 	#$0, CTRL_Z80BUSREQ    	; Test bit 0 of A11100 to see if the 68k has access to the Z80 bus yet
-	bne.s 	.WaitZ80                ; If we don't yet have control, branch back up to Wait
 
 	; clear the Z80's 8KB of RAM
 	move.w	#$2000, D0				; 8KB of Z80 RAM to clear
@@ -182,7 +91,7 @@ EntryPoint:           				; Entry point address set in ROM header
 ; ************************************
 ; Cleanup
 ; ************************************
-	move.l 	#$00FF0000, A0     		; A0 points to $00 value in RAM (has been cleared)
+	move.l 	#M68K_RAM, A0     		; A0 points to $00 value in RAM (has been cleared)
 	movem.l (A0), D0-D7/A1-A6  		; Multiple move zero to all registers
 	suba.l	A0, A0					; Clear A0
 
@@ -204,18 +113,6 @@ VBlankInterrupt:
 
 Exception:
    	stop #$2700 					; Halt CPU
-
-WaitVBlankStart:
-   	move.w 	VDP_CTRL, D0 			; Move VDP status word to d0
-   	andi.w 	#$0008, D0    			; AND with bit 4 (vblank), result in status register
-	bne.s	WaitVBlankStart 		; Branch if not equal (to zero)
-   	rts
- 
-WaitVBlankEnd:
-   	move.w 	VDP_CTRL, D0 			; Move VDP status word to d0
-   	andi.w 	#$0008, D0     			; AND with bit 4 (vblank), result in status register
-   	beq.s	WaitVBlankEnd   		; Branch if equal (to zero)
-   	rts
 
 Z80Data:
    	dc.w $af01, $d91f

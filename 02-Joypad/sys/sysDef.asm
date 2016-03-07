@@ -14,18 +14,12 @@ VDP_CRAM_READ			equ $00000020
 VDP_VRAM_WRITE			equ $40000000
 VDP_VRAM_READ			equ $00000000
 
-vdp_write_palettes		equ $F0000000
-vdp_write_tiles			equ $40000000
-vdp_write_plane_a		equ $40000003
-vdp_write_sprite_tiles	equ $60000000
-vdp_write_sprite_table	equ $60000003
-
 ; ************************************
 ; I/O Addresses
 ; ************************************
 IO_VERSIONNO			equ $00A10001
-IO_DATA_1				equ $00A10003		; byte reads
-IO_DATA_2				equ $00A10005		; byte reads
+IO_DATA_1				equ $00A10003
+IO_DATA_2				equ $00A10005
 IO_DATA_EXP				equ $00A10007
 IO_CTRL_1				equ $00A10009
 IO_CTRL_2				equ $00A1000B
@@ -55,24 +49,6 @@ CTRL_Z80RESET			equ $00A11200
 CTRL_TIME				equ $00A13000
 CTRL_TMSS				equ $00A14000
 
-Z80Reset_m		MACRO
-	move.w	#$0000, CTRL_Z80RESET
-	exg.l	A0,A1					; waste some time
-	exg.l	A1,A0
-	move.w	#$0100, CTRL_Z80RESET	
-	ENDM
-
-Z80Request_m	MACRO
-	move.w	#$0100, CTRL_Z80BUSREQ
-.Wait
-	btst.b	#0, CTRL_Z80BUSREQ
-	bne.s	.Wait
-	ENDM
-
-Z80Release_m	MACRO
-	move.w	#$0000, CTRL_Z80BUSREQ
-	ENDM
-
 ; ************************************
 ; Other Addresses
 ; ************************************
@@ -89,5 +65,3 @@ JOY_A            		equ 6
 JOY_B            		equ 4
 JOY_C            		equ 5
 JOY_START        		equ 7
-
-

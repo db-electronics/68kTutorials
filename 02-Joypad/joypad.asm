@@ -1,10 +1,9 @@
 ; ************************************
 ; Main Entry
 ; ************************************
-__main:
 .loop	
-	jsr		WaitVBlankStart			; synchronize
-	jsr		WaitVBlankEnd
+	WaitVBlankStart_m				; synchronize
+	WaitVBlankEnd_m
 	jsr		JOYPAD_ReadPad01		; read joypad state
 	bra.s	.loop
 

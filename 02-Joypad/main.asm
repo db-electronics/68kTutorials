@@ -1,20 +1,33 @@
 ; ************************************
-; EQU
+; COMPILER OPTIONS
 ; ************************************
-	include 'genesis.asm'
-	include 'RAM.asm'
+	LIST MACRO
+	LIST NOSYM
+	LIST NOTEMP
+
+; ************************************
+; SYSTEM DEFINES
+; ************************************
+	include 'sys/sysDef.asm'
+	include 'sys/sysRAM.asm'
 
 ; ************************************
 ; MACROS
 ; ************************************
+	include	'sys/sysMacros.asm'
 
 ; ************************************
-; CODE
+; HEADER AND STARTUP CODE
 ; ************************************
-	include 'init.asm'
+	include 'header.asm'
+	include 'sys/sysInit.asm'
+
+; ************************************
+; USER PROGRAM
+; ************************************
+__main:
 	include 'joypad.asm'
-
-; ************************************
-; END OF ROM
-; ************************************
 __end:
+
+; debug in MESS using
+; mess genesis -cart out/rom.bim -window -debug
