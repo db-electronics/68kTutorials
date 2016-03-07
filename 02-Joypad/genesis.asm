@@ -55,6 +55,24 @@ CTRL_Z80RESET			equ $00A11200
 CTRL_TIME				equ $00A13000
 CTRL_TMSS				equ $00A14000
 
+Z80Reset_m		MACRO
+	move.w	#$0000, CTRL_Z80RESET
+	exg.l	A0,A1					; waste some time
+	exg.l	A1,A0
+	move.w	#$0100, CTRL_Z80RESET	
+	ENDM
+
+Z80Request_m	MACRO
+	move.w	#$0100, CTRL_Z80BUSREQ
+.Wait
+	btst.b	#0, CTRL_Z80BUSREQ
+	bne.s	.Wait
+	ENDM
+
+Z80Release_m	MACRO
+	move.w	#$0000, CTRL_Z80BUSREQ
+	ENDM
+
 ; ************************************
 ; Other Addresses
 ; ************************************

@@ -120,8 +120,8 @@ EntryPoint:           				; Entry point address set in ROM header
 ; ************************************
 ; Init Z80
 ; ************************************
-	move.w 	#$0100, CTRL_Z80BUSREQ 	; Request access to the Z80 bus, by writing $0100 into the BUSREQ port
-	move.w 	#$0100, CTRL_Z80RESET  	; Hold the Z80 in a reset state, by writing $0100 into the RESET port
+	Z80Reset_m
+	Z80Request_m
 
 .WaitZ80:
 	btst 	#$0, CTRL_Z80BUSREQ    	; Test bit 0 of A11100 to see if the 68k has access to the Z80 bus yet
@@ -142,17 +142,16 @@ EntryPoint:           				; Entry point address set in ROM header
 	move.b 	(A0)+, (A1)+        	; Copy data, and increment the source/dest addresses
 	dbra 	D0, .CopyZ80
 
-	move.w 	#$0000, CTRL_Z80RESET  ; Release reset state
-	move.w	#$0000, CTRL_Z80BUSREQ ; Release control of bus
+	Z80Reset_m
+	Z80Release_m
 
 ; ************************************
 ; Init PSG
 ; ************************************
-	move.l 	VDP_PSG, A0        		; Load address of PSG data into a0
-	move.b	$9F, (A0)				; mutes all PSG channels
-	move.b	$BF, (A0)
-	move.b	$DF, (A0)
-	move.b	$FF, (A0)
+	move.b	$9F, VDP_PSG			; mutes all PSG channels
+	move.b	$BF, VDP_PSG
+	move.b	$DF, VDP_PSG
+	move.b	$FF, VDP_PSG
 
 ; ************************************
 ; Init VDP
@@ -184,8 +183,8 @@ EntryPoint:           				; Entry point address set in ROM header
 ; Cleanup
 ; ************************************
 	move.l 	#$00FF0000, A0     		; A0 points to $00 value in RAM (has been cleared)
-	movem.l (A0), D0-D7/A1-A7  		; Multiple move zero to all registers
-	sub.l	A0, A0					; Clear A0
+	movem.l (A0), D0-D7/A1-A6  		; Multiple move zero to all registers
+	suba.l	A0, A0					; Clear A0
 
 	; Init status register (no trace, supervisor mode, all interrupt levels enabled, clear condition code bits)
 	move 	#$2000, SR
@@ -197,11 +196,11 @@ Main:
 	jmp __main 						; Begin external main
 
 HBlankInterrupt:
-	rts
+	rte
 
 VBlankInterrupt:
 	addq.l	#1, vintcounter			; increment vint counter
-   	rts
+   	rte
 
 Exception:
    	stop #$2700 					; Halt CPU
