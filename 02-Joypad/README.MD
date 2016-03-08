@@ -83,6 +83,23 @@ That's it! There's a second routine in joypad.asm which reads both joypads and s
 ```
 xxxxxxxx SACBLRDU xxxxxxxx SACBLRDU
 ```
-Why did I leave a blank byte between each joypad state? Simple, I will probably want to add 6 button support to my routines in the future. This data configuration is expandable.
+Why did I leave a blank byte between each joypad state? Simple, I will probably want to add 6 button support to my routines in the future. This data configuration is expandable and will be backwards compatible.
 
 ##Separating the code into logical entities
+
+New in Tutorial-02's structure is the sys folder. I decided all system relevant date, defines, etc... should be include in the sys folder. The sys folder contains address definitions, start-up code - anything which is generic enough to be similar throughout many/any project will be dumped into sys. Adopting this structure will make creating a new project quite simple.
+
+### SYS Folder
+- sys/sysDef.asm
+..- contains static addresses and useful bitmasks
+- sys/sysInit.asm
+..- contains entry start-up code (ORG $200) which initialize the memory, video and sound subsystems to known states
+- sys/sysMacros.asm
+..- contains useful macros for operations which will be used frequently in game code
+- sys/sysRAM.asm
+..- contains a RAM map for variables used by the system such as interrupt vectors, joypad status, etc...
+
+The SYS folder will evolve with each tutorial but it will always only contain generic code/data that is reusable.
+
+### main.asm
+
