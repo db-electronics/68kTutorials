@@ -10,13 +10,13 @@ The tutorial will cover 3 basic elements:
 
 ## Reading the Joypad
 ### Protocol
-The Genesis 3 button joypad is a fairly simple device. It consists of a 6bit data bus which multiplexes the different button values. Why 6 bits? Well, the original Master System controller only had 6 buttons (Up, Down, Left, Right, 1, 2) and Sega wished to keep the same physical interface on the Genesis. But, the Genesis has 8 total buttons on the standard controller, therefore, we need to do a bit of processing in order to retrieve the full status of the Joypad.
+The Genesis 3 button joypad is a fairly simple device. It consists of a 6 bit data bus which multiplexes the different button values. Why 6 bits? Well, the original Master System controller only had 6 buttons (Up, Down, Left, Right, 1, 2) and Sega wished to keep the same physical interface on the Genesis. But, the Genesis has 8 total buttons on the standard controller, therefore, we need to do a bit of processing in order to retrieve the full status of the Joypad.
 
 In the Joypad, a 74HC157 multiplexes the different buttons onto the 6 bit bus. A select signal (called TH from here on) controls which buttons are currently broadcast onto the bus.
 
 Data | TH = '1' | TH = '0'
 ------------ | ------------- | -------------
-DO | Up | Up 
+D0 | Up | Up 
 D1 | Down | Down
 D2 | Left | '0'
 D3 | Right | '0'
@@ -30,16 +30,15 @@ First, we need some code to initialize the Joypad:
 
 ```
 sys/sysInit.asm
-Line 85:
-	move.b 	#$40, IO_CTRL_1	  		; Controller port 1 CTRL, TH = output
-	move.b 	#$40, IO_CTRL_2	 		; Controller port 2 CTRL, TH = output
-	move.b 	#$00, IO_CTRL_EXP 		; EXP port CTRL
-	move.b	#$40, IO_DATA_1			; Idle with TH = '1'
-	move.b	#$40, IO_DATA_2			; Idle with TH = '1'
+85	move.b 	#$40, IO_CTRL_1	  		; Controller port 1 CTRL, TH = output
+86	move.b 	#$40, IO_CTRL_2	 		; Controller port 2 CTRL, TH = output
+87	move.b 	#$00, IO_CTRL_EXP 		; EXP port CTRL
+88	move.b	#$40, IO_DATA_1			; Idle with TH = '1'
+89	move.b	#$40, IO_DATA_2			; Idle with TH = '1'
 ```
-Line 85, 86 make TH an output (bit6 = '1') so that we can use it to drive the select signal of the multiplexer inside the joypad.
+Line 85, 86 make TH an output (bit 6 = '1') so that we can use it to drive the select signal of the multiplexer inside the joypad.
 
-Line 88, 89 set the TH pins to '1' immediately (bit6 = '1'). This way, when reach our joypad reading subroutine the joypad databus will already have stable data for TH = '1'.
+Line 88, 89 set the TH pins to '1' immediately (bit 6 = '1'). This way, when reach our joypad reading subroutine the joypad databus will already have stable data for TH = '1'.
 
 The labels **IO_CTRL_1** and others are defined in **sys/sysDef.asm** which contain all relevant Genesis definitions. I will discuss this more in the last section of this tutorial
 ```
@@ -58,7 +57,7 @@ JOYPAD_ReadPad01:
 	move.l	#IO_DATA_1, A0			; load data_1 address
 	move.l	#joy1State, A1			; point to RAM placeholder for joystate
 ```
-I start by loading two addresses in A0 and A1. A0 points to **IO_DATA_1** register ($00A10003) which contains the 6bit joypad bus discussed earlier. A1 points to a RAM variable which will be used to store the joypad state.
+I start by loading two addresses in A0 and A1. A0 points to **IO_DATA_1** register ($00A10003) which contains the 6 bit joypad bus discussed earlier. A1 points to a RAM variable which will be used to store the joypad state.
 ```
 	move.b	(A0), D6				; read status j1 = 00CBRLDU
 	move.b 	#$00, (A0)				; set TH low
@@ -79,17 +78,25 @@ Next I read the second series of values from the joypad into D5 (earlier we used
 ```
 I finish the joypad read subroutine by setting TH to '1' again to be ready for the next read. Finally, I store D6 to RAM variable location we loaded earlier so that the main code can use the joypad status.
 
-That's it! There's a second routine in joypad.asm which reads both joypads and stores the results in the format:
+That's it! There's a second routine in joypad.asm which reads both joypads and stores the results in the RAM location pointed to by **joy1state** in the format:
 ```
 xxxxxxxx SACBLRDU xxxxxxxx SACBLRDU
 ```
+
 Why did I leave a blank byte between each joypad state? Simple, I will probably want to add 6 button support to my routines in the future. This data configuration is expandable and will be backwards compatible.
+
+
+We can now verify that the code is functioning properly by assembling it using the included **build.sh** and running the out/rom.bin in MESS with debug enabled:
+```
+mess genesis -cart out/rom.bin -debug
+```
+Open a new memory window in MESS, point to beginning of RAM ($FF0000) and run the program. You see see the joystate1 location change bit patterns when you press the keys corresponding to player 1 inputs. As a simple homework assignment, you should try to modify the code to use the other subroutine in **joypad.asm** which reads both joypads.
 
 ##Separating the code into logical entities
 
-New in Tutorial-02's structure is the sys folder. I decided all system relevant date, defines, etc... should be include in the sys folder. The sys folder contains address definitions, start-up code - anything which is generic enough to be similar throughout many/any project will be dumped into sys. Adopting this structure will make creating a new project quite simple.
+New in Tutorial-02's structure is the SYS folder. I decided all system relevant data, defines, etc... should be included in the SYS folder. The SYS folder contains address definitions, start-up code - anything which is generic enough to be similar throughout many/any project will be dumped into SYS. Adopting this structure will make creating a new project quite simple.
 
-### SYS Folder
+### SYS Folder Current Contents
 - sys/sysDef.asm
   - contains static addresses and useful bitmasks
 - sys/sysInit.asm
@@ -99,10 +106,10 @@ New in Tutorial-02's structure is the sys folder. I decided all system relevant 
 - sys/sysRAM.asm
   - contains a RAM map for variables used by the system such as interrupt vectors, joypad status, etc...
 
-The SYS folder will evolve with each tutorial but it will always only contain generic code/data that is reusable. I did not include header.asm in the SYS folder because header is supposed to contain data specific to a project, i.e. project name, size, checksum, SRAM usage, etc...
+The SYS folder will evolve with each tutorial but it will always only contain generic code/data that is reusable. For instance, future tutorials will include **sysJoypad.asm** which will contain more or less the joypad subroutines developped in this tutorial since all games need to read from the joypads. I did not include **header.asm** in the SYS folder because header is supposed to contain data specific to a project, i.e. project name, size, checksum, SRAM usage, etc...
 
 ### MAIN.asm
-**Main.asm** is where all files are regrouped and organized. This is the top-level .asm file which is called by build.sh. The idea here is to only use 'include' and other assembler directives in order to organize defines/macros/code/data to your liking. In Tutorial-02, I did the following:
+**Main.asm** is where all files are regrouped and organized. This is the top-level .asm file which is called by **build.sh**. The idea here is to only use 'include' and other assembler directives in order to organize defines/macros/code/data to your liking. In Tutorial-02, I did the following:
 ```
 ; ************************************
 ; COMPILER OPTIONS
