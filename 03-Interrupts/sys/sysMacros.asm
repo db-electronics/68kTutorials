@@ -1,4 +1,31 @@
 ; ************************************
+; Title
+; ************************************
+;
+;    Title:          sysMacros.asm
+;    Author:         René Richard
+;    Description:
+;        
+;    Target Hardware:
+;        Sega Genesis / Megadrive
+;    Assembler:
+;        ASMX
+;
+; LICENSE
+; 
+;    This file is part of 68kTutorials.
+;    68kTutorials is free software: you can redistribute it and/or modify
+;    it under the terms of the GNU General Public License as published by
+;    the Free Software Foundation, either version 3 of the License, or
+;    (at your option) any later version.
+;    Foobar is distributed in the hope that it will be useful,
+;    but WITHOUT ANY WARRANTY; without even the implied warranty of
+;    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;    GNU General Public License for more details.
+;    You should have received a copy of the GNU General Public License
+;    along with 68kTutorials.  If not, see <http://www.gnu.org/licenses/>.
+;
+; ************************************
 ; MACROS
 ; ************************************
 Z80Reset_m		MACRO
@@ -10,9 +37,9 @@ Z80Reset_m		MACRO
 
 Z80Request_m	MACRO
 	move.w	#$0100, CTRL_Z80BUSREQ
-.\?Wait
+.Wait\?
 	btst.b	#0, CTRL_Z80BUSREQ
-	bne.s	.\?Wait
+	bne.s	.Wait\?
 	ENDM
 
 Z80Release_m	MACRO
@@ -20,15 +47,15 @@ Z80Release_m	MACRO
 	ENDM
 
 WaitVBlankStart_m	MACRO
-.\?Wait
+.Wait\?
    	move.w 	VDP_CTRL, D0 			; Move VDP status word to d0
    	andi.w 	#$0008, D0    			; AND with bit 4 (vblank), result in status register
-	bne.s	.\?Wait			 		; Branch if not equal (to zero)
+	bne.s	.Wait\?			 		; Branch if not equal (to zero)
 	ENDM
  
 WaitVBlankEnd_m		MACRO
-.\?Wait
+.Wait\?
    	move.w 	VDP_CTRL, D0 			; Move VDP status word to d0
    	andi.w 	#$0008, D0     			; AND with bit 4 (vblank), result in status register
-   	beq.s	.\?Wait  				; Branch if equal (to zero)
+   	beq.s	.Wait\?  				; Branch if equal (to zero)
 	ENDM
