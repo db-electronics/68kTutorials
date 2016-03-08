@@ -6,6 +6,8 @@ tutorial, HelloWorld, is more or less exactly the same as from BigEvilCorp - the
 a few labels to be compatible with the ASMX assembler. I decided to go with ASMX since it supports both 68k and Z80 and can
 be built on Linux.
 
+From Tutorial-02 onwards I heavily modify the existing code, add my own code, and explore a few aspects of the Genesis in each tutorial in the hopes both fully understanding the underlying concepts and to properly communicate those concepts to whomever is reading this. The goal of these tutorials is not necessarily to teach anyone M68K assembly, but rather, to learn about the Sega Genesis hardware.
+
 The simple instructions below will help you setup and ASMX and MESS which are required to follow the tutorials. The instructions assume you are using Ubuntu 14.04, I'm sure there's a ton of info available online if you're trying to install these tools on Windows.
 
 ## Build ASMX
