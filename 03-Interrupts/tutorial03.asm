@@ -2,7 +2,7 @@
 ; Title
 ; ************************************
 ;
-;    Title:          main.asm
+;    Title:          tutorial03.asm
 ;    Author:         René Richard
 ;    Description:
 ;        
@@ -26,37 +26,39 @@
 ;    along with 68kTutorials.  If not, see <http://www.gnu.org/licenses/>.
 ;
 ; ************************************
-; COMPILER OPTIONS
+; Tutorial 03
 ; ************************************
-	LIST MACRO
-	LIST NOSYM
-	LIST NOTEMP
+Tutorial03Entry:
+				
+	move.l	#2, D2					; test context saving in Vint
+	move.l	#3, D3
+	move.l	#4, D4
+	move.l	#5, D5
+	move.l 	#6, D6
+	move.l	#7, D7
+	movea.l	#$10, A0
+	movea.l	#$11, A1
+	movea.l	#$12, A2
+	movea.l	#$13, A3
+	movea.l	#$14, A4
+	movea.l	#$15, A5
+	movea.l	#$16, A6
+	
 
-; ************************************
-; SYSTEM DEFINES
-; ************************************
-	include 'sys/sysDef.asm'
-	include 'sys/sysRAM.asm'
+.loop	
+	WaitVBlankStart_m				; synchronize
+	WaitVBlankEnd_m
 
-; ************************************
-; MACROS
-; ************************************
-	include	'sys/sysMacros.asm'
+	addq.l	#1, D1
+	move.l	vintcounter, D0			; load the vintcounter into D0
+	andi.l	#$00000003, D0			; look at the lowest two bits of vintcounter
+	bne.s	.loop					; if zero, load vintvector address, this should execute every 4 frames
+	move.l	#VintRoutine, vintvector
+	bra.s	.loop
 
-; ************************************
-; HEADER AND STARTUP CODE
-; ************************************
-	include 'header.asm'
-	include 'sys/sysInit.asm'
-	include 'sys/sysInterrupts.asm'
-	include 'sys/sysJoypad.asm'
-
-; ************************************
-; USER PROGRAM
-; ************************************
-__main:
-	include 'tutorial03.asm'
-__end:
-
-; debug in MESS using
-; mess genesis -cart out/rom.bin -window -debug
+VintRoutine:
+	clr.l	D0						; Clear D0
+	clr.l	D1						; clear D1
+	move.l	D0, vintvector			; clear the vintvector address
+	addq.l	#1, _USERRAM			; increment a variable, should be 1/4 the frame rate
+	rts								; return

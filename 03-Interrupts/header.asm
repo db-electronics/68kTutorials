@@ -20,7 +20,7 @@
 ;    (at your option) any later version.
 ;    Foobar is distributed in the hope that it will be useful,
 ;    but WITHOUT ANY WARRANTY; without even the implied warranty of
-;    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;    MERCHANTABILITY or FITNESS FOR A  PURPOSE.  See the
 ;    GNU General Public License for more details.
 ;    You should have received a copy of the GNU General Public License
 ;    along with 68kTutorials.  If not, see <http://www.gnu.org/licenses/>.
@@ -28,8 +28,8 @@
 ; ******************************************************************
 ; Sega Megadrive ROM header
 ; ******************************************************************
-	dc.l   $00FFE000      	; Initial stack pointer value
-	dc.l   EntryPoint      ; Start of program
+	dc.l   $00FFFFF0		; Initial stack pointer value
+	dc.l   EntryPoint      	; Start of program
 	dc.l   Exception       ; Bus error
 	dc.l   Exception       ; Address error
 	dc.l   Exception       ; Illegal instruction
@@ -112,4 +112,4 @@
 	dc.l $00000000											; Unused
 	dc.l $00000000											; Unused
 	dc.b "                                        "			; Notes (unused)
-	dc.b "JUE             "									; Country codes
+	dc.b "JUE             "									; Country codesPARTICULAR

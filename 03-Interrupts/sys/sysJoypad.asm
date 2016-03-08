@@ -2,7 +2,7 @@
 ; Title
 ; ************************************
 ;
-;    Title:          joypad.asm
+;    Title:          sysJoypad.asm
 ;    Author:         René Richard
 ;    Description:
 ;        
@@ -18,22 +18,13 @@
 ;    it under the terms of the GNU General Public License as published by
 ;    the Free Software Foundation, either version 3 of the License, or
 ;    (at your option) any later version.
-;    Foobar is distributed in the hope that it will be useful,
+;    68kTutorials is distributed in the hope that it will be useful,
 ;    but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;    GNU General Public License for more details.
 ;    You should have received a copy of the GNU General Public License
 ;    along with 68kTutorials.  If not, see <http://www.gnu.org/licenses/>.
 ;
-; ************************************
-; Main Entry
-; ************************************
-.loop	
-	WaitVBlankStart_m				; synchronize
-	WaitVBlankEnd_m
-	jsr		JOYPAD_ReadPad01		; read joypad state
-	bra.s	.loop
-
 ; ************************************
 ; JOYPAD_ReadPad01:
 ;
@@ -77,7 +68,7 @@ JOYPAD_READ12:
 	andi.b	#$C0, D5				; SA000000
 	or.b	D5, D6					; D6.b = SACBRLDU j2
 	swap	D6						; move j2 to high word in D6
-	subq.l	#IO_DATA_2-IO_DATA_1, A0; load data_2 address
+	subq.l	#IO_DATA_2-IO_DATA_1, A0; load data_2 address by cheating a bit
 	move.b	#$40, (A0)				; set TH high for next pass
 	move.b	(A0), D6				; read status j1 = 00CBRLDU
 	move.b 	#$00, (A0)				; set TH low

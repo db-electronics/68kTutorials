@@ -18,7 +18,7 @@
 ;    it under the terms of the GNU General Public License as published by
 ;    the Free Software Foundation, either version 3 of the License, or
 ;    (at your option) any later version.
-;    Foobar is distributed in the hope that it will be useful,
+;    68kTutorials is distributed in the hope that it will be useful,
 ;    but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;    GNU General Public License for more details.
@@ -133,20 +133,6 @@ EntryPoint:           				; Entry point address set in ROM header
 ; ************************************
 Main:
 	jmp __main 						; Begin external main
-
-; ************************************
-; Interrupts
-; ************************************
-
-HBlankInterrupt:
-	rte
-
-VBlankInterrupt:
-	addq.l	#1, vintcounter			; increment vint counter
-   	rte
-
-Exception:
-   	stop #$2700 					; Halt CPU
 
 ; ************************************
 ; Data

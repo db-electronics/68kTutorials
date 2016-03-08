@@ -2,7 +2,7 @@
 ; Title
 ; ************************************
 ;
-;    Title:          sysRAM.asm
+;    Title:          sysInterrupts.asm
 ;    Author:         René Richard
 ;    Description:
 ;        
@@ -18,7 +18,7 @@
 ;    it under the terms of the GNU General Public License as published by
 ;    the Free Software Foundation, either version 3 of the License, or
 ;    (at your option) any later version.
-;    Foobar is distributed in the hope that it will be useful,
+;    68kTutorials is distributed in the hope that it will be useful,
 ;    but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;    GNU General Public License for more details.
@@ -26,22 +26,29 @@
 ;    along with 68kTutorials.  If not, see <http://www.gnu.org/licenses/>.
 ;
 ; ************************************
-; Soft Interrupt Vectors
+; Horizontal Interrupts
 ; ************************************
-_RAMVECTORSBASE			EQU		$00FF0000
-vintvector				EQU		_RAMVECTORSBASE+0
-hintvector				EQU		_RAMVECTORSBASE+4
-xintvector				EQU		_RAMVECTORSBASE+8
-vintcounter				EQU		_RAMVECTORSBASE+12
+HBlankInterrupt:
+	rte
 
 ; ************************************
-; Joypads
+; Vertical Interrupts
 ; ************************************
-_RAMJOYSTATEBASE		EQU		$00FF0010
-joy1state				EQU		_RAMJOYSTATEBASE+0
-joy2state				EQU		_RAMJOYSTATEBASE+2
+VBlankInterrupt:
+	addq.l	#1, vintcounter			; increment vint counter
+	tst.l	vintvector				; test vintvector
+	beq.s	.noVector				; if vintvector = 0, get out of here!
+.vectorValid
+	movem.l D0-D7/A0-A6, -(SP)		; push context to stack
+	movea.l	vintvector, A0			; put vintvector in A0
+	jsr		(A0)					; jsr to vintvector	
+	movem.l (SP)+, D0-D7/A0-A6		; pop context from stack
+.noVector
+   	rte								; return to main code
 
 ; ************************************
-; UserRAM
+; Exception
 ; ************************************
-_USERRAM				EQU		$00FF0020
+Exception:
+   	stop #$2700 					; Halt CPU
+
