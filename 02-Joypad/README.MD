@@ -40,7 +40,7 @@ Line 85, 86 make TH an output (bit 6 = '1') so that we can use it to drive the s
 
 Line 88, 89 set the TH pins to '1' immediately (bit 6 = '1'). This way, when reach our joypad reading subroutine the joypad databus will already have stable data for TH = '1'.
 
-The labels **IO_CTRL_1** and others are defined in **sys/sysDef.asm** which contain all relevant Genesis definitions. I will discuss this more in the last section of this tutorial
+The labels **IO_CTRL_1** and others are defined in **sys/sysDef.asm** which contain all relevant Genesis definitions. I will discuss this more in the second section of this tutorial
 ```
 sys/sysDef.asm
 IO_DATA_1				equ $00A10003
@@ -90,7 +90,7 @@ We can now verify that the code is functioning properly by assembling it using t
 ```
 mess genesis -cart out/rom.bin -debug
 ```
-Open a new memory window in MESS, point to beginning of RAM ($FF0000) and run the program. You see see the joystate1 location change bit patterns when you press the keys corresponding to player 1 inputs. As a simple homework assignment, you should try to modify the code to use the other subroutine in **joypad.asm** which reads both joypads.
+Open a new memory window in MESS (MESS -> Debug -> New Memory Window), point to beginning of RAM ($FF0000) and run the program. You see see the joystate1 location change bit patterns when you press the keys corresponding to player 1 inputs. As a simple homework assignment, you should try to modify the code to use the other subroutine in **joypad.asm** which reads both joypads.
 
 ##Separating the code into logical entities
 
