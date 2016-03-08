@@ -186,7 +186,7 @@ The optimized loop is as follows:
 	dbra 	D1, .Clear          	; Decrement d0, repeat until depleted
 ```
 
-Next let's look at the Z80 Init code:
+Next let's look at the Z80 Init code from Tutorial-01:
 ```
 ; ************************************
 ; Init Z80
@@ -234,7 +234,7 @@ Next, the only other thing that I really didn't like about the original Z80 Init
 ```
 move.l #0x29, d0           ; 42 bytes of init data
 ```
-Now it's true that Tutorial-01 does in fact load 42 bytes of init code to the Z80. But what if I want to change that init code, and most likely, I don't remember to also go to the above line of code and update the size of the transfer? Luckily there's a simple solution to this using labels. Assemblers always translate labels to addresses therefore we can label both the start and end of our data block and subtract the two labels - this way the assembler auto-calculates the length of the transfer for us at compile time. I also opted to add extra code in my new Z80init to clear the 8KB of Z80 RAM.
+Now it's true that Tutorial-01 does in fact load 42 bytes of init code to the Z80. But what if I want to change the Z80 init code, and most likely, I don't remember to also go to the above line of code and update the size of the transfer? The shit will hit the fan! Luckily there's a simple solution to this using labels. Assemblers always translate labels to addresses therefore we can label both the start and end of our data block and subtract the two labels - this way the assembler auto-calculates the length of the transfer for us at compile time. I also opted to add extra code in my new Z80init to clear the 8KB of Z80 RAM.
 ```
 ; ************************************
 ; Init Z80
