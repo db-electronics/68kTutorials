@@ -146,3 +146,122 @@ __end:
 ; mess genesis -cart out/rom.bin -window -debug
 ```
 In the above, up until the section **Header and Startup Code** there is no actual assembled code; it only consists of definitions and macros (and should be kept that way). The file **header.asm** contains data which MUST be at memory location $000000 and therefore no other assembled code or data can exist before it. Afterwards, **sys/sysInit.asm**, as discussed earlier, contains generic start-up code which is dynamically referenced by **header.asm** but should idealy still be placed immediately after the header. Finally, the section **User Program**, obviously, is where the project specific files should be included. When *sysInit.asm* is done is will jump to the label **__main:** which should flow right into any file included immediately after it.
+
+##Modifying the Initialization Code
+
+For the average observer, it may seem that I'm giving myself alot of trouble to make a simple joypad reading tutorial. In fact, I know that I'm going to expand on this tutorials ALOT in the future; this is why I am taking extra care in organizing the code and data properly from the get-go. 
+
+### Header
+
+As discussed earlier, I moved the ROM header portion of Tutorial-01's **init.asm** to its own file called **header.asm**. Header should not be part of SYS because it is project specific. The header is $200 bytes in size but there are no safeguards in **header.asm** against this. Therefore, I placed an **ORG $200** at the beginning of **sys/sysInit.asm** which should complain if you accidently make **header.asm** too long.
+
+### Slight Optimizations
+
+In Tutorial-01, the M68K RAM was cleared using this routine:
+```
+; ************************************
+; Clear RAM
+; ************************************
+	move.l #0x00000000, d0     ; Place a 0 into d0, ready to copy to each longword of RAM
+	move.l #0x00000000, a0     ; Starting from address 0x0, clearing backwards
+	move.l #0x00003FFF, d1     ; Clearing 64k's worth of longwords (minus 1, for the loop to be correct)
+.Clear:
+	move.l d0, -(a0)           ; Decrement the address by 1 longword, before moving the zero from d0 to it
+	dbra d1, .Clear            ; Decrement d0, repeat until depleted
+```
+There are several ways we can improve this. Firstly, you should never move #$00 into a data register, instead you should use clr.b/clr.w or clr.l. This saves both cycles and data. With the move instructions, the M68K has to perform 2 extra word reads from ROM to retrieve the immediate long value $00 whereas clr is SPECIFICALLY designed to zero registers. 
+
+Next, the loop moves #$00 to A0 - sadly there is no clr for address registers, but you can optimize it to **suba.l A0,A0**. But we're not going to optimize it this way. Instead, we're going to explore the loop a bit more. This Clear RAM starts at the very last RAM address and pre-decrements its way down to the beginning of RAM moving 16K of longs (= 64KB). If you google the M68K instruction set you'll quickly notice that post-incrementing an address register is quicker than pre-decrementing. Since this loop is executing 16K times it's definitely worth it to change. In fact, whenever possible you should always favour post-inc to pre-dec for optimizations.
+
+The optimized loop is as follows:
+```
+; ************************************
+; Clear RAM
+; ************************************
+	clr.l	D0						; Place a 0 into d0, ready to copy to each longword of RAM
+	move.l	M68K_RAM, A0			; A0 points to beginning of RAM
+	move.l 	#$00004000, D1     		; Clearing 64k's worth of longwords
+.Clear:
+	move.l 	D0, (A0)+           	; Post-inc faster than Pre-dec (as last tutorial)
+	dbra 	D1, .Clear          	; Decrement d0, repeat until depleted
+```
+
+Next let's look at the Z80 Init code:
+```
+; ************************************
+; Init Z80
+; ************************************
+	move.w #0x0100, 0x00A11100    ; Request access to the Z80 bus, by writing 0x0100 into the BUSREQ port
+	move.w #0x0100, 0x00A11200    ; Hold the Z80 in a reset state, by writing 0x0100 into the RESET port
+
+.Wait:
+	btst #0x0, 0x00A11100      ; Test bit 0 of A11100 to see if the 68k has access to the Z80 bus yet
+	bne .Wait                  ; If we don't yet have control, branch back up to Wait
+	
+	move.l #Z80Data, a0        ; Load address of data into a0
+	move.l #0x00A00000, a1     ; Copy Z80 RAM address to a1
+	move.l #0x29, d0           ; 42 bytes of init data
+.CopyZ80:
+	move.b (a0)+, (a1)+        ; Copy data, and increment the source/dest addresses
+	dbra d0, .CopyZ80
+
+	move.w #0x0000, 0x00A11200    ; Release reset state
+	move.w #0x0000, 0x00A11100    ; Release control of bus
+```
+The first 4 and last 2 instructions deal with Z80 bus request and release. I know we'll be using this type of code elsewhere in later programs so I decided to make 3 macros out of these: Z80Reset_m, Z80Request_m and Z80Relese_m.
+```
+Z80Reset_m		MACRO
+	move.w	#$0000, CTRL_Z80RESET
+	exg.l	A0,A1					; waste some time
+	exg.l	A1,A0
+	move.w	#$0100, CTRL_Z80RESET	
+	ENDM
+
+Z80Request_m	MACRO
+	move.w	#$0100, CTRL_Z80BUSREQ
+.\?Wait
+	btst.b	#0, CTRL_Z80BUSREQ
+	bne.s	.\?Wait
+	ENDM
+
+Z80Release_m	MACRO
+	move.w	#$0000, CTRL_Z80BUSREQ
+	ENDM
+```
+The symbol \? in the above macros is a special ASMX symbol which ensures that labels are not duplicated in multiple macro calls.
+
+Next, the only other thing that I really didn't like about the original Z80 Init code in Tutorial-01 was:
+```
+move.l #0x29, d0           ; 42 bytes of init data
+```
+Now it's true that Tutorial-01 does in fact load 42 bytes of init code to the Z80. But what if I want to change that init code, and most likely, I don't remember to also go to the above line of code and update the size of the transfer? Luckily there's a simple solution to this using labels. Assemblers always translate labels to addresses therefore we can label both the start and end of our data block and subtract the two labels - this way the assembler auto-calculates the length of the transfer for us at compile time. I also opted to add extra code in my new Z80init to clear the 8KB of Z80 RAM.
+```
+; ************************************
+; Init Z80
+; ************************************
+	Z80Reset_m
+	Z80Request_m
+
+	; clear the Z80's 8KB of RAM
+	move.w	#$2000, D0				; 8KB of Z80 RAM to clear
+	move.l	#Z80_RAM, A1			; A1 points to Z80 RAM
+.ClearZ80
+	clr.b	(A1)+					; clear bytes, $00 is Z80 nop
+	dbra	D0, .ClearZ80				
+
+	; load simple program to Z80
+	move.l 	#Z80Data, A0        	; Load address of data into a0
+	move.l 	#Z80_RAM, A1     		; Copy Z80 RAM address to a1
+	move.l 	#Z80DataEnd-Z80Data, D0 ; Auto-calculate size of transfer using labels
+.CopyZ80:
+	move.b 	(A0)+, (A1)+        	; Copy data, and increment the source/dest addresses
+	dbra 	D0, .CopyZ80
+
+	Z80Reset_m
+	Z80Release_m
+	
+Z80Data:
+[data goes here, bunch of dc.b...]
+Z80DataEnd:
+```
+There are a few more differences between Tutorial-01 and Tutorial-02's init code. I invite the curious to study the additional differences.
