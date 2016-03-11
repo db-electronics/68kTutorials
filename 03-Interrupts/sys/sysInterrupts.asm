@@ -35,7 +35,8 @@ HBlankInterrupt:
 ; Vertical Interrupts
 ; ************************************
 VBlankInterrupt:
-	addq.l	#1, vintcounter			; increment vint counter
+	addq.w	#1, vintcounter			; increment vint counter
+	addq.w	#1, vintoccured			; increment vint occured
 	tst.l	vintvector				; test vintvector
 	beq.s	.noVector				; if vintvector = 0, get out of here!
 .vectorValid

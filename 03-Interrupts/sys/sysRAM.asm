@@ -33,6 +33,7 @@ vintvector				EQU		_RAMVECTORSBASE+0
 hintvector				EQU		_RAMVECTORSBASE+4
 xintvector				EQU		_RAMVECTORSBASE+8
 vintcounter				EQU		_RAMVECTORSBASE+12
+vintoccured				EQU		_RAMVECTORSBASE+14
 
 ; ************************************
 ; Joypads
