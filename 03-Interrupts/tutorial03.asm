@@ -30,12 +30,12 @@
 ; ************************************
 Tutorial03Entry:
 				
-	move.l	#2, D2					; test context saving in Vint
-	move.l	#3, D3
-	move.l	#4, D4
-	move.l	#5, D5
-	move.l 	#6, D6
-	move.l	#7, D7
+	move.w	#2, D2						; test context saving in Vint
+	move.w	#3, D3
+	move.w	#4, D4
+	move.w	#5, D5
+	move.w 	#6, D6
+	move.w	#7, D7
 	movea.l	#$10, A0
 	movea.l	#$11, A1
 	movea.l	#$12, A2
@@ -44,21 +44,28 @@ Tutorial03Entry:
 	movea.l	#$15, A5
 	movea.l	#$16, A6
 	
+	; TODO
+	; only enable VDP interrupts here
 
-.loop	
-	WaitVBlankStart_m				; synchronize
-	WaitVBlankEnd_m
+.newFrame
+	movea.l	#intflags, A0				; A0 points to intflags
+.syncVint	
+	btst	#0, (A0)					; test if a Vertical Interrupt occured
+	beq.s	.syncVint					; wait until vint occurs, bit0 set = vint has happened
+	bclr	#0, (A0)					; clear the intflag	
 
-	addq.l	#1, D1
-	move.l	vintcounter, D0			; load the vintcounter into D0
-	andi.l	#$00000003, D0			; look at the lowest two bits of vintcounter
-	bne.s	.loop					; if zero, load vintvector address, this should execute every 4 frames
+	; TODO
+	; increment counter for timing, agnostic to PAL or NTSC
+
+	jsr		JOYPAD_ReadPad01			; read joypad1 state
+
+	move.w	vintcounter, D0				; load the vintcounter into D0
+	andi.w	#$0003, D0					; look at the lowest two bits of vintcounter
+	bne.s	.newFrame					; if zero, load vintvector address, this should execute every 4 frames
 	move.l	#VintRoutine, vintvector
-	bra.s	.loop
+	bra.s	.newFrame
 
 VintRoutine:
-	clr.l	D0						; Clear D0
-	clr.l	D1						; clear D1
-	move.l	D0, vintvector			; clear the vintvector address
-	addq.l	#1, _USERRAM			; increment a variable, should be 1/4 the frame rate
-	rts								; return
+	move.l	D0, vintvector				; clear the vintvector address
+	addq.w	#1, _USERRAM				; increment a variable, should be 1/4 the frame rate
+	rts									; return

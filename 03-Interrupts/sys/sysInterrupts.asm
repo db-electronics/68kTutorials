@@ -35,21 +35,21 @@ HBlankInterrupt:
 ; Vertical Interrupts
 ; ************************************
 VBlankInterrupt:
-	addq.w	#1, vintcounter			; increment vint counter
-	addq.w	#1, vintoccured			; increment vint occured
-	tst.l	vintvector				; test vintvector
-	beq.s	.noVector				; if vintvector = 0, get out of here!
+	addq.w	#1, vintcounter				; increment vint counter
+	bset	#0, intflags				; set vintflag
+	tst.l	vintvector					; test vintvector
+	beq.s	.noVector					; if vintvector = 0, get out of here!
 .vectorValid
-	movem.l D0-D7/A0-A6, -(SP)		; push context to stack
-	movea.l	vintvector, A0			; put vintvector in A0
-	jsr		(A0)					; jsr to vintvector	
-	movem.l (SP)+, D0-D7/A0-A6		; pop context from stack
+	movem.l D0-D7/A0-A6, -(SP)			; push context to stack
+	movea.l	vintvector, A0				; put vintvector in A0
+	jsr		(A0)						; jsr to vintvector	
+	movem.l (SP)+, D0-D7/A0-A6			; pop context from stack
 .noVector
-   	rte								; return to main code
+   	rte									; return to main code
 
 ; ************************************
 ; Exception
 ; ************************************
 Exception:
-   	stop #$2700 					; Halt CPU
+   	stop #$2700 						; Halt CPU
 

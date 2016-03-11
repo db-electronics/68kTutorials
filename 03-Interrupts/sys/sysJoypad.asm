@@ -40,10 +40,12 @@ JOYPAD_ReadPad01:
 	move.b	(A0), D6				; read status j1 = 00CBRLDU
 	move.b 	#$00, (A0)				; set TH low
 	nop								; wait to settle
+	nop								;
 	move.b  (A0), D5				; read status = 00SA00DU
 	rol.b	#2, D5					; SA00DU??
 	andi.b	#$C0, D5				; SA000000
 	or.b	D5, D6					; D6 = SACBRLDU
+	not.b	D6						; invert, 1 = pressed
 	move.b	#$40, (A0)				; set TH high for next pass
 	move.w	D6, (A1)				; store to RAM
 	rts
@@ -63,6 +65,7 @@ JOYPAD_READ12:
 	move.b	(A0), D6				; read status j2 = 00CBRLDU
 	move.b 	#$00, (A0)				; set TH low
 	nop								; wait to settle
+	nop								;
 	move.b  (A0), D5				; read status  = 00SA00DU
 	rol.b	#2, D5					; SA00DU??
 	andi.b	#$C0, D5				; SA000000
@@ -73,6 +76,7 @@ JOYPAD_READ12:
 	move.b	(A0), D6				; read status j1 = 00CBRLDU
 	move.b 	#$00, (A0)				; set TH low
 	nop								; wait to settle
+	nop								;
 	move.b  (A0), D5				; read status  = 00SA00DU
 	rol.b	#2, D5					; SA00DU??
 	andi.b	#$C0, D5				; SA000000
