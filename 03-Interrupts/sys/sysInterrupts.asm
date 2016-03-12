@@ -29,23 +29,43 @@
 ; Horizontal Interrupts
 ; ************************************
 HBlankInterrupt:
+	bset	#0, intflags				; set hintflag
 	rte
 
 ; ************************************
 ; Vertical Interrupts
 ; ************************************
 VBlankInterrupt:
-	addq.w	#1, vintcounter				; increment vint counter
-	bset	#0, intflags				; set vintflag
+	addq.w	#1, sysframecnt				; increment vint counter
+	add.w	sysmillisinc, D7			; D7 = global millis counter
+	bset	#1, intflags				; set vintflag
 	tst.l	vintvector					; test vintvector
 	beq.s	.noVector					; if vintvector = 0, get out of here!
 .vectorValid
-	movem.l D0-D7/A0-A6, -(SP)			; push context to stack
+	movem.l D0-D6/A0-A6, -(SP)			; push context to stack
 	movea.l	vintvector, A0				; put vintvector in A0
 	jsr		(A0)						; jsr to vintvector	
-	movem.l (SP)+, D0-D7/A0-A6			; pop context from stack
+	movem.l (SP)+, D0-D6/A0-A6			; pop context from stack
 .noVector
    	rte									; return to main code
+
+; ************************************
+; External Interrupts
+; ************************************
+ExtInterrupt:
+	bset	#2, intflags				; set xintflag
+	rte
+
+; ************************************
+; Macros
+; ************************************
+sysInt_VDPDisableHInt	MACRO
+	move.w	#$8004, VDP_CTRL
+	ENDM
+
+sysInt_VDPEnableHInt	MACRO
+	move.w	#$8014, VDP_CTRL
+	ENDM
 
 ; ************************************
 ; Exception

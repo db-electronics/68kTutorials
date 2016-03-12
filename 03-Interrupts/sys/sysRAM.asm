@@ -32,15 +32,23 @@ _RAMVECTORSBASE			EQU		M68K_RAM
 vintvector				EQU		_RAMVECTORSBASE+0
 hintvector				EQU		_RAMVECTORSBASE+4
 xintvector				EQU		_RAMVECTORSBASE+8
-vintcounter				EQU		_RAMVECTORSBASE+12
-intflags				EQU		_RAMVECTORSBASE+14
+intflags				EQU		_RAMVECTORSBASE+12
+_SIZEOFRAMVECTORS		EQU		16
 
 ; ************************************
 ; Joypads
 ; ************************************
-_RAMJOYSTATEBASE		EQU		$00FF0010
+_RAMJOYSTATEBASE		EQU		_RAMVECTORSBASE	+ _SIZEOFRAMVECTORS
 joy1state				EQU		_RAMJOYSTATEBASE+0
 joy2state				EQU		_RAMJOYSTATEBASE+2
+_SIZEOFRAMJOY			EQU		4
+
+; ************************************
+; System Timing
+; ************************************
+_SYSTIMINGBASE			EQU		_RAMJOYSTATEBASE + _SIZEOFRAMJOY
+sysmillisinc			EQU		_SYSTIMINGBASE+0
+sysframecnt				EQU		_SYSTIMINGBASE+2
 
 ; ************************************
 ; UserRAM

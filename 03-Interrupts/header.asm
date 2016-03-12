@@ -54,7 +54,7 @@
 	dc.l   Exception       ; Unused (reserved)
 	dc.l   Exception       ; Spurious exception
 	dc.l   Exception       ; IRQ level 1
-	dc.l   Exception       ; IRQ level 2
+	dc.l   ExtInterrupt    ; IRQ level 2 (external interrupt)
 	dc.l   Exception       ; IRQ level 3
 	dc.l   HBlankInterrupt ; IRQ level 4 (horizontal retrace interrupt)
 	dc.l   Exception       ; IRQ level 5

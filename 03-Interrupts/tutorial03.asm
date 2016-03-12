@@ -35,7 +35,6 @@ Tutorial03Entry:
 	move.w	#4, D4
 	move.w	#5, D5
 	move.w 	#6, D6
-	move.w	#7, D7
 	movea.l	#$10, A0
 	movea.l	#$11, A1
 	movea.l	#$12, A2
@@ -50,16 +49,13 @@ Tutorial03Entry:
 .newFrame
 	movea.l	#intflags, A0				; A0 points to intflags
 .syncVint	
-	btst	#0, (A0)					; test if a Vertical Interrupt occured
+	btst	#1, (A0)					; test if a Vertical Interrupt occured
 	beq.s	.syncVint					; wait until vint occurs, bit0 set = vint has happened
-	bclr	#0, (A0)					; clear the intflag	
-
-	; TODO
-	; increment counter for timing, agnostic to PAL or NTSC
+	bclr	#1, (A0)					; clear the intflag	
 
 	jsr		JOYPAD_ReadPad01			; read joypad1 state
 
-	move.w	vintcounter, D0				; load the vintcounter into D0
+	move.w	sysframecnt, D0				; load the sysframecnt into D0
 	andi.w	#$0003, D0					; look at the lowest two bits of vintcounter
 	bne.s	.newFrame					; if zero, load vintvector address, this should execute every 4 frames
 	move.l	#VintRoutine, vintvector

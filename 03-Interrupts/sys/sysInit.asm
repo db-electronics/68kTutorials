@@ -52,9 +52,15 @@ EntryPoint:           				; Entry point address set in ROM header
 	dbra 	D1, .Clear          	; Decrement d0, repeat until depleted
 	
 ; ************************************
-; Write TMSS
+; Write TMSS, get System Region
 ; ************************************
+	move.w	#20, D1					; millis timer init (20ms for PAL)
 	move.b 	IO_VERSIONNO, D0      	; Move Megadrive hardware version to d0
+	btst	#6, D0					; Test VMOD bit for region (PAL = 1, NTSC = 0)
+	bne.s	.skipForPal
+	subi.w	#3, D1					; change millis timer to 17 for NTSC
+.skipForPal
+	move.w	D1, sysmillisinc		; store value to sysregion
 	andi.b 	#$0F, D0           		; The version is stored in last four bits, so mask it with 0F
 	beq.s 	.SkipTMSS              	; If version is equal to 0, skip TMSS signature
 	move.l 	#'SEGA', CTRL_TMSS 		; Move the string "SEGA" to $A14000
@@ -153,7 +159,7 @@ Z80Data:
 Z80DataEnd:
    
 VDPRegisters:
-	dc.b $04 ; 0: Horiz. interrupt off, display on
+	dc.b $04 ; 0: Horiz. interrupt off
 	dc.b $74 ; 1: Vert. interrupt on, screen blank off, DMA on, V28 mode (40 cells vertically), Genesis mode on
    	dc.b $30 ; 2: Pattern table for Scroll Plane A at $C000 (bits 3-5)
    	dc.b $40 ; 3: Pattern table for Window Plane at $10000 (bits 1-5)
