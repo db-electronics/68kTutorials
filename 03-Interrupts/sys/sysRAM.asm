@@ -39,9 +39,11 @@ _SIZEOFRAMVECTORS		EQU		16
 ; Joypads
 ; ************************************
 _RAMJOYSTATEBASE		EQU		_RAMVECTORSBASE	+ _SIZEOFRAMVECTORS
-joy1state				EQU		_RAMJOYSTATEBASE+0
-joy2state				EQU		_RAMJOYSTATEBASE+2
-_SIZEOFRAMJOY			EQU		4
+v_joy1State				EQU		_RAMJOYSTATEBASE+0
+v_joy1Held				EQU		_RAMJOYSTATEBASE+2
+v_joy2State				EQU		_RAMJOYSTATEBASE+4
+v_joy2Held				EQU		_RAMJOYSTATEBASE+6
+_SIZEOFRAMJOY			EQU		8
 
 ; ************************************
 ; System Timing

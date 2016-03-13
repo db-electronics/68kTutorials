@@ -35,52 +35,47 @@
 ;		joy1State (RAM) = D6		
 ; ************************************
 JOYPAD_ReadPad01:
-	move.l	#IO_DATA_1, A0			; load data_1 address
-	move.l	#joy1State, A1			; point to RAM placeholder for joystate
-	move.b	(A0), D6				; read status j1 = 00CBRLDU
-	move.b 	#$00, (A0)				; set TH low
-	nop								; wait to settle
-	nop								;
-	move.b  (A0), D5				; read status = 00SA00DU
-	rol.b	#2, D5					; SA00DU??
-	andi.b	#$C0, D5				; SA000000
-	or.b	D5, D6					; D6 = SACBRLDU
-	not.b	D6						; invert, 1 = pressed
-	move.b	#$40, (A0)				; set TH high for next pass
-	move.w	D6, (A1)				; store to RAM
+	move.l	#IO_DATA_1, A0				; load data_1 address
+	move.l	#v_joy1State, A1			; point to RAM placeholder for joystate
+	move.b	(A0), D6					; read status j1 = 00CBRLDU
+	move.b 	#$00, (A0)					; set TH low
+	nop									; wait to settle
+	nop									;
+	move.b  (A0), D5					; read status = 00SA00DU
+	rol.b	#2, D5						; SA00DU??
+	andi.b	#$C0, D5					; SA000000
+	or.b	D5, D6						; D6 = SACBRLDU
+	not.b	D6							; invert, 1 = pressed
+	move.b	#$40, (A0)					; set TH high for next pass
+	move.w	D6, (A1)					; store to RAM
 	rts
 	
 ; ************************************
-; JOYPAD_READ12
+; sysJoy_ReadBoth
 ;
 ; destroys:
-;		A0, D5, D6
-; returns:
-;						j2				j1
-;		D6 = xxxxxxxx SACBRLDU xxxxxxxx	SACBRLDU
+;		A0, A1, D0, D1
 ; ************************************
-JOYPAD_READ12:
-	move.l	#IO_DATA_2, A0			; load data_2 address
-	move.l	#joy1State, A1			; point to RAM placeholder for joystate
-	move.b	(A0), D6				; read status j2 = 00CBRLDU
-	move.b 	#$00, (A0)				; set TH low
-	nop								; wait to settle
-	nop								;
-	move.b  (A0), D5				; read status  = 00SA00DU
-	rol.b	#2, D5					; SA00DU??
-	andi.b	#$C0, D5				; SA000000
-	or.b	D5, D6					; D6.b = SACBRLDU j2
-	swap	D6						; move j2 to high word in D6
-	subq.l	#IO_DATA_2-IO_DATA_1, A0; load data_2 address by cheating a bit
-	move.b	#$40, (A0)				; set TH high for next pass
-	move.b	(A0), D6				; read status j1 = 00CBRLDU
-	move.b 	#$00, (A0)				; set TH low
-	nop								; wait to settle
-	nop								;
-	move.b  (A0), D5				; read status  = 00SA00DU
-	rol.b	#2, D5					; SA00DU??
-	andi.b	#$C0, D5				; SA000000
-	or.b	D5, D6					; D6.b = SACBRLDU j1
-	move.b	#$40, (A0)				; set TH high for next pass
-	move.l	D6, (A1)				; store to RAM
+sysJoy_ReadBoth:
+	lea		IO_DATA_1, A0				; load data_1 address
+	lea		v_joy1State, A1				; point to RAM placeholder for joystate
+	bsr.s	sysJoy_ReadOne				;
+	addq.w	#2, A0						;
+
+sysJoy_ReadOne:
+	move.b	(A0), D0					; read status of j1 = 00CBRLDU
+	move.b 	#$00, (A0)					; set TH low
+	nop									; wait to settle
+	nop									;
+	move.b  (A0), D1					; read status  = 00SA00DU
+	move.b 	#$40, (A0)					; set TH high for next pass
+	rol.b	#2, D1						; SA00DU??
+	andi.b	#$C0, D1					; SA000000
+	or.b	D1, D0						; D0.b = SACBRLDU j1
+	not.b	D0							; 1 = pressed
+	move.w	(A1), D1					; get previous joypad state
+	eor.w	D0, D1						; diff current with previous
+	move.w	D0, (A1)+					; store current joypad state
+	and.w	D0, D1
+	move.w	D1, (A1)+					; store held joypad state
 	rts
