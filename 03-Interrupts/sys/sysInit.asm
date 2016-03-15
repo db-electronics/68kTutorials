@@ -45,7 +45,7 @@ EntryPoint:           				; Entry point address set in ROM header
 ; Clear RAM
 ; ************************************
 	clr.l	D0						; Place a 0 into d0, ready to copy to each longword of RAM
-	move.l	M68K_RAM, A0			; A0 points to beginning of RAM
+	lea		M68K_RAM, A0			; A0 points to beginning of RAM
 	move.l 	#$00004000, D1     		; Clearing 64k's worth of longwords
 .Clear:
 	move.l 	D0, (A0)+           	; Post-inc faster than Pre-dec (as last tutorial)
@@ -74,14 +74,14 @@ EntryPoint:           				; Entry point address set in ROM header
 
 	; clear the Z80's 8KB of RAM
 	move.w	#$2000, D0				; 8KB of Z80 RAM to clear
-	move.l	#Z80_RAM, A1			; A1 points to Z80 RAM
+	lea		Z80_RAM, A1				; A1 points to Z80 RAM
 .ClearZ80
 	clr.b	(A1)+					; clear bytes, $00 is Z80 nop
 	dbra	D0, .ClearZ80				
 
 	; load simple program to Z80
-	move.l 	#Z80Data, A0        	; Load address of data into a0
-	move.l 	#Z80_RAM, A1     		; Copy Z80 RAM address to a1
+	lea 	Z80Data, A0	        	; Load address of data into a0
+	lea 	Z80_RAM, A1     		; Copy Z80 RAM address to a1
 	move.l 	#Z80DataEnd-Z80Data, D0 ; Auto-calculate size of transfer using labels
 .CopyZ80:
 	move.b 	(A0)+, (A1)+        	; Copy data, and increment the source/dest addresses
@@ -105,7 +105,7 @@ EntryPoint:           				; Entry point address set in ROM header
 ;	D1.lw 	- register value
 ;	A0 		- pointer to VDP register value array 
 ; ************************************
-	move.l 	#VDPRegisters, A0   	; Load address of register table into a0
+	lea 	VDPRegisters, A0   		; Load address of register table into a0
 	move.l 	#24, D0           		; 24 registers to write
 	move.l 	#$00008000, d1     		; 'Set register 0' command (and clear the rest of d1 ready)
 
@@ -127,7 +127,7 @@ EntryPoint:           				; Entry point address set in ROM header
 ; ************************************
 ; Cleanup
 ; ************************************
-	move.l 	#M68K_RAM, A0     		; A0 points to $00 value in RAM (has been cleared)
+	lea 	M68K_RAM, A0     		; A0 points to $00 value in RAM (has been cleared)
 	movem.l (A0), D0-D7/A1-A6  		; Multiple move zero to all registers
 	suba.l	A0, A0					; Clear A0
 

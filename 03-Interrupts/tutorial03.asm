@@ -47,13 +47,13 @@ Tutorial03Entry:
 	; only enable VDP interrupts here
 
 .newFrame
-	movea.l	#intflags, A0				; A0 points to intflags
+	lea		intflags, A0				; A0 points to intflags
 .syncVint	
 	btst	#1, (A0)					; test if a Vertical Interrupt occured
 	beq.s	.syncVint					; wait until vint occurs, bit0 set = vint has happened
 	bclr	#1, (A0)					; clear the intflag	
 
-	jsr		sysJoy_ReadOne				; read joypad1 state
+	jsr		sysJoy_Read3Button			; read joypad1 state
 
 	move.w	sysframecnt, D0				; load the sysframecnt into D0
 	andi.w	#$0003, D0					; look at the lowest two bits of vintcounter

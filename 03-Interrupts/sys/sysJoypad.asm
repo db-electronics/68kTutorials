@@ -35,8 +35,8 @@
 ;		joy1State (RAM) = D6		
 ; ************************************
 JOYPAD_ReadPad01:
-	move.l	#IO_DATA_1, A0				; load data_1 address
-	move.l	#v_joy1State, A1			; point to RAM placeholder for joystate
+	lea		IO_DATA_1, A0				; load data_1 address
+	lea		v_joy1State, A1				; point to RAM placeholder for joystate
 	move.b	(A0), D6					; read status j1 = 00CBRLDU
 	move.b 	#$00, (A0)					; set TH low
 	nop									; wait to settle
@@ -51,19 +51,19 @@ JOYPAD_ReadPad01:
 	rts
 	
 ; ************************************
-; sysJoy_ReadBoth
+; sysJoy_Read3ButtonBoth
 ;
 ; destroys:
 ;		A0, A1, D0, D1
 ; ************************************
-sysJoy_ReadBoth:
+sysJoy_Read3ButtonBoth:
 	lea		IO_DATA_1, A0				; load data_1 address
 	lea		v_joy1State, A1				; point to RAM placeholder for joystate
-	bsr.s	sysJoy_ReadOne				;
+	bsr.s	sysJoy_Read3Button			;
 	addq.w	#2, A0						;
 
-sysJoy_ReadOne:
-	move.b	(A0), D0					; read status of j1 = 00CBRLDU
+sysJoy_Read3Button:
+	move.b	(A0), D0					; read status of j1 = 00CBRLDU, TH already high
 	move.b 	#$00, (A0)					; set TH low
 	nop									; wait to settle
 	nop									;
