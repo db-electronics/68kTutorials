@@ -2,7 +2,7 @@
 ; Title
 ; ************************************
 ;
-;    Title:          sysInterrupts.asm
+;    Title:          sysInterrupts.68k
 ;    Author:         René Richard
 ;    Description:
 ;        
@@ -37,7 +37,7 @@ HBlankInterrupt:
 ; ************************************
 VBlankInterrupt:
 	addq.w	#1, sysframecnt				; increment vint counter
-	add.w	sysmillisinc, D7			; D7 = global millis counter
+	add.l	sysmillisinc, D7			; D7 = global millis counter
 	bset	#1, intflags				; set vintflag
 	tst.l	vintvector					; test vintvector
 	beq.s	.noVector					; if vintvector = 0, get out of here!
