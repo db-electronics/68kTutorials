@@ -2,7 +2,7 @@
 ; Title
 ; ************************************
 ;
-;    Title:          tutorial03.asm
+;    Title:          tutorial03.68k
 ;    Author:         René Richard
 ;    Description:
 ;        
@@ -63,5 +63,5 @@ Tutorial03Entry:
 
 VintRoutine:
 	move.l	D0, vintvector				; clear the vintvector address
-	addq.w	#1, _USERRAM				; increment a variable, should be 1/4 the frame rate
+	addq.w	#1, M68K_RAM				; increment a variable, should be 1/4 the frame rate
 	rts									; return

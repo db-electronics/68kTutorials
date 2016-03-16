@@ -2,7 +2,7 @@
 ; Title
 ; ************************************
 ;
-;    Title:          sysInit.asm
+;    Title:          sysInit.68k
 ;    Author:         René Richard
 ;    Description:
 ;        
@@ -54,11 +54,12 @@ EntryPoint:           				; Entry point address set in ROM header
 ; ************************************
 ; Write TMSS, get System Region
 ; ************************************
-	move.w	#20, D1					; millis timer init (20ms for PAL)
+	move.w	#(20<<4), D1			; millis timer init (20ms for PAL)
+									; the millis timer is in D7 and has a binary point at bit4, 
 	move.b 	IO_VERSIONNO, D0      	; Move Megadrive hardware version to d0
 	btst	#6, D0					; Test VMOD bit for region (PAL = 1, NTSC = 0)
 	bne.s	.skipForPal
-	subi.w	#3, D1					; change millis timer to 17 for NTSC
+	subi.w	#53, D1					; change millis timer to ~16.7 for NTSC (3.3 * 16 = 52.8)
 .skipForPal
 	move.w	D1, sysmillisinc		; store value to sysregion
 	andi.b 	#$0F, D0           		; The version is stored in last four bits, so mask it with 0F

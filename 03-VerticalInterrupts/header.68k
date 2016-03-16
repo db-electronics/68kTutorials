@@ -28,7 +28,7 @@
 ; ******************************************************************
 ; Sega Megadrive ROM header
 ; ******************************************************************
-	dc.l   $00FFFFF0		; Initial stack pointer value
+	dc.l   $00FFFF00		; Initial stack pointer value
 	dc.l   EntryPoint      	; Start of program
 	dc.l   Exception       ; Bus error
 	dc.l   Exception       ; Address error

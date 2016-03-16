@@ -2,7 +2,7 @@
 ; Title
 ; ************************************
 ;
-;    Title:          sysRAM.asm
+;    Title:          sysRAM.68k
 ;    Author:         René Richard
 ;    Description:
 ;        
@@ -28,7 +28,7 @@
 ; ************************************
 ; Soft Interrupt Vectors
 ; ************************************
-_RAMVECTORSBASE			EQU		M68K_RAM
+_RAMVECTORSBASE			EQU		$FFFF00
 vintvector				EQU		_RAMVECTORSBASE+0
 hintvector				EQU		_RAMVECTORSBASE+4
 xintvector				EQU		_RAMVECTORSBASE+8
@@ -52,7 +52,3 @@ _SYSTIMINGBASE			EQU		_RAMJOYSTATEBASE + _SIZEOFRAMJOY
 sysmillisinc			EQU		_SYSTIMINGBASE+0
 sysframecnt				EQU		_SYSTIMINGBASE+2
 
-; ************************************
-; UserRAM
-; ************************************
-_USERRAM				EQU		$00FF0020
