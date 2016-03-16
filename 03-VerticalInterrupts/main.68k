@@ -2,7 +2,7 @@
 ; Title
 ; ************************************
 ;
-;    Title:          main.asm
+;    Title:          main.68k
 ;    Author:         René Richard
 ;    Description:
 ;        
@@ -35,27 +35,27 @@
 ; ************************************
 ; SYSTEM DEFINES
 ; ************************************
-	include 'sys/sysDef.asm'
-	include 'sys/sysRAM.asm'
+	include 'sys/sysDef.68k'
+	include 'sys/sysRAM.68k'
 
 ; ************************************
 ; MACROS
 ; ************************************
-	include	'sys/sysMacros.asm'
+	include	'sys/sysMacros.68k'
 
 ; ************************************
 ; HEADER AND STARTUP CODE
 ; ************************************
-	include 'header.asm'
-	include 'sys/sysInit.asm'
-	include 'sys/sysInterrupts.asm'
-	include 'sys/sysJoypad.asm'
+	include 'header.68k'
+	include 'sys/sysInit.68k'
+	include 'sys/sysInterrupts.68k'
+	include 'sys/sysJoypad.68k'
 
 ; ************************************
 ; USER PROGRAM
 ; ************************************
 __main:
-	include 'tutorial03.asm'
+	include 'tutorial03.68k'
 __end:
 
 ; debug in MESS using

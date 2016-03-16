@@ -34,7 +34,7 @@ else
 fi
 
 # assemble main.asm 
-asmx -C 68000 -e -w -b 0 -l out/rom.lst -o out/rom.bin -- main.asm
+asmx -C 68000 -e -w -b 0 -l out/rom.lst -o out/rom.bin -- main.68k
 
 # check for options
 while getopts ":d" opt; do
