@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE language SYSTEM "language.dtd">
+<language id="68k" _name="m68k Assembler" version="1.0" _section="Sources" mimetypes="text/x-asm;text/x-assembler" globs="*.68k">
+
+	<line-comment _name = "Line Comment" style= "Comment">
+		<start-regex>;</start-regex>
+	</line-comment>
+
+	<pattern-item _name = "Label" style = "Preprocessor">
+		<regex>^[A-Za-z_][A-Za-z_0-9]*\:</regex>
+	</pattern-item>
+
+	<string _name = "String" style = "String" end-at-line-end = "TRUE">
+		<start-regex>&apos;</start-regex>
+		<end-regex>&apos;</end-regex>
+	</string>
+	
+	<pattern-item _name = "ImOperand" style = "Decimal">
+		<regex>\$[A-Za-z0-9_\-\+]*</regex>
+	</pattern-item>
+
+	<keyword-list _name = "Registers" style = "Data Type" case-sensitive="FALSE"
+		match-empty-string-at-beginning = "FALSE"
+		match-empty-string-at-end = "TRUE">
+		<keyword>d0</keyword>
+		<keyword>d1</keyword>
+		<keyword>d2</keyword>
+		<keyword>d3</keyword>		
+		<keyword>d4</keyword>
+		<keyword>d5</keyword>		
+		<keyword>d6</keyword>
+		<keyword>d7</keyword>
+		<keyword>a0</keyword>
+		<keyword>a1</keyword>
+		<keyword>a2</keyword>
+		<keyword>a3</keyword>
+		<keyword>a4</keyword>
+		<keyword>a5</keyword>
+		<keyword>a6</keyword>
+		<keyword>a7</keyword>
+		<keyword>sp</keyword>
+		<keyword>sr</keyword>
+		<keyword>usp</keyword>
+		<keyword>pc</keyword>
+		<keyword>ccr</keyword>
+	</keyword-list>
+<!--
+		<end-regex>"[bwl]"</end-regex>
+-->
+	<keyword-list _name = "InstByte" style = "Keyword" case-sensitive="FALSE"
+		end-regex = ".b">
+		<keyword>add</keyword>
+		<keyword>abcd</keyword>
+		<keyword>addi</keyword>
+		<keyword>addq</keyword>
+		<keyword>addx</keyword>
+		<keyword>and</keyword>
+		<keyword>andi</keyword>
+		<keyword>asl</keyword>
+		<keyword>asr</keyword>
+		<keyword>bcc</keyword>
+		<keyword>bcs</keyword>
+		<keyword>beq</keyword>
+		<keyword>bge</keyword>
+		<keyword>bgt</keyword>
+		<keyword>bhi</keyword>
+		<keyword>ble</keyword>
+		<keyword>bls</keyword>
+		<keyword>blt</keyword>
+		<keyword>bmi</keyword>
+		<keyword>bne</keyword>
+		<keyword>bpl</keyword>
+		<keyword>bvc</keyword>
+		<keyword>bvs</keyword>
+		<keyword>bchg</keyword>
+                <keyword>bra</keyword>
+		<keyword>bclr</keyword>
+		<keyword>bset</keyword>
+		<keyword>bsr</keyword>
+		<keyword>btst</keyword>
+		<keyword>clr</keyword>
+		<keyword>cmp</keyword>
+		<keyword>cmpi</keyword>
+		<keyword>cmpm</keyword>
+		<keyword>dc</keyword>
+		<keyword>eor</keyword>
+		<keyword>eori</keyword>
+		<keyword>lsl</keyword>
+		<keyword>lsr</keyword>
+		<keyword>move</keyword>
+		<keyword>nbcd</keyword>
+		<keyword>neg</keyword>
+		<keyword>negx</keyword>
+		<keyword>not</keyword>
+                <keyword>or</keyword>
+                <keyword>ori</keyword>
+                <keyword>rol</keyword>
+                <keyword>ror</keyword>
+                <keyword>roxl</keyword>
+                <keyword>roxr</keyword>
+                <keyword>sbcd</keyword>
+                <keyword>scc</keyword>
+		<keyword>scs</keyword>
+		<keyword>seq</keyword>
+		<keyword>sf</keyword>
+		<keyword>sge</keyword>
+		<keyword>sgt</keyword>
+		<keyword>shi</keyword>
+		<keyword>sle</keyword>
+		<keyword>sls</keyword>
+		<keyword>slt</keyword>
+		<keyword>smi</keyword>
+		<keyword>sne</keyword>
+		<keyword>spl</keyword>
+		<keyword>st</keyword>
+		<keyword>svc</keyword>
+		<keyword>svs</keyword>
+                <keyword>sub</keyword>
+                <keyword>subi</keyword>
+                <keyword>subq</keyword>
+                <keyword>subx</keyword>
+		<keyword>tas</keyword>
+		<keyword>tst</keyword>
+	</keyword-list>
+
+	<keyword-list _name = "InstShort" style = "Keyword" case-sensitive="FALSE"
+		end-regex = ".s">
+		<keyword>bcc</keyword>
+		<keyword>bcs</keyword>
+		<keyword>beq</keyword>
+		<keyword>bge</keyword>
+		<keyword>bgt</keyword>
+		<keyword>bhi</keyword>
+		<keyword>ble</keyword>
+		<keyword>bls</keyword>
+		<keyword>blt</keyword>
+		<keyword>bmi</keyword>
+		<keyword>bne</keyword>
+		<keyword>bpl</keyword>
+		<keyword>bvc</keyword>
+		<keyword>bvs</keyword>
+		<keyword>bra</keyword>
+		<keyword>bsr</keyword>
+	</keyword-list>
+
+	<keyword-list _name = "InstWord" style = "Keyword" case-sensitive="FALSE"
+		end-regex = ".w">
+		<keyword>add</keyword>
+		<keyword>adda</keyword>
+		<keyword>addi</keyword>
+		<keyword>addq</keyword>
+		<keyword>addx</keyword>
+		<keyword>and</keyword>
+		<keyword>andi</keyword>
+		<keyword>asl</keyword>
+		<keyword>asr</keyword>
+		<keyword>bcc</keyword>
+		<keyword>bcs</keyword>
+		<keyword>beq</keyword>
+		<keyword>bge</keyword>
+		<keyword>bgt</keyword>
+		<keyword>bhi</keyword>
+		<keyword>ble</keyword>
+		<keyword>bls</keyword>
+		<keyword>blt</keyword>
+		<keyword>bmi</keyword>
+		<keyword>bne</keyword>
+		<keyword>bpl</keyword>
+		<keyword>bvc</keyword>
+		<keyword>bvs</keyword>
+                <keyword>bra</keyword>
+		<keyword>bsr</keyword>
+		<keyword>chk</keyword>
+		<keyword>clr</keyword>
+		<keyword>cmp</keyword>
+		<keyword>cmpa</keyword>
+		<keyword>cmpi</keyword>
+		<keyword>cmpm</keyword>
+                <keyword>dbcc</keyword>
+		<keyword>dbcs</keyword>
+		<keyword>dbeq</keyword>
+		<keyword>dbf</keyword>
+		<keyword>dbge</keyword>
+		<keyword>dbgt</keyword>
+		<keyword>dbhi</keyword>
+		<keyword>dble</keyword>
+		<keyword>dbls</keyword>
+		<keyword>dblt</keyword>
+		<keyword>dbmi</keyword>
+		<keyword>dbne</keyword>
+		<keyword>dbpl</keyword>
+		<keyword>dbt</keyword>
+		<keyword>dbvc</keyword>
+		<keyword>dbvs</keyword>
+		<keyword>dbeq</keyword>
+		<keyword>dbne</keyword>
+                <keyword>dbf</keyword>
+                <keyword>dbra</keyword>
+		<keyword>dc</keyword>
+		<keyword>divs</keyword>
+		<keyword>divu</keyword>
+		<keyword>eor</keyword>
+		<keyword>eori</keyword>
+		<keyword>ext</keyword>
+		<keyword>link</keyword>
+		<keyword>lsl</keyword>
+		<keyword>lsr</keyword>
+		<keyword>move</keyword>
+		<keyword>movea</keyword>
+		<keyword>movem</keyword>
+		<keyword>movep</keyword>
+		<keyword>muls</keyword>
+		<keyword>mulu</keyword>
+		<keyword>neg</keyword>
+		<keyword>negx</keyword>
+		<keyword>not</keyword>
+                <keyword>or</keyword>
+                <keyword>ori</keyword>
+                <keyword>rol</keyword>
+                <keyword>ror</keyword>
+                <keyword>roxl</keyword>
+                <keyword>roxr</keyword>
+                <keyword>sub</keyword>
+                <keyword>suba</keyword>
+                <keyword>subi</keyword>
+                <keyword>subq</keyword>
+                <keyword>subx</keyword>
+		<keyword>swap</keyword>
+		<keyword>tst</keyword>
+	</keyword-list>
+
+	<keyword-list _name = "InstLong" style = "Keyword" case-sensitive="FALSE"
+		end-regex = ".l">
+		<keyword>add</keyword>
+		<keyword>adda</keyword>
+		<keyword>addi</keyword>
+		<keyword>addq</keyword>
+		<keyword>addx</keyword>
+		<keyword>and</keyword>
+		<keyword>andi</keyword>
+		<keyword>asl</keyword>
+		<keyword>asr</keyword>
+		<keyword>bchg</keyword>
+		<keyword>bclr</keyword>
+		<keyword>btst</keyword>
+		<keyword>clr</keyword>
+		<keyword>cmp</keyword>
+		<keyword>cmpa</keyword>
+		<keyword>cmpi</keyword>
+		<keyword>cmpm</keyword>
+		<keyword>dc</keyword>
+		<keyword>eor</keyword>
+		<keyword>eori</keyword>
+		<keyword>exg</keyword>
+		<keyword>ext</keyword>
+		<keyword>lea</keyword>
+		<keyword>lsl</keyword>
+		<keyword>lsr</keyword>
+		<keyword>move</keyword>
+		<keyword>movea</keyword>
+		<keyword>movem</keyword>
+		<keyword>movep</keyword>
+		<keyword>moveq</keyword>
+		<keyword>neg</keyword>
+		<keyword>negx</keyword>
+		<keyword>not</keyword>
+                <keyword>or</keyword>
+                <keyword>ori</keyword>
+		<keyword>pea</keyword>
+                <keyword>rol</keyword>
+                <keyword>ror</keyword>
+                <keyword>roxl</keyword>
+                <keyword>roxr</keyword>
+                <keyword>sub</keyword>
+                <keyword>suba</keyword>
+                <keyword>subi</keyword>
+                <keyword>subq</keyword>
+                <keyword>subx</keyword>
+		<keyword>tst</keyword>
+	</keyword-list>
+
+	<keyword-list _name = "Instructions" style = "Keyword" case-sensitive="FALSE">
+                <keyword>bcc</keyword>
+                <keyword>bchg</keyword>
+                <keyword>bclr</keyword>
+                <keyword>bra</keyword>
+                <keyword>bset</keyword>
+                <keyword>bsr</keyword>
+                <keyword>btst</keyword>
+                <keyword>dbcc</keyword>
+		<keyword>dbeq</keyword>
+		<keyword>dbne</keyword>
+                <keyword>dbf</keyword>
+                <keyword>dbra</keyword>
+                <keyword>illegal</keyword>
+                <keyword>jmp</keyword>
+                <keyword>jsr</keyword>
+                <keyword>lea</keyword>
+                <keyword>link</keyword>
+                <keyword>move</keyword>
+                <keyword>moveq</keyword>
+                <keyword>nop</keyword>
+                <keyword>reset</keyword>
+                <keyword>rte</keyword>
+                <keyword>rtr</keyword>
+                <keyword>rts</keyword>
+                <keyword>stop</keyword>
+                <keyword>swap</keyword>
+                <keyword>trap</keyword>
+                <keyword>trapv</keyword>
+                <keyword>unlk</keyword>
+	</keyword-list>
+
+	<keyword-list _name = "Preprocessor Definitions" style = "Preprocessor" case-sensitive="FALSE">
+		<keyword>macro</keyword>
+		<keyword>cnop</keyword>
+		<keyword>endm</keyword>
+		<keyword>incbin</keyword>
+		<keyword>include</keyword>
+		<keyword>equ</keyword>
+		<keyword>set</keyword>
+		<keyword>even</keyword>
+	</keyword-list>
+
+	<pattern-item _name = "Decimal" style = "Decimal">
+		<regex>\b([1-9][0-9]*|0)([Uu]([Ll]|LL|ll)?|([Ll]|LL|ll)[Uu]?)?\b</regex>
+	</pattern-item>
+
+</language>

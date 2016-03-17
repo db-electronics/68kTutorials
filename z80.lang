@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE language SYSTEM "language.dtd">
+<language id="z80" _name="Z80 Assembly" version="2.0" _section="Sources">
+	<metadata>
+		<property name="mimetypes">text/x-z80
+		</property>
+		<property name="globs">*.z80</property>
+		<property name="line-comment-start">;</property>
+	</metadata>
+	
+	<styles>
+		<style id="comment"		   _name="Comment"								map-to="def:comment"/>
+		<style id="undoc"			 _name="Undocumented instructions"			  map-to="def:error"/>
+		<style id="string"			_name="String"								 map-to="def:string"/>
+		<style id="preprocessor"	  _name="Preprocessor"						   map-to="def:preprocessor"/>
+		<style id="bcall"			 _name="BCALL"								  map-to="def:special-constant"/>
+		<style id="included-file"	 _name="Included File"						  map-to="def:string"/>
+		<style id="char"			  _name="Character"							  map-to="def:character"/>
+		<style id="keyword"		   _name="Instructions"						   map-to="def:keyword"/>
+		<style id="registers"		 _name="Registers"							  map-to="def:type"/>
+		<style id="decimal"		   _name="Decimal number"						 map-to="def:decimal"/>
+		<style id="octal"			 _name="Octal number"						   map-to="def:base-n-integer"/>
+		<style id="hexadecimal"	   _name="Hexadecimal number"					 map-to="def:base-n-integer"/>
+	</styles>
+	
+	<definitions>
+		<context id="z80" class="no-spell-check">
+			<include>
+				<context id="comment" style-ref="comment" end-at-line-end="true" class="comment" class-disabled="no-spell-check">
+					<start>;</start>
+					<include>
+					  <context ref="def:in-line-comment"/>
+					</include>
+				</context>
+				
+				<context id="include" style-ref="preprocessor">
+					<match>^\s*[#\.]\s*include\s*(".*?"|&lt;.*&gt;)</match>
+					<include>
+						<context id="included-file" sub-pattern="2" style-ref="included-file"/>
+					</include>
+				</context>
+				
+				<context id="preprocessor" style-ref="preprocessor" end-at-line-end="true">
+					<start>^\s*[#\.]\s*(addinstr|ADDINSTR|byte|BYTE|db|DB|dw|DW|equ|EQU|end|END|list|LIST|module|MODULE|nolist|NOLIST|org|ORG|define|else|elseif|elseifdef|endif|if|ifdef)\b</start>
+					<include>
+						<context ref="def:line-continue" ignore-style="true"/>
+						<context ref="string" ignore-style="true"/>
+						<context ref="comment"/>
+					</include>
+				</context>
+				
+				<context id="string" style-ref="string" end-at-line-end="true" class="string" class-disabled="no-spell-check">
+					<start>"</start>
+					<end>"</end>
+					<include>
+						<context id="escape">
+						<match>\\"</match>
+						</context>
+					</include>
+				</context>
+				
+				<context id="char" end-at-line-end="true" style-ref="string">
+				<start>'</start>
+				<end>'</end>
+				<include>
+					<context ref="escape" />
+				</include>
+				</context>
+				
+				<context id="hexadecimal" style-ref="hexadecimal">
+					<match>(\$[0-9A-Fa-f]+)|([1-9][0-9A-Fa-f]*h)</match>
+				</context>
+				
+				<context id="octal" style-ref="octal">
+					<match>(0[0-7]+)|([1-7][0-7]*o)</match>
+				</context>
+				
+				<context id="decimal" style-ref="decimal">
+					<match>[1-9][0-9]*</match>
+				</context>
+				
+				<context id="keyword" style-ref="keyword">
+					<keyword>ex</keyword>
+					<keyword>EX</keyword>
+					<keyword>exx</keyword>
+					<keyword>EXX</keyword>
+					<keyword>ld</keyword>
+					<keyword>LD</keyword>
+					<keyword>ldd</keyword>
+					<keyword>LDD</keyword>
+					<keyword>lddr</keyword>
+					<keyword>LDDR</keyword>
+					<keyword>ldi</keyword>
+					<keyword>LDI</keyword>
+					<keyword>ldir</keyword>
+					<keyword>LDIR</keyword>
+					<keyword>pop</keyword>
+					<keyword>POP</keyword>
+					<keyword>push</keyword>
+					<keyword>PUSH</keyword>
+					<keyword>adc</keyword>
+					<keyword>ADC</keyword>
+					<keyword>add</keyword>
+					<keyword>ADD</keyword>
+					<keyword>cp</keyword>
+					<keyword>CP</keyword>
+					<keyword>cpd</keyword>
+					<keyword>CPD</keyword>
+					<keyword>cpdr</keyword>
+					<keyword>CPDR</keyword>
+					<keyword>cpi</keyword>
+					<keyword>CPI</keyword>
+					<keyword>cpir</keyword>
+					<keyword>CPIR</keyword>
+					<keyword>cpl</keyword>
+					<keyword>CPL</keyword>
+					<keyword>daa</keyword>
+					<keyword>DAA</keyword>
+					<keyword>dec</keyword>
+					<keyword>DEC</keyword>
+					<keyword>inc</keyword>
+					<keyword>INC</keyword>
+					<keyword>neg</keyword>
+					<keyword>NEG</keyword>
+					<keyword>sbc</keyword>
+					<keyword>SBC</keyword>
+					<keyword>sub</keyword>
+					<keyword>SUB</keyword>
+					<keyword>and</keyword>
+					<keyword>AND</keyword>
+					<keyword>bit</keyword>
+					<keyword>BIT</keyword>
+					<keyword>ccf</keyword>
+					<keyword>CCF</keyword>
+					<keyword>or</keyword>
+					<keyword>OR</keyword>
+					<keyword>res</keyword>
+					<keyword>RES</keyword>
+					<keyword>scf</keyword>
+					<keyword>SCF</keyword>
+					<keyword>set</keyword>
+					<keyword>SET</keyword>
+					<keyword>xor</keyword>
+					<keyword>XOR</keyword>
+					<keyword>rl</keyword>
+					<keyword>RL</keyword>
+					<keyword>rla</keyword>
+					<keyword>RLA</keyword>
+					<keyword>rlc</keyword>
+					<keyword>RLC</keyword>
+					<keyword>rlca</keyword>
+					<keyword>RLCA</keyword>
+					<keyword>rld</keyword>
+					<keyword>RLD</keyword>
+					<keyword>rr</keyword>
+					<keyword>RR</keyword>
+					<keyword>rra</keyword>
+					<keyword>RRA</keyword>
+					<keyword>rrc</keyword>
+					<keyword>RRC</keyword>
+					<keyword>rrca</keyword>
+					<keyword>RRCA</keyword>
+					<keyword>rrd</keyword>
+					<keyword>RRD</keyword>
+					<keyword>sla</keyword>
+					<keyword>SLA</keyword>
+					<keyword>sra</keyword>
+					<keyword>SRA</keyword>
+					<keyword>srl</keyword>
+					<keyword>SRL</keyword>
+					<keyword>call</keyword>
+					<keyword>CALL</keyword>
+					<keyword>djnz</keyword>
+					<keyword>DJNZ</keyword>
+					<keyword>jp</keyword>
+					<keyword>JP</keyword>
+					<keyword>jr</keyword>
+					<keyword>JR</keyword>
+					<keyword>nop</keyword>
+					<keyword>NOP</keyword>
+					<keyword>ret</keyword>
+					<keyword>RET</keyword>
+					<keyword>reti</keyword>
+					<keyword>RETI</keyword>
+					<keyword>retn</keyword>
+					<keyword>RETN</keyword>
+					<keyword>rst</keyword>
+					<keyword>RST</keyword>
+					<keyword>di</keyword>
+					<keyword>DI</keyword>
+					<keyword>ei</keyword>
+					<keyword>DI</keyword>
+					<keyword>halt</keyword>
+					<keyword>HALT</keyword>
+					<keyword>im</keyword>
+					<keyword>IM</keyword>
+					<keyword>in</keyword>
+					<keyword>IN</keyword>
+					<keyword>ind</keyword>
+					<keyword>IND</keyword>
+					<keyword>indr</keyword>
+					<keyword>INDR</keyword>
+					<keyword>ini</keyword>
+					<keyword>INI</keyword>
+					<keyword>inir</keyword>
+					<keyword>INIR</keyword>
+					<keyword>otdr</keyword>
+					<keyword>OTDR</keyword>
+					<keyword>otir</keyword>
+					<keyword>OTIR</keyword>
+					<keyword>out</keyword>
+					<keyword>OUT</keyword>
+					<keyword>outd</keyword>
+					<keyword>OUTD</keyword>
+					<keyword>outi</keyword>
+					<keyword>OUTI</keyword>
+				</context>
+				
+				<context id="bcall" style-ref="bcall">
+					<keyword>bcall</keyword>
+					<keyword>BCALL</keyword>
+					<keyword>b_call</keyword>
+					<keyword>B_CALL</keyword>
+					<keyword>\$</keyword>
+					<keyword>\*</keyword>
+				</context>
+				
+				<context id="undoc" style-ref="undoc">
+					<keyword>hx</keyword>
+					<keyword>HX</keyword>
+					<keyword>hy</keyword>
+					<keyword>HY</keyword>
+					<keyword>lx</keyword>
+					<keyword>LX</keyword>
+					<keyword>ly</keyword>
+					<keyword>LY</keyword>
+					<keyword>ixh</keyword>
+					<keyword>IXH</keyword>
+					<keyword>ixl</keyword>
+					<keyword>IXL</keyword>
+					<keyword>iyh</keyword>
+					<keyword>iYH</keyword>
+					<keyword>iyl</keyword>
+					<keyword>IYL</keyword>
+					<keyword>sll</keyword>
+					<keyword>SLL</keyword>
+				</context>
+				
+				<context id="registers" style-ref="registers">
+					<keyword>a</keyword>
+					<keyword>A</keyword>
+					<keyword>af</keyword>
+					<keyword>AF</keyword>
+					<keyword>AF'</keyword>
+					<keyword>b</keyword>
+					<keyword>B</keyword>
+					<keyword>bc</keyword>
+					<keyword>BC</keyword>
+					<keyword>c</keyword>
+					<keyword>C</keyword>
+					<keyword>d</keyword>
+					<keyword>D</keyword>
+					<keyword>de</keyword>
+					<keyword>DE</keyword>
+					<keyword>e</keyword>
+					<keyword>E</keyword>
+					<keyword>h</keyword>
+					<keyword>H</keyword>
+					<keyword>hl</keyword>
+					<keyword>HL</keyword>
+					<keyword>i</keyword>
+					<keyword>I</keyword>
+					<keyword>ix</keyword>
+					<keyword>IX</keyword>
+					<keyword>iy</keyword>
+					<keyword>IY</keyword>
+					<keyword>l</keyword>
+					<keyword>L</keyword>
+					<keyword>r</keyword>
+					<keyword>R</keyword>
+					<keyword>sp</keyword>
+					<keyword>SP</keyword>
+				</context>
+			</include>
+		</context>
+	</definitions>
+</language>
