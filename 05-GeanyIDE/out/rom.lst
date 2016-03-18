@@ -210,7 +210,7 @@
                         ;    it under the terms of the GNU General Public License as published by
                         ;    the Free Software Foundation, either version 3 of the License, or
                         ;    (at your option) any later version.
-                        ;    Foobar is distributed in the hope that it will be useful,
+                        ;    68kTutorials is distributed in the hope that it will be useful,
                         ;    but WITHOUT ANY WARRANTY; without even the implied warranty of
                         ;    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
                         ;    GNU General Public License for more details.
@@ -653,6 +653,7 @@
                         ; ************************************
                         ; Vertical Interrupts
                         ; ************************************
+                        ;{
 000384                  VBlankInterrupt:
 000384 5278 FF1A        	addq.w	#1, sysframecnt				; increment vint counter
 000388 DEB8 FF18        	add.l	sysmillisinc, D7			; D7 = global millis counter
@@ -666,6 +667,7 @@
 0003A2 4CDF 7F7F        	movem.l (SP)+, D0-D6/A0-A6			; pop context from stack
 0003A6                  .noVector
 0003A6 4E73                	rte									; return to main code
+                        ;}
 
                         ; ************************************
                         ; External Interrupts
@@ -678,11 +680,11 @@
                         ; Macros
                         ; ************************************
                         sysInt_VDPDisableHInt	MACRO
-                        	move.w	#$8004, VDP_CTRL
+                        	move.w	#0x8004, VDP_CTRL
                         	ENDM
 
                         sysInt_VDPEnableHInt	MACRO
-                        	move.w	#$8014, VDP_CTRL
+                        	move.w	#0x8014, VDP_CTRL
                         	ENDM
 
                         ; ************************************
@@ -817,7 +819,6 @@
 000414 0810 0001        	btst	#1, (A0)					; test if a Vertical Interrupt occured
 000418 67FA             	beq.s	.syncVint00004					; wait until vint occurs, bit0 set = vint has happened
 00041A 0890 0001        	bclr	#1, (A0)					; clear the intflag	
-                        	
                         	
 
 00041E                  Loop:

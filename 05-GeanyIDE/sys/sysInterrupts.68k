@@ -35,6 +35,7 @@ HBlankInterrupt:
 ; ************************************
 ; Vertical Interrupts
 ; ************************************
+;{
 VBlankInterrupt:
 	addq.w	#1, sysframecnt				; increment vint counter
 	add.l	sysmillisinc, D7			; D7 = global millis counter
@@ -48,6 +49,7 @@ VBlankInterrupt:
 	movem.l (SP)+, D0-D6/A0-A6			; pop context from stack
 .noVector
    	rte									; return to main code
+;}
 
 ; ************************************
 ; External Interrupts
@@ -60,11 +62,11 @@ ExtInterrupt:
 ; Macros
 ; ************************************
 sysInt_VDPDisableHInt	MACRO
-	move.w	#$8004, VDP_CTRL
+	move.w	#0x8004, VDP_CTRL
 	ENDM
 
 sysInt_VDPEnableHInt	MACRO
-	move.w	#$8014, VDP_CTRL
+	move.w	#0x8014, VDP_CTRL
 	ENDM
 
 ; ************************************
