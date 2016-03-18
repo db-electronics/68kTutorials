@@ -23,17 +23,14 @@ long_line_behaviour=1
 long_line_column=72
 
 [files]
-current_page=1
+current_page=2
 FILE_NAME_0=1171;68k;0;EUTF-8;1;1;0;%2Fhome%2Frene%2FGit%2F68kTutorials%2F05-GeanyIDE%2Ftutorial05.68k;0;4
-FILE_NAME_1=1255;68k;0;EUTF-8;1;1;0;%2Fhome%2Frene%2FGit%2F68kTutorials%2F05-GeanyIDE%2Fsys%2FsysInterrupts.68k;0;4
-FILE_NAME_2=2286;68k;0;EUTF-8;1;1;0;%2Fhome%2Frene%2FGit%2F68kTutorials%2F05-GeanyIDE%2Fsys%2FsysJoypad.68k;0;4
+FILE_NAME_1=2235;68k;0;EUTF-8;1;1;0;%2Fhome%2Frene%2FGit%2F68kTutorials%2F05-GeanyIDE%2Fsys%2FsysInterrupts.68k;0;4
+FILE_NAME_2=2019;68k;0;EUTF-8;1;1;0;%2Fhome%2Frene%2FGit%2F68kTutorials%2F05-GeanyIDE%2Fsys%2FsysJoypad.68k;0;4
 FILE_NAME_3=1100;68k;0;EUTF-8;1;1;0;%2Fhome%2Frene%2FGit%2F68kTutorials%2F05-GeanyIDE%2Fsys%2FsysMacros.68k;0;4
-FILE_NAME_4=918;Conf;0;EUTF-8;1;1;0;%2Fhome%2Frene%2F.config%2Fgeany%2Ffiledefs%2Ffiletypes.68k.conf;0;4
+FILE_NAME_4=1874;Conf;0;EUTF-8;1;1;0;%2Fhome%2Frene%2F.config%2Fgeany%2Ffiledefs%2Ffiletypes.68k.conf;0;4
 
 [build-menu]
-NF_00_LB=_Make
-NF_00_CM=asmx -C 68000 -e -w -b 0 -l out/rom.lst -o out/rom.bin -- main.68k
-NF_00_WD=
 68kFT_00_LB=
 68kFT_00_CM=
 68kFT_00_WD=
