@@ -27,15 +27,16 @@
 ;
 ; ************************************
 ; Horizontal Interrupts
-; ************************************
+;{************************************
 HBlankInterrupt:
 	bset	#0, intflags				; set hintflag
 	rte
+;}
 
 ; ************************************
 ; Vertical Interrupts
-; ************************************
-;{
+;{************************************
+
 VBlankInterrupt:
 	addq.w	#1, sysframecnt				; increment vint counter
 	add.l	sysmillisinc, D7			; D7 = global millis counter
