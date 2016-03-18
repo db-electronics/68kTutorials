@@ -1,0 +1,57 @@
+; ************************************
+; Title
+; ************************************
+;
+;    Title:          tutorial05.68k
+;    Author:         René Richard
+;    Description:
+;        
+;    Target Hardware:
+;        Sega Genesis / Megadrive
+;    Assembler:
+;        ASMX
+;
+; LICENSE
+; 
+;    This file is part of 68kTutorials.
+;    68kTutorials is free software: you can redistribute it and/or modify
+;    it under the terms of the GNU General Public License as published by
+;    the Free Software Foundation, either version 3 of the License, or
+;    (at your option) any later version.
+;    68kTutorials is distributed in the hope that it will be useful,
+;    but WITHOUT ANY WARRANTY; without even the implied warranty of
+;    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;    GNU General Public License for more details.
+;    You should have received a copy of the GNU General Public License
+;    along with 68kTutorials.  If not, see <http://www.gnu.org/licenses/>.
+;
+; ************************************
+; Tutorial 05
+; ************************************
+Tutorial05Entry:
+			
+	sysMacSyncVint_m					; sync to vint
+	
+
+Loop:
+	bra.s	Loop
+	
+Pattern0:
+	dc.l	$21000001
+	dc.l	$12100000
+	dc.l	$01210000
+	dc.l	$00121000
+	dc.l	$00012100
+	dc.l	$00001210
+	dc.l	$00000121
+	dc.l	$10000012
+
+Pattern1:
+	dc.l	$00000000
+	dc.l	$01111110
+	dc.l	$01022010
+	dc.l	$01233210
+	dc.l	$01233210
+	dc.l	$01022010
+	dc.l	$01111110
+	dc.l	$00000000
