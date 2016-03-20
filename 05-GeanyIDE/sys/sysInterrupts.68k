@@ -39,15 +39,15 @@ HBlankInterrupt:
 
 VBlankInterrupt:
 	addq.w	#1, sysframecnt				; increment vint counter
-	add.l	sysmillisinc, D7			; D7 = global millis counter
+	add.l	sysmillisinc, d7			; D7 = global millis counter
 	bset	#1, intflags				; set vintflag
 	tst.l	vintvector					; test vintvector
 	beq.s	.noVector					; if vintvector = 0, get out of here!
 .vectorValid
-	movem.l D0-D6/A0-A6, -(SP)			; push context to stack
-	movea.l	vintvector, A0				; put vintvector in A0
-	jsr		(A0)						; jsr to vintvector	
-	movem.l (SP)+, D0-D6/A0-A6			; pop context from stack
+	movem.l d0-d6/a0-a6, -(sp)			; push context to stack
+	movea.l	vintvector, a0				; put vintvector in A0
+	jsr		(a0)						; jsr to vintvector	
+	movem.l (sp)+, d0-d6/a0-a6			; pop context from stack
 .noVector
    	rte									; return to main code
 ;}
@@ -74,5 +74,5 @@ sysInt_VDPEnableHInt	MACRO
 ; Exception
 ; ************************************
 Exception:
-   	stop #$2700 						; Halt CPU
+   	stop 	#0x2700 					; Halt CPU
 

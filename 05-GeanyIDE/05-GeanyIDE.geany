@@ -36,7 +36,8 @@ FILE_NAME_6=2648;Conf;0;EUTF-8;1;1;0;%2Fhome%2Frene%2F.config%2Fgeany%2Ffiledefs
 68kFT_00_LB=Build68k
 68kFT_00_CM=asmx -C 68000 -e -w -b 0 -l out/rom.lst -o out/rom.bin -- %f
 68kFT_00_WD=
-filetypes=68k;
 68kFT_01_LB=Build Genesis
 68kFT_01_CM=./build.sh
 68kFT_01_WD=%p
+filetypes=68k;
+

@@ -29,16 +29,16 @@
 ; Start of System Initialization
 ; ************************************
 
-	ORG		$00000200				; header section should get us to $200
+	ORG		0x00000200				; header section should get us to 0x200
 									; but ORG in case we made a mistake (ASMX will complain)
 EntryPoint:           				; Entry point address set in ROM header
 
 ; ************************************
 ; Test reset button
 ; ************************************
-	tst.w 	$00A10008  				; Test mystery reset (expansion port reset?)
+	tst.w 	0x00A10008  			; Test mystery reset (expansion port reset?)
 	bne.w 	Main          			; Branch if Not Equal (to zero) - to Main
-	tst.w 	$00A1000C	  			; Test reset button
+	tst.w 	0x00A1000C	  			; Test reset button
 	bne.w 	Main          			; Branch if Not Equal (to zero) - to Main
 
 ; ************************************
@@ -46,7 +46,7 @@ EntryPoint:           				; Entry point address set in ROM header
 ; ************************************
 	clr.l	D0						; Place a 0 into d0, ready to copy to each longword of RAM
 	lea		M68K_RAM, A0			; A0 points to beginning of RAM
-	move.l 	#$00004000, D1     		; Clearing 64k's worth of longwords
+	move.l 	0x00004000, D1     		; Clearing 64k's worth of longwords
 .Clear:
 	move.l 	D0, (A0)+           	; Post-inc faster than Pre-dec (as last tutorial)
 	dbra 	D1, .Clear          	; Decrement d0, repeat until depleted
@@ -62,9 +62,9 @@ EntryPoint:           				; Entry point address set in ROM header
 	subi.w	#53, D1					; change millis timer to ~16.7 for NTSC (3.3 * 16 = 52.8)
 .skipForPal
 	move.w	D1, sysmillisinc		; store value to sysregion
-	andi.b 	#$0F, D0           		; The version is stored in last four bits, so mask it with 0F
+	andi.b 	#0x0F, D0           		; The version is stored in last four bits, so mask it with 0F
 	beq.s 	.SkipTMSS              	; If version is equal to 0, skip TMSS signature
-	move.l 	#'SEGA', CTRL_TMSS 		; Move the string "SEGA" to $A14000
+	move.l 	#'SEGA', CTRL_TMSS 		; Move the string "SEGA" to 0xA14000
 .SkipTMSS:
 
 ; ************************************
@@ -74,10 +74,10 @@ EntryPoint:           				; Entry point address set in ROM header
 	Z80Request_m
 
 	; clear the Z80's 8KB of RAM
-	move.w	#$2000, D0				; 8KB of Z80 RAM to clear
+	move.w	#0x2000, D0				; 8KB of Z80 RAM to clear
 	lea		Z80_RAM, A1				; A1 points to Z80 RAM
 .ClearZ80
-	clr.b	(A1)+					; clear bytes, $00 is Z80 nop
+	clr.b	(A1)+					; clear bytes, 0x00 is Z80 nop
 	dbra	D0, .ClearZ80				
 
 	; load simple program to Z80
@@ -94,10 +94,10 @@ EntryPoint:           				; Entry point address set in ROM header
 ; ************************************
 ; Init PSG
 ; ************************************
-	move.b	$9F, VDP_PSG			; mutes all PSG channels
-	move.b	$BF, VDP_PSG
-	move.b	$DF, VDP_PSG
-	move.b	$FF, VDP_PSG
+	move.b	0x9F, VDP_PSG			; mutes all PSG channels
+	move.b	0xBF, VDP_PSG
+	move.b	0xDF, VDP_PSG
+	move.b	0xFF, VDP_PSG
 
 ; ************************************
 ; Init VDP
@@ -108,32 +108,32 @@ EntryPoint:           				; Entry point address set in ROM header
 ; ************************************
 	lea 	VDPRegisters, A0   		; Load address of register table into a0
 	move.l 	#24, D0           		; 24 registers to write
-	move.l 	#$00008000, d1     		; 'Set register 0' command (and clear the rest of d1 ready)
+	move.l 	#0x00008000, d1     	; 'Set register 0' command (and clear the rest of d1 ready)
 
 .CopyVDP:
 	move.b 	(A0)+, D1           	; Move register value to lower byte of d1
 	move.w 	D1, VDP_CTRL     		; Write command and value to VDP control port
-	add.w 	#$0100, D1          	; Increment register #
+	add.w 	#0x0100, D1          	; Increment register #
 	dbra 	D0, .CopyVDP
 
 ; ************************************
 ; Init IO Ports
 ; ************************************
-	move.b 	#$40, IO_CTRL_1	  		; Controller port 1 CTRL, TH = output
-	move.b 	#$40, IO_CTRL_2	 		; Controller port 2 CTRL, TH = output
-	move.b 	#$00, IO_CTRL_EXP 		; EXP port CTRL
-	move.b	#$40, IO_DATA_1			; Idle with TH = '1'
-	move.b	#$40, IO_DATA_2			; Idle with TH = '1'	
+	move.b 	#0x40, IO_CTRL_1	  		; Controller port 1 CTRL, TH = output
+	move.b 	#0x40, IO_CTRL_2	 		; Controller port 2 CTRL, TH = output
+	move.b 	#0x00, IO_CTRL_EXP 		; EXP port CTRL
+	move.b	#0x40, IO_DATA_1			; Idle with TH = '1'
+	move.b	#0x40, IO_DATA_2			; Idle with TH = '1'	
 
 ; ************************************
 ; Cleanup
 ; ************************************
-	lea 	M68K_RAM, A0     		; A0 points to $00 value in RAM (has been cleared)
+	lea 	M68K_RAM, A0     		; A0 points to 0x00 value in RAM (has been cleared)
 	movem.l (A0), D0-D7/A1-A6  		; Multiple move zero to all registers
 	suba.l	A0, A0					; Clear A0
 
 	; Init status register (no trace, supervisor mode, all interrupt levels enabled, clear condition code bits)
-	move 	#$2000, SR
+	move 	#0x2000, SR
 
 ; ************************************
 ; Main
@@ -146,41 +146,41 @@ Main:
 ; ************************************
 
 Z80Data:
-   	dc.w $af01, $d91f
-   	dc.w $1127, $0021
-   	dc.w $2600, $f977
-   	dc.w $edb0, $dde1
-   	dc.w $fde1, $ed47
-   	dc.w $ed4f, $d1e1
-   	dc.w $f108, $d9c1
-   	dc.w $d1e1, $f1f9
-   	dc.w $f3ed, $5636
-   	dc.w $e9e9, $8104
-   	dc.w $8f01
+   	dc.w 0xaf01, 0xd91f
+   	dc.w 0x1127, 0x0021
+   	dc.w 0x2600, 0xf977
+   	dc.w 0xedb0, 0xdde1
+   	dc.w 0xfde1, 0xed47
+   	dc.w 0xed4f, 0xd1e1
+   	dc.w 0xf108, 0xd9c1
+   	dc.w 0xd1e1, 0xf1f9
+   	dc.w 0xf3ed, 0x5636
+   	dc.w 0xe9e9, 0x8104
+   	dc.w 0x8f01
 Z80DataEnd:
    
 VDPRegisters:
-	dc.b 	$04 			; 0: Horiz. interrupt off
-	dc.b 	$14 			; 1: DMA on, V28 mode (40 cells vertically), Genesis mode on
-   	dc.b 	($C000>>10) 	; 2: Pattern table for Scroll Plane A at $C000 (bits 3-5)
-   	dc.b 	($F000>>10)	 	; 3: Pattern table for Window Plane at $F000 (bits 1-5)
-   	dc.b 	($E000>>13)	 	; 4: Pattern table for Scroll Plane B at $A000 (bits 0-2)
-   	dc.b 	($D800>>9) 		; 5: Sprite table at $E000 (bits 0-6)
-   	dc.b 	$00 			; 6: Unused
-   	dc.b 	$00 			; 7: Background colour - bits 0-3 = colour, bits 4-5 = palette
-   	dc.b 	$00 			; 8: Unused
-   	dc.b 	$00 			; 9: Unused
-   	dc.b 	$FF 			; 10: Frequency of Horiz. interrupt
-   	dc.b 	$00 			; 11: External interrupts off, V/H scrolling on
-   	dc.b 	$81 			; 12: Shadows and highlights off, interlace off, H40 mode (64 cells horizontally)
-   	dc.b 	($DC00>>10)	 	; 13: Horiz. scroll table at $DC00 (bits 0-5)
-   	dc.b 	$00 			; 14: Unused
-   	dc.b 	$00 			; 15: Autoincrement off
-   	dc.b 	$01 			; 16: Vert. scroll 32, Horiz. scroll 64
-   	dc.b 	$00 			; 17: Window Plane X pos
-   	dc.b 	$00 			; 18: Window Plane Y pos
-	dc.w	$FFFF			; 19,20 : DMA length
-   	dc.b 	$00 			; 21: DMA source address lo byte
-   	dc.b 	$00 			; 22: DMA source address mid byte
-   	dc.b 	$00 			; 23: DMA source address hi byte, memory-to-VRAM mode (bits 6-7)
+	dc.b 	0x04 			; 0: Horiz. interrupt off
+	dc.b 	0x14 			; 1: DMA on, V28 mode (40 cells vertically), Genesis mode on
+   	dc.b 	(0xC000>>10) 	; 2: Pattern table for Scroll Plane A at 0xC000 (bits 3-5)
+   	dc.b 	(0xF000>>10)	 	; 3: Pattern table for Window Plane at 0xF000 (bits 1-5)
+   	dc.b 	(0xE000>>13)	 	; 4: Pattern table for Scroll Plane B at 0xA000 (bits 0-2)
+   	dc.b 	(0xD800>>9) 		; 5: Sprite table at 0xE000 (bits 0-6)
+   	dc.b 	0x00 			; 6: Unused
+   	dc.b 	0x00 			; 7: Background colour - bits 0-3 = colour, bits 4-5 = palette
+   	dc.b 	0x00 			; 8: Unused
+   	dc.b 	0x00 			; 9: Unused
+   	dc.b 	0xFF 			; 10: Frequency of Horiz. interrupt
+   	dc.b 	0x00 			; 11: External interrupts off, V/H scrolling on
+   	dc.b 	0x81 			; 12: Shadows and highlights off, interlace off, H40 mode (64 cells horizontally)
+   	dc.b 	(0xDC00>>10)	 	; 13: Horiz. scroll table at 0xDC00 (bits 0-5)
+   	dc.b 	0x00 			; 14: Unused
+   	dc.b 	0x00 			; 15: Autoincrement off
+   	dc.b 	0x01 			; 16: Vert. scroll 32, Horiz. scroll 64
+   	dc.b 	0x00 			; 17: Window Plane X pos
+   	dc.b 	0x00 			; 18: Window Plane Y pos
+	dc.w	0xFFFF			; 19,20 : DMA length
+   	dc.b 	0x00 			; 21: DMA source address lo byte
+   	dc.b 	0x00 			; 22: DMA source address mid byte
+   	dc.b 	0x00 			; 23: DMA source address hi byte, memory-to-VRAM mode (bits 6-7)
 VDPRegistersEnd:
