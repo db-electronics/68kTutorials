@@ -49,7 +49,7 @@ JOYPAD_ReadPad01:
 	move.b	#0x00, (A0)					; set TH high for next pass
 	move.w	D6, (A1)					; store to RAM
 	rts
-	
+
 ; ************************************
 ; sysJoy_Read3ButtonBoth
 ;
