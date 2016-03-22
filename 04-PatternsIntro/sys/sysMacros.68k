@@ -61,11 +61,11 @@ Z80Release_m	MACRO
 ; Synchronize to System Vint
 ;{******************************************************************
 sysMacSyncVint_m	MACRO
-	lea		intflags, A0				; A0 points to intflags
+	lea		intflags, a0				; A0 points to intflags
 .syncVint\?	
-	btst	#1, (A0)					; test if a Vertical Interrupt occured
+	btst	#1, (a0)					; test if a Vertical Interrupt occured
 	beq.s	.syncVint\?					; wait until vint occurs, bit0 set = vint has happened
-	bclr	#1, (A0)					; clear the intflag	
+	bclr	#1, (a0)					; clear the intflag	
 	ENDM
 ;}******************************************************************
 
@@ -74,8 +74,8 @@ sysMacSyncVint_m	MACRO
 ;{******************************************************************
 WaitVBlankStart_m	MACRO
 .Wait\?
-   	move.w 	VDP_CTRL, D0 				; Move VDP status word to d0
-   	andi.w 	#0x0008, D0    				; AND with bit 4 (vblank), result in status register
+   	move.w 	VDP_CTRL, d0 				; Move VDP status word to d0
+   	andi.w 	#0x0008, d0    				; AND with bit 4 (vblank), result in status register
 	bne.s	.Wait\?			 			; Branch if not equal (to zero)
 	ENDM
 ;}******************************************************************
@@ -85,8 +85,8 @@ WaitVBlankStart_m	MACRO
 ;{******************************************************************
 WaitVBlankEnd_m		MACRO
 .Wait\?
-   	move.w 	VDP_CTRL, D0 				; Move VDP status word to d0
-   	andi.w 	#0x0008, D0     			; AND with bit 4 (vblank), result in status register
+   	move.w 	VDP_CTRL, d0 				; Move VDP status word to d0
+   	andi.w 	#0x0008, d0     			; AND with bit 4 (vblank), result in status register
    	beq.s	.Wait\?  					; Branch if equal (to zero)
 	ENDM
 ;}******************************************************************
