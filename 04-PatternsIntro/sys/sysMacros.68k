@@ -90,3 +90,15 @@ WaitVBlankEnd_m		MACRO
    	beq.s	.Wait\?  					; Branch if equal (to zero)
 	ENDM
 ;}******************************************************************
+
+; ******************************************************************
+; Wait for DMA End
+;{******************************************************************
+WaitDMAEnd_m		MACRO
+.Wait\?
+	lea		VDP_CTRL, a0				; a0 points to VDP control port
+   	move.w 	(a0), d0	 				; Move VDP status word to d0
+   	andi.w 	#0x0002, d0     			; AND with bit 2 (dma), result in status register
+   	bne.s	.Wait\?  					; Branch if not equal (to zero)
+	ENDM
+;}******************************************************************

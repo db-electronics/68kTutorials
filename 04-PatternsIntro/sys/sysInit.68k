@@ -42,18 +42,6 @@ EntryPoint:           					; Entry point address set in ROM header
 ;}******************************************************************
 
 ; ******************************************************************
-; Clear 68k RAM
-;{******************************************************************
-	clr.l	d0							; Place a 0 into d0, ready to copy to each longword of RAM
-	lea		M68K_RAM, a0				; A0 points to beginning of RAM
-	move.l 	0x00004000, d1     			; Clearing 64k's worth of longwords
-.Clear:
-	move.l 	d0, (a0)+           		; Post-inc faster than Pre-dec (as last tutorial)
-	dbra 	d1, .Clear          		; Decrement d0, repeat until depleted
-	
-;}******************************************************************
-
-; ******************************************************************
 ; Write TMSS and Get System Region
 ;{******************************************************************
 	move.w	#(20<<4), d1				; millis timer init (20ms for PAL)
@@ -78,7 +66,7 @@ EntryPoint:           					; Entry point address set in ROM header
 	Z80Request_m
 
 	; clear the Z80's 8KB of RAM
-	move.w	#0x2000, d0					; 8KB of Z80 RAM to clear
+	move.w	#(0x2000-1), d0				; 8KB of Z80 RAM to clear
 	lea		Z80_RAM, a1					; A1 points to Z80 RAM
 .ClearZ80
 	clr.b	(a1)+						; clear bytes, 0x00 is Z80 nop
@@ -87,7 +75,7 @@ EntryPoint:           					; Entry point address set in ROM header
 	; load simple program to Z80
 	lea 	Z80Data, a0	        		; Load address of data into a0
 	lea 	Z80_RAM, a1     			; Copy Z80 RAM address to a1
-	move.l 	#Z80DataEnd-Z80Data, d0 	; Auto-calculate size of transfer using labels
+	move.l 	#Z80DataEnd-Z80Data-1, d0 	; Auto-calculate size of transfer using labels
 .CopyZ80:
 	move.b 	(a0)+, (a1)+        		; Copy data, and increment the source/dest addresses
 	dbra 	d0, .CopyZ80
@@ -119,21 +107,21 @@ EntryPoint:           					; Entry point address set in ROM header
 	
 	; clear VSRAM, 40 words
 	move.w	#0x8F02, (a1)				; set VDP auto-increment to 2
-	move.w	#40, d0						; 40 words to clear
+	move.w	#(40-1), d0					; 40 words to clear
 	move.l  #VDP_VSRAM_WRITE, (a1)		; set VSRAM Write
 .ClearVSRAM
 	move.w	d1,(a2)						; write 0 to data port, VDP_addr += 2
 	dbra	d0, .ClearVSRAM				
 
 	; clear CRAM, 64 words
-	move.w	#64, d0						; 64 words to clear
+	move.w	#(64-1), d0					; 64 words to clear
 	move.l	#VDP_CRAM_WRITE, (a1)		; set CRAM Write
 .ClearCRAM
 	move.w	d1, (a2)					; write 0 to data port, VDP_addr += 2
 	dbra	d0, .ClearCRAM
 	
 	; write init values to VDP registers
-	move.w 	#24, d0           			; 24 registers to write
+	move.w 	#(24-1), d0           		; 24 registers to write
 	move.l 	#0x00008000, d1     		; 'Set register 0' command (and clear the rest of d1 ready)
 .CopyVDP:
 	move.b 	(a0)+, d1           		; Move register value to lower byte of d1
@@ -142,7 +130,12 @@ EntryPoint:           					; Entry point address set in ROM header
 	dbra 	d0, .CopyVDP
 	
 	move.l	#0x40000080, (a1)			; VRAM Fill, start at 0x0000
-	move.w	#0x0000, (a2)				; Trigger DMA, fill with 0's
+	move.w	#0x1234, (a2)				; Trigger DMA, fill VRAM with 0x12
+	
+	; n.b. VRAM fill and VRAM copy are byte to byte transfers
+	; the length parameters describes the amount of bytes to transfer
+	; the fill value is the upper byte of the move.w trigger, in this
+	; case, 0x12 is filled
 	
 ;}******************************************************************
 
@@ -158,8 +151,22 @@ EntryPoint:           					; Entry point address set in ROM header
 ;}******************************************************************
 
 ; ******************************************************************
+; Clear 68k RAM
+;{******************************************************************
+	clr.l	d0							; Place a 0 into d0, ready to copy to each longword of RAM
+	lea		M68K_RAM, a3				; A3 points to beginning of RAM
+	move.w 	#(0x4000-1), d1     		; Clearing 64k's worth of longwords
+.Clear:
+	move.l 	d0, (a3)+           		; move.l 0's to RAM
+	dbra 	d1, .Clear          		; Decrement d0, repeat until depleted
+	
+;}******************************************************************
+
+; ******************************************************************
 ; Cleanup
 ;{******************************************************************
+	
+	WaitDMAEnd_m						; ensure VRAM fill has ended
 	lea 	M68K_RAM, a0     			; A0 points to 0x00 value in RAM (has been cleared)
 	movem.l (a0), d0-d7/a1-a6  			; Multiple move zero to all registers
 	suba.l	a0, a0						; Clear A0
@@ -212,11 +219,11 @@ VDPRegisters:
    	dc.b 	0x81 				; 12: Shadows and highlights off, interlace off, H40 mode (64 cells horizontally)
    	dc.b 	(0xDC00>>10)	 	; 13: Horiz. scroll table at 0xDC00 (bits 0-5)
    	dc.b 	0x00 				; 14: Unused
-   	dc.b 	0x02 				; 15: Autoincrement to 1
+   	dc.b 	0x01 				; 15: Autoincrement to 1
    	dc.b 	0x01 				; 16: Vert. scroll 32, Horiz. scroll 64
    	dc.b 	0x00 				; 17: Window Plane X pos
    	dc.b 	0x00 				; 18: Window Plane Y pos
-	dc.w	0x7FFF				; 19,20 : DMA word length, 32k words
+	dc.w	0xFFFF				; 19,20 : DMA length
    	dc.b 	0x00 				; 21: DMA source address lo byte
    	dc.b 	0x00 				; 22: DMA source address mid byte
    	dc.b 	0x80 				; 23: DMA source address hi byte, memory-to-VRAM mode (bits 6-7)
