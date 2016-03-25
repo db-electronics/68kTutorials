@@ -44,7 +44,7 @@ Tutorial04Entry:
 	move.l	(a0)+, (a6)					; write 2 palette entries
 	dbra	d0, .PalLoop
 	
-	; load 2 patterns to VDP, starting at pattern 1 leaving leaving pattern 0 blank
+	; load 2 patterns to VDP, starting at pattern 1 leaving pattern 0 blank
 	lea		Pattern0, a0				; I know, a0 already is pointing here
 	move.w	#(16-1), d0					; 8 longs per pattern
 	move.l  #(VDP_VRAM_WRITE + (0x0020<<16)), (a5)
@@ -52,45 +52,60 @@ Tutorial04Entry:
 	move.l	(a0)+, (a6)					; write patterns
 	dbra	d0, .PatLoop
 	
-	; place patterns on plane A base 0xC000
-	lea		MapTable, a0				; point a0 to map table
-	move.w	#0x8F02, (a5)     			; Set autoincrement to 1 bytes
-	move.w	#(MapTableEnd-MapTable-1), d0
+	; place patterns on plane A base 0xC000 (i.e. first line)
+	lea		MapTable1, a0				; point a0 to map table
+	move.w	#(((MapTableEnd1-MapTable1)/2)-1), d0
 	move.l	#(VDP_VRAM_WRITE + (0x0003)), (a5)
 .MapLoop
-	move.w	(a0)+, (a6)					; write to VRAM
+	move.l	(a0)+, (a6)					; write to VRAM
 	dbra	d0, .MapLoop
+	
+	; place same patterns on plane A 2 lines lower (128 * linenum)
+	; reasoning is that the nametable is 64 patterns wide horizontally
+	; each nametable entry is 1 word, thus, 128 bytes per horizontal nametable line
+	lea		MapTable1, a0
+	move.w	#(((MapTableEnd1-MapTable1)/2)-1), d0
+	move.l	#(VDP_VRAM_WRITE + (0x0003) + (128*(2<<16)) ), (a5)
+.MapLoop2
+	move.l	(a0)+, (a6)					; write to VRAM
+	dbra	d0, .MapLoop2
+
+	; place same patterns on plane A 4 lines lower (128 * linenum) and offset 8 patterns
+	lea		MapTable1, a0
+	move.w	#(((MapTableEnd1-MapTable1)/2)-1), d0
+	move.l	#(VDP_VRAM_WRITE + (0x0003) + (128*(4<<16) + (8*(2<<16)) ) ), (a5)
+.MapLoop3
+	move.l	(a0)+, (a6)					; write to VRAM
+	dbra	d0, .MapLoop3
 	
 	; enable display and vint
 	move.w	#0x8164, (a5)
 	
-	; sync vint
-	sysMacSyncVint_m					; sync to vint
-	
 Loop:
+	sysMacSyncVint_m					; sync to vint
 	bra.s	Loop
 	
 ;}******************************************************************
 	
 	Align 16
-MapTable:
-	dc.w	(NT_PRI1 + NT_PAL0 + 1)		; pattern 1, pal 0
-	dc.w	(NT_PRI1 + NT_PAL1 + 1)		; pattern 1, pal 1
-	dc.w	(NT_PRI1 + NT_PAL2 + 1)		; pattern 1, pal 2
-	dc.w	(NT_PRI1 + NT_PAL3 + 1)		; pattern 1, pal 3
-	dc.w	(NT_PRI1 + NT_PAL0 + 2)		; pattern 2, pal 0
-	dc.w	(NT_PRI1 + NT_PAL1 + 2)		; pattern 2, pal 1
-	dc.w	(NT_PRI1 + NT_PAL2 + 2)		; pattern 2, pal 2
-	dc.w	(NT_PRI1 + NT_PAL3 + 2)		; pattern 2, pal 3
-MapTableEnd:	
+MapTable1:
+	dc.w	(NT_PRI1 + NT_PAL0 + 1)						; pattern 1, pal 0
+	dc.w	(NT_PRI1 + NT_PAL1 + NT_HF + 1)				; pattern 1, hflip, pal 1
+	dc.w	(NT_PRI1 + NT_PAL2 + NT_VF + 1)				; pattern 1, vflip, pal 2
+	dc.w	(NT_PRI1 + NT_PAL3 + NT_VF + NT_HF + 1)		; pattern 1, hvflip, pal 3
+	dc.w	(NT_PRI1 + NT_PAL0 + 2)						; pattern 2, pal 0
+	dc.w	(NT_PRI1 + NT_PAL1 + NT_HF + 2)				; pattern 2, hflip, pal 1
+	dc.w	(NT_PRI1 + NT_PAL2 + NT_VF + 2)				; pattern 2, vflip, pal 2
+	dc.w	(NT_PRI1 + NT_PAL3 + NT_VF + NT_HF + 2)		; pattern 2, hvflip, pal 3
+MapTableEnd1:	
 	
 	Align 16
 Palettes:
 PaletteRed:	  ;BGR
 	dc.w 	0x0000 ; transparent
-	dc.w 	0x000E ; red
-	dc.w 	0x000A ; less red
-	dc.w 	0x0000
+	dc.w 	0x000E ; red 		0b1110
+	dc.w 	0x000A ; less red	0b1010
+	dc.w 	0x0004 ; lesser red 0b0100
 	dc.w 	0x0000
 	dc.w 	0x0000
 	dc.w 	0x0000
@@ -108,7 +123,7 @@ PaletteGreen: ;BGR
 	dc.w 	0x0000 ; transparent
 	dc.w 	0x00E0 ; green
 	dc.w 	0x00A0 ; less green
-	dc.w 	0x0000
+	dc.w 	0x0040 ; lesser green
 	dc.w 	0x0000
 	dc.w 	0x0000
 	dc.w 	0x0000
@@ -126,7 +141,7 @@ PaletteBlue: ;BGR
 	dc.w 	0x0000 ; transparent
 	dc.w 	0x0E00 ; blue
 	dc.w 	0x0A00 ; less blue
-	dc.w 	0x0000
+	dc.w 	0x0400 ; lesser blue
 	dc.w 	0x0000
 	dc.w 	0x0000
 	dc.w 	0x0000
@@ -144,7 +159,7 @@ PaletteWhite: ;BGR
 	dc.w 	0x0000 ; transparent
 	dc.w 	0x0EEE ; white
 	dc.w 	0x0AAA ; less white
-	dc.w 	0x0000
+	dc.w 	0x0444 ; lesser white
 	dc.w 	0x0000
 	dc.w 	0x0000
 	dc.w 	0x0000
@@ -160,21 +175,22 @@ PaletteWhite: ;BGR
 	
 	Align 16
 Pattern0:
-	dc.l	0x21000001
-	dc.l	0x12100000
-	dc.l	0x01210000
-	dc.l	0x00121000
-	dc.l	0x00012100
-	dc.l	0x00001210
-	dc.l	0x00000121
-	dc.l	0x10000012
+	dc.l	0x00000000
+	dc.l	0x00000010
+	dc.l	0x00000010
+	dc.l	0x00111110
+	dc.l	0x01000010
+	dc.l	0x01000110
+	dc.l	0x00111010
+	dc.l	0x00000000
 
 Pattern1:
 	dc.l	0x00000000
-	dc.l	0x01111110
-	dc.l	0x01022010
-	dc.l	0x01233210
-	dc.l	0x01233210
-	dc.l	0x01022010
-	dc.l	0x01111110
+	dc.l	0x33000000
+	dc.l	0x22330000
+	dc.l	0x11223300
+	dc.l	0x00112233
+	dc.l	0x00001122
+	dc.l	0x00000011
 	dc.l	0x00000000
+		
