@@ -130,7 +130,7 @@ EntryPoint:           					; Entry point address set in ROM header
 	dbra 	d0, .CopyVDP
 	
 	move.l	#0x40000080, (a1)			; VRAM Fill, start at 0x0000
-	move.w	#0x1234, (a2)				; Trigger DMA, fill VRAM with 0x12
+	move.w	#0x0000, (a2)				; Trigger DMA, fill VRAM with 0x00
 	
 	; n.b. VRAM fill and VRAM copy are byte to byte transfers
 	; the length parameters describes the amount of bytes to transfer
@@ -167,6 +167,7 @@ EntryPoint:           					; Entry point address set in ROM header
 ;{******************************************************************
 	
 	WaitDMAEnd_m						; ensure VRAM fill has ended
+	move.w	#8104, (a2)					; disable DMA since it's done
 	lea 	M68K_RAM, a0     			; A0 points to 0x00 value in RAM (has been cleared)
 	movem.l (a0), d0-d7/a1-a6  			; Multiple move zero to all registers
 	suba.l	a0, a0						; Clear A0

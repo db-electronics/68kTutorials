@@ -31,14 +31,134 @@
 ; Tutorial 04 Entry Point
 ;{******************************************************************
 Tutorial04Entry:
-			
+	
+	lea		VDP_CTRL, a5				; point to VDP port throughout
+	lea		VDP_DATA, a6
+	
+	; load palettes to VDP
+	lea		Palettes, a0				; a0 points to palettes
+	move.w	#(32-1), d0					; 64 palette entries to write, as 32 longs
+	move.w	#0x8F02,(a5)     			; Set autoincrement to 2 bytes
+	move.l	#VDP_CRAM_WRITE, (a5)		; VDP write to CRAM address 0x00
+.PalLoop
+	move.l	(a0)+, (a6)					; write 2 palette entries
+	dbra	d0, .PalLoop
+	
+	; load 2 patterns to VDP, starting at pattern 1 leaving leaving pattern 0 blank
+	lea		Pattern0, a0				; I know, a0 already is pointing here
+	move.w	#(16-1), d0					; 8 longs per pattern
+	move.l  #(VDP_VRAM_WRITE + (0x0020<<16)), (a5)
+.PatLoop
+	move.l	(a0)+, (a6)					; write patterns
+	dbra	d0, .PatLoop
+	
+	; place patterns on plane A base 0xC000
+	lea		MapTable, a0				; point a0 to map table
+	move.w	#0x8F02, (a5)     			; Set autoincrement to 1 bytes
+	move.w	#(MapTableEnd-MapTable-1), d0
+	move.l	#(VDP_VRAM_WRITE + (0x0003)), (a5)
+.MapLoop
+	move.w	(a0)+, (a6)					; write to VRAM
+	dbra	d0, .MapLoop
+	
+	; enable display and vint
+	move.w	#0x8164, (a5)
+	
+	; sync vint
 	sysMacSyncVint_m					; sync to vint
 	
 Loop:
 	bra.s	Loop
 	
 ;}******************************************************************
+	
+	Align 16
+MapTable:
+	dc.w	(NT_PRI1 + NT_PAL0 + 1)		; pattern 1, pal 0
+	dc.w	(NT_PRI1 + NT_PAL1 + 1)		; pattern 1, pal 1
+	dc.w	(NT_PRI1 + NT_PAL2 + 1)		; pattern 1, pal 2
+	dc.w	(NT_PRI1 + NT_PAL3 + 1)		; pattern 1, pal 3
+	dc.w	(NT_PRI1 + NT_PAL0 + 2)		; pattern 2, pal 0
+	dc.w	(NT_PRI1 + NT_PAL1 + 2)		; pattern 2, pal 1
+	dc.w	(NT_PRI1 + NT_PAL2 + 2)		; pattern 2, pal 2
+	dc.w	(NT_PRI1 + NT_PAL3 + 2)		; pattern 2, pal 3
+MapTableEnd:	
+	
+	Align 16
+Palettes:
+PaletteRed:	  ;BGR
+	dc.w 	0x0000 ; transparent
+	dc.w 	0x000E ; red
+	dc.w 	0x000A ; less red
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	
+PaletteGreen: ;BGR
+	dc.w 	0x0000 ; transparent
+	dc.w 	0x00E0 ; green
+	dc.w 	0x00A0 ; less green
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
 
+PaletteBlue: ;BGR
+	dc.w 	0x0000 ; transparent
+	dc.w 	0x0E00 ; blue
+	dc.w 	0x0A00 ; less blue
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+
+PaletteWhite: ;BGR
+	dc.w 	0x0000 ; transparent
+	dc.w 	0x0EEE ; white
+	dc.w 	0x0AAA ; less white
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	
+	Align 16
 Pattern0:
 	dc.l	0x21000001
 	dc.l	0x12100000

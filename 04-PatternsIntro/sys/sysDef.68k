@@ -45,6 +45,16 @@ VDP_CRAM_WRITE			equ 0xC0000000
 VDP_CRAM_READ			equ 0x00000020
 VDP_VRAM_WRITE			equ 0x40000000
 VDP_VRAM_READ			equ 0x00000000
+
+NT_PRI1					equ 0x8000
+NT_PRI0					equ	0x0000
+NT_PAL0					equ	0x0000
+NT_PAL1					equ	0x2000
+NT_PAL2					equ	0x4000
+NT_PAL3					equ 0x6000
+NT_VF					equ 0x1000
+NT_HF					equ 0x0800
+
 ;}******************************************************************
 
 ; ******************************************************************
