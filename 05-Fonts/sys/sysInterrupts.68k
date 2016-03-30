@@ -1,0 +1,82 @@
+; ******************************************************************
+; SYSTEM INTERRUPTS
+;{******************************************************************
+;
+;    Title:          sysInterrupts.68k
+;    Author:         René Richard
+;    Description:
+;        
+;    Target Hardware:
+;        Sega Genesis / Megadrive
+;    Assembler:
+;        ASMX
+;
+; LICENSE
+; 
+;    This file is part of 68kTutorials.
+;    68kTutorials is free software: you can redistribute it and/or modify
+;    it under the terms of the GNU General Public License as published by
+;    the Free Software Foundation, either version 3 of the License, or
+;    (at your option) any later version.
+;    68kTutorials is distributed in the hope that it will be useful,
+;    but WITHOUT ANY WARRANTY; without even the implied warranty of
+;    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;    GNU General Public License for more details.
+;    You should have received a copy of the GNU General Public License
+;    along with 68kTutorials.  If not, see <http://www.gnu.org/licenses/>.
+;
+;}******************************************************************
+
+; ******************************************************************
+; Vertical Interrupts - Level 6
+;{******************************************************************
+
+VBlankInterrupt:
+	addq.w	#1, sysframecnt				; increment vint counter
+	add.l	sysmillisinc, d7			; D7 = global millis counter
+	bset	#1, intflags				; set vintflag
+	tst.l	vintvector					; test vintvector
+	beq.s	.noVector					; if vintvector = 0, get out of here!
+.vectorValid
+	movem.l d0-d6/a0-a6, -(sp)			; push context to stack
+	movea.l	vintvector, a0				; put vintvector in A0
+	jsr		(a0)						; jsr to vintvector	
+	movem.l (sp)+, d0-d6/a0-a6			; pop context from stack
+.noVector
+   	rte									; return to main code
+;}******************************************************************
+
+; ******************************************************************
+; Horizontal Interrupts - Level 4
+;{******************************************************************
+HBlankInterrupt:
+	bset	#0, intflags				; set hintflag
+	rte
+;}******************************************************************
+
+; ******************************************************************
+; External Interrupts - Level 2
+;{******************************************************************
+ExtInterrupt:
+	bset	#2, intflags				; set xintflag
+	rte
+;}******************************************************************
+
+; ******************************************************************
+; Macros
+;{******************************************************************
+sysInt_VDPDisableHInt	MACRO
+	move.w	#0x8004, VDP_CTRL
+	ENDM
+
+sysInt_VDPEnableHInt	MACRO
+	move.w	#0x8014, VDP_CTRL
+	ENDM
+;}******************************************************************
+
+; ******************************************************************
+; Exception
+;{******************************************************************
+Exception:
+   	stop 	#0x2700 					; Halt CPU
+;}******************************************************************

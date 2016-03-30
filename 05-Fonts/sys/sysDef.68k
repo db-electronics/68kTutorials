@@ -1,0 +1,115 @@
+; ******************************************************************
+; SYSTEM DEFINITIONS
+;{******************************************************************
+;
+;    Title:          sysDef.68k
+;    Author:         René Richard
+;    Description:
+;        
+;    Target Hardware:
+;        Sega Genesis / Megadrive
+;    Assembler:
+;        ASMX
+;
+; LICENSE
+; 
+;    This file is part of 68kTutorials.
+;    68kTutorials is free software: you can redistribute it and/or modify
+;    it under the terms of the GNU General Public License as published by
+;    the Free Software Foundation, either version 3 of the License, or
+;    (at your option) any later version.
+;    68kTutorials is distributed in the hope that it will be useful,
+;    but WITHOUT ANY WARRANTY; without even the implied warranty of
+;    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;    GNU General Public License for more details.
+;    You should have received a copy of the GNU General Public License
+;    along with 68kTutorials.  If not, see <http://www.gnu.org/licenses/>.
+;
+;}******************************************************************
+
+; ******************************************************************
+; VDP Addresses
+;{******************************************************************
+VDP_DATA				equ	0x00C00000
+VDP_CTRL				equ 0x00C00004
+VDP_HVCOUNTER			equ 0x00C00008
+VDP_PSG					equ 0x00C00011
+;}******************************************************************
+
+; ******************************************************************
+; VDP Control Masks
+;{******************************************************************
+VDP_VSRAM_WRITE			equ 0x40000010
+VDP_VSRAM_READ			equ 0x00000010
+VDP_CRAM_WRITE			equ 0xC0000000
+VDP_CRAM_READ			equ 0x00000020
+VDP_VRAM_WRITE			equ 0x40000000
+VDP_VRAM_READ			equ 0x00000000
+
+NT_PRI1					equ 0x8000
+NT_PRI0					equ	0x0000
+NT_PAL0					equ	0x0000
+NT_PAL1					equ	0x2000
+NT_PAL2					equ	0x4000
+NT_PAL3					equ 0x6000
+NT_VF					equ 0x1000
+NT_HF					equ 0x0800
+
+;}******************************************************************
+
+; ******************************************************************
+; I/O Addresses
+;{******************************************************************
+IO_VERSIONNO			equ 0x00A10001
+IO_DATA_1				equ 0x00A10003
+IO_DATA_2				equ 0x00A10005
+IO_DATA_EXP				equ 0x00A10007
+IO_CTRL_1				equ 0x00A10009
+IO_CTRL_2				equ 0x00A1000B
+IO_CTRL_EXP				equ 0x00A1000D
+IO_TXDATA_1				equ 0x00A1000F
+IO_RXDATA_1				equ 0x00A10011
+IO_SCTRL_1				equ 0x00A10013
+IO_TXDATA_2				equ 0x00A10015
+IO_RXDATA_2				equ 0x00A10017
+IO_SCTRL_2				equ 0x00A10019
+IO_TXDATA_3				equ 0x00A1001B
+IO_RXDATA_3				equ 0x00A1001D
+IO_SCTRL_EXP			equ 0x00A1001F
+;}******************************************************************
+
+; ******************************************************************
+; Z80 Addresses
+;{******************************************************************
+Z80_MEMSPACE			equ 0x00A00000
+Z80_RAM					equ 0x00A00000
+;}******************************************************************
+
+; ******************************************************************
+; CTRL Addresses
+;{******************************************************************
+CTRL_MEMMODE			equ 0x00A11000
+CTRL_Z80BUSREQ			equ	0x00A11100
+CTRL_Z80RESET			equ 0x00A11200
+CTRL_TIME				equ 0x00A13000
+CTRL_TMSS				equ 0x00A14000
+;}******************************************************************
+
+; ******************************************************************
+; Other Addresses
+;{******************************************************************
+M68K_RAM				equ 0x00FF0000
+;}******************************************************************
+
+; ******************************************************************
+; JOY bit numbers 	SACBRLDU
+;{******************************************************************
+JOY_UP           		equ 0
+JOY_DOWN         		equ 1
+JOY_LEFT         		equ 2
+JOY_RIGHT        		equ 3
+JOY_A            		equ 6
+JOY_B            		equ 4
+JOY_C            		equ 5
+JOY_START        		equ 7
+;}******************************************************************
