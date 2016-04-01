@@ -50,42 +50,42 @@ Tutorial05Entry:
 ; d0 - xypos
 ; d1 - palette
 	lea		zdbString, a0
-	move.l	#( (12<<16) + (10) ), d0	; place string at 12,10
+	move.l	#( (12<<16) + (8) ), d0		; place string at 12,8
 	clr.w	d1							; use palette 0
 	jsr		sysDrawTextPlaneA
 	
 	lea		zdbWasHere, a0
-	move.l	#( (12<<16) + (11) ), d0	; place string at 12,11
+	move.l	#( (12<<16) + (9) ), d0		; place string at 12,9
 	move.w	#1, d1						; use palette 1
 	jsr		sysDrawTextPlaneA
 
 	lea		zTestLimitChars, a0
-	move.l	#( (12<<16) + (12) ), d0	; place string at 12,12
+	move.l	#( (12<<16) + (10) ), d0	; place string at 12,10
 	move.w	#2, d1						; use palette 2
 	jsr		sysDrawTextPlaneA
 
 	lea		zdbString, a0
-	move.l	#( (12<<16) + (13) ), d0	; place string at 12,13
+	move.l	#( (12<<16) + (11) ), d0	; place string at 12,11
 	move.w	#3, d1						; use palette 3
 	jsr		sysDrawTextPlaneA
 
 	lea		zQuickBrown, a0
-	move.l	#( (9<<16) + (15) ), d0		; place string at 3,15
+	move.l	#( (9<<16) + (13) ), d0		; place string at 3,13
 	move.w	#0, d1						; use palette 0
 	jsr		sysDrawTextPlaneA
 
 	lea		zLazyDog, a0
-	move.l	#( (7<<16) + (16) ), d0		; place string at 1,16
+	move.l	#( (7<<16) + (14) ), d0		; place string at 1,14
 	move.w	#1, d1						; use palette 1
 	jsr		sysDrawTextPlaneA
 	
 	lea		zAllOtherChars1, a0
-	move.l	#( (10<<16) + (18) ), d0	; place string at 1,16
+	move.l	#( (10<<16) + (16) ), d0	; place string at 1,16
 	move.w	#2, d1						; use palette 2
 	jsr		sysDrawTextPlaneA
 	
 	lea		zAllOtherChars2, a0
-	move.l	#( (10<<16) + (19) ), d0	; place string at 1,16
+	move.l	#( (10<<16) + (17) ), d0	; place string at 1,17
 	move.w	#3, d1						; use palette 3
 	jsr		sysDrawTextPlaneA
 	

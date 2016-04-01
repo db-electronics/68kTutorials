@@ -75,19 +75,20 @@ sysDrawTextPlaneA:
 	
 	; write string tiles #s to VRAM until null terminator
 	move.w	#0x20, d2					; ascii offset optimized in d2
+	move.w	#0x40, d3					; ascii charset size optimized in d3
 .writeLoop
 	clr.l	d0
 	move.b	(a0)+, d0					; get next char
 	beq.s	.done						; done if null character
 	sub.b	d2, d0						; substract ascii offset
 	blt.s	.outOfRange					; display blank char if ascii less than 0x20
-	cmpi.b	#64, d0						; if ascii is greater than 0x60 (already sub's 0x20)
+	cmp.b	d3, d0						; if ascii is greater than 0x60 (already sub's 0x20)
 	bge.s	.outOfRange					; display blank char if ascii ge to 0x60
 	add.w	d1, d0						; add palette # to tile number
 	move.w	d0, (a6)					; write tile entry to VDP
 	bra.s	.writeLoop	
 .outOfRange
-	move.w	#0, (a6)					; write blank char for out of range ascii
+	move.w	#0x1F, (a6)					; write '?' char for out of range ascii
 .done
 	rts
 
