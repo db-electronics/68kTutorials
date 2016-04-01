@@ -50,13 +50,43 @@ Tutorial05Entry:
 ; d0 - xypos
 ; d1 - palette
 	lea		zdbString, a0
-	move.l	#( (10<<16) + (13) ), d0	; place string at 10,13
+	move.l	#( (12<<16) + (10) ), d0	; place string at 12,10
 	clr.w	d1							; use palette 0
 	jsr		sysDrawTextPlaneA
 	
 	lea		zdbWasHere, a0
-	move.l	#( (10<<16) + (14) ), d0	; place string at 10,14
+	move.l	#( (12<<16) + (11) ), d0	; place string at 12,11
 	move.w	#1, d1						; use palette 1
+	jsr		sysDrawTextPlaneA
+
+	lea		zTestLimitChars, a0
+	move.l	#( (12<<16) + (12) ), d0	; place string at 12,12
+	move.w	#2, d1						; use palette 2
+	jsr		sysDrawTextPlaneA
+
+	lea		zdbString, a0
+	move.l	#( (12<<16) + (13) ), d0	; place string at 12,13
+	move.w	#3, d1						; use palette 3
+	jsr		sysDrawTextPlaneA
+
+	lea		zQuickBrown, a0
+	move.l	#( (9<<16) + (15) ), d0		; place string at 3,15
+	move.w	#0, d1						; use palette 0
+	jsr		sysDrawTextPlaneA
+
+	lea		zLazyDog, a0
+	move.l	#( (7<<16) + (16) ), d0		; place string at 1,16
+	move.w	#1, d1						; use palette 1
+	jsr		sysDrawTextPlaneA
+	
+	lea		zAllOtherChars1, a0
+	move.l	#( (10<<16) + (18) ), d0	; place string at 1,16
+	move.w	#2, d1						; use palette 2
+	jsr		sysDrawTextPlaneA
+	
+	lea		zAllOtherChars2, a0
+	move.l	#( (10<<16) + (19) ), d0	; place string at 1,16
+	move.w	#3, d1						; use palette 3
 	jsr		sysDrawTextPlaneA
 	
 	; enable display and vint
@@ -68,12 +98,21 @@ Loop:
 	
 ;}******************************************************************
 	
-	align 16
 zdbString:
 	dc.b	'DB ELECTRONICS',0
 zdbWasHere:
 	dc.b	'RENE WAS HERE!',0
-	
+zTestLimitChars:
+	dc.b	'__ LIMITS __',0
+zQuickBrown:
+	dc.b	'THE QUICK BROWN FOX',0
+zLazyDog:	
+	dc.b	'JUMPS OVER THE LAZY DOG',0
+zAllOtherChars1:
+	dc.b	'@!"#$%&()*+,-./[]\\',0
+zAllOtherChars2:
+	dc.b	'0123456789:;<=>?^_',0
+
 	align 16
 Palettes:
 PaletteRed:	  ;BGR
