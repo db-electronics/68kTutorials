@@ -32,14 +32,14 @@ Tutorial05Entry:
 			
 	lea		VDP_CTRL, a5				; point to VDP port throughout
 	lea		VDP_DATA, a6
+	move.w	#0x8F02, (a5)     			; Set autoincrement to 2 bytes
 	
 	; load font to VRAM
 	jsr		sysLoadFontPatterns			; load fonts
 	
 	; load palettes to VDP
 	lea		Palettes, a0				; a0 points to palettes
-	move.w	#(32-1), d0					; 64 palette entries to write, as 32 longs
-	move.w	#0x8F02,(a5)     			; Set autoincrement to 2 bytes
+	moveq	#(32-1), d0					; 64 palette entries to write, as 32 longs
 	move.l	#VDP_CRAM_WRITE, (a5)		; VDP write to CRAM address 0x00
 .PalLoop
 	move.l	(a0)+, (a6)					; write 2 palette entries
@@ -51,42 +51,42 @@ Tutorial05Entry:
 ; d1 - palette
 	lea		zdbString, a0
 	move.l	#( (12<<16) + (8) ), d0		; place string at 12,8
-	clr.w	d1							; use palette 0
+	moveq	#0, d1						; use palette 0						
 	jsr		sysDrawTextPlaneA
 	
 	lea		zdbWasHere, a0
 	move.l	#( (12<<16) + (9) ), d0		; place string at 12,9
-	move.w	#1, d1						; use palette 1
+	moveq	#1, d1						; use palette 1
 	jsr		sysDrawTextPlaneA
 
 	lea		zTestLimitChars, a0
 	move.l	#( (12<<16) + (10) ), d0	; place string at 12,10
-	move.w	#2, d1						; use palette 2
+	moveq	#2, d1						; use palette 2
 	jsr		sysDrawTextPlaneA
 
 	lea		zdbString, a0
 	move.l	#( (12<<16) + (11) ), d0	; place string at 12,11
-	move.w	#3, d1						; use palette 3
+	moveq	#3, d1						; use palette 3
 	jsr		sysDrawTextPlaneA
 
 	lea		zQuickBrown, a0
 	move.l	#( (9<<16) + (13) ), d0		; place string at 3,13
-	move.w	#0, d1						; use palette 0
+	moveq	#0, d1						; use palette 0
 	jsr		sysDrawTextPlaneA
 
 	lea		zLazyDog, a0
 	move.l	#( (7<<16) + (14) ), d0		; place string at 1,14
-	move.w	#1, d1						; use palette 1
+	moveq	#1, d1						; use palette 1
 	jsr		sysDrawTextPlaneA
 	
 	lea		zAllOtherChars1, a0
 	move.l	#( (10<<16) + (16) ), d0	; place string at 1,16
-	move.w	#2, d1						; use palette 2
+	moveq	#2, d1						; use palette 2
 	jsr		sysDrawTextPlaneA
 	
 	lea		zAllOtherChars2, a0
 	move.l	#( (10<<16) + (17) ), d0	; place string at 1,17
-	move.w	#3, d1						; use palette 3
+	moveq	#3, d1						; use palette 3
 	jsr		sysDrawTextPlaneA
 	
 	; enable display and vint

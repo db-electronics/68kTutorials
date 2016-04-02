@@ -75,7 +75,7 @@ EntryPoint:           					; Entry point address set in ROM header
 	; load simple program to Z80
 	lea 	Z80Data, a0	        		; Load address of data into a0
 	lea 	Z80_RAM, a1     			; Copy Z80 RAM address to a1
-	move.l 	#Z80DataEnd-Z80Data-1, d0 	; Auto-calculate size of transfer using labels
+	move.w 	#Z80DataEnd-Z80Data-1, d0 	; Auto-calculate size of transfer using labels
 .CopyZ80:
 	move.b 	(a0)+, (a1)+        		; Copy data, and increment the source/dest addresses
 	dbra 	d0, .CopyZ80
@@ -100,37 +100,37 @@ EntryPoint:           					; Entry point address set in ROM header
 ; VDP Initialization
 ;{******************************************************************
 	lea 	VDPRegisters, a0   			; Load address of register table into a0
-	lea		VDP_CTRL, a1				; a1 points to VDP_CTRL
-	lea		VDP_DATA, a2				; a2 points to VDP_DATA
-	clr.l	d0
-	clr.l	d1
+	lea		VDP_CTRL, a5				; a5 points to VDP_CTRL
+	lea		VDP_DATA, a6				; a6 points to VDP_DATA
+	moveq	#0, d0
+	moveq	#0, d1
 	
 	; clear VSRAM, 40 words
-	move.w	#0x8F02, (a1)				; set VDP auto-increment to 2
-	move.w	#(40-1), d0					; 40 words to clear
-	move.l  #VDP_VSRAM_WRITE, (a1)		; set VSRAM Write
+	move.w	#0x8F02, (a5)				; set VDP auto-increment to 2
+	moveq	#(40-1), d0					; 40 words to clear
+	move.l  #VDP_VSRAM_WRITE, (a5)		; set VSRAM Write
 .ClearVSRAM
-	move.w	d1,(a2)						; write 0 to data port, VDP_addr += 2
+	move.w	d1, (a6)					; write 0 to data port, VDP_addr += 2
 	dbra	d0, .ClearVSRAM				
 
 	; clear CRAM, 64 words
-	move.w	#(64-1), d0					; 64 words to clear
-	move.l	#VDP_CRAM_WRITE, (a1)		; set CRAM Write
+	moveq	#(64-1), d0					; 64 words to clear
+	move.l	#VDP_CRAM_WRITE, (a5)		; set CRAM Write
 .ClearCRAM
-	move.w	d1, (a2)					; write 0 to data port, VDP_addr += 2
+	move.w	d1, (a6)					; write 0 to data port, VDP_addr += 2
 	dbra	d0, .ClearCRAM
 	
 	; write init values to VDP registers
-	move.w 	#(24-1), d0           		; 24 registers to write
+	moveq 	#(24-1), d0           		; 24 registers to write
 	move.l 	#0x00008000, d1     		; 'Set register 0' command (and clear the rest of d1 ready)
 .CopyVDP:
 	move.b 	(a0)+, d1           		; Move register value to lower byte of d1
-	move.w 	d1, (a1)	     			; Write command and value to VDP control port
+	move.w 	d1, (a5)	     			; Write command and value to VDP control port
 	add.w 	#0x0100, d1          		; Increment register #
 	dbra 	d0, .CopyVDP
 	
-	move.l	#0x40000080, (a1)			; VRAM Fill, start at 0x0000
-	move.w	#0x0000, (a2)				; Trigger DMA, fill VRAM with 0x00
+	move.l	#0x40000080, (a5)			; VRAM Fill, start at 0x0000
+	move.w	#0x0000, (a6)				; Trigger DMA, fill VRAM with 0x00
 	
 	; n.b. VRAM fill and VRAM copy are byte to byte transfers
 	; the length parameters describes the amount of bytes to transfer
@@ -153,7 +153,7 @@ EntryPoint:           					; Entry point address set in ROM header
 ; ******************************************************************
 ; Clear 68k RAM
 ;{******************************************************************
-	clr.l	d0							; Place a 0 into d0, ready to copy to each longword of RAM
+	moveq	#0, d0						; Place a 0 into d0, ready to copy to each longword of RAM
 	lea		M68K_RAM, a3				; A3 points to beginning of RAM
 	move.w 	#(0x4000-1), d1     		; Clearing 64k's worth of longwords
 .Clear:
@@ -167,7 +167,7 @@ EntryPoint:           					; Entry point address set in ROM header
 ;{******************************************************************
 	
 	WaitDMAEnd_m						; ensure VRAM fill has ended
-	move.w	#0x8104, (a1)				; disable DMA since it's done
+	move.w	#0x8104, (a5)				; disable DMA since it's done
 	lea 	M68K_RAM, a0     			; A0 points to 0x00 value in RAM (has been cleared)
 	movem.l (a0), d0-d7/a1-a6  			; Multiple move zero to all registers
 	suba.l	a0, a0						; Clear A0
