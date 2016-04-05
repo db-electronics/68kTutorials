@@ -1,0 +1,54 @@
+; ******************************************************************
+; SYSTEM STRINGS
+;{******************************************************************
+;
+;    Title:          sysStrings.68k
+;    Author:         René Richard
+;    Description:
+;        
+;    Target Hardware:
+;        Sega Genesis / Megadrive
+;    Assembler:
+;        ASMX
+;
+; LICENSE
+; 
+;    This file is part of 68kTutorials.
+;    68kTutorials is free software: you can redistribute it and/or modify
+;    it under the terms of the GNU General Public License as published by
+;    the Free Software Foundation, either version 3 of the License, or
+;    (at your option) any later version.
+;    68kTutorials is distributed in the hope that it will be useful,
+;    but WITHOUT ANY WARRANTY; without even the implied warranty of
+;    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;    GNU General Public License for more details.
+;    You should have received a copy of the GNU General Public License
+;    along with 68kTutorials.  If not, see <http://www.gnu.org/licenses/>.
+;
+;}******************************************************************
+
+; ******************************************************************
+; Convert Word to HEX string
+; d0 = word to convert
+; a0 = where to store the result (4 bytes needed - 0x????)
+;{******************************************************************
+sysStringConvWord2Hex:
+	addq.w	#4, a0						; point a0 to final char location (backwards conversion)
+	moveq	#0x0F, d2					; optimize nibble mask in d2
+	lea		sysStringNumTable, a1		; point a1 to numtable for ascii conv		
+	moveq	#3-1, d3					; repeat 3 times, unrolled last iteration
+
+.loop
+	move.w	d0, d1						; copy in d1
+	and.w	d2, d1						; get first nibble
+	move.b	(a1,d1.w), -(a0)			; d1 nibble is offset into StringNumTable
+	lsr.w	#4, d0						; shift down to next nibble
+	dbra	d3, .loop					; repeat
+.lastOne								
+	move.b	(a1,d0.w), -(a0)			; d0 already contains just the last nibble
+	rts
+
+sysStringNumTable:
+	dc.b	'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'
+;}******************************************************************
+

@@ -1,0 +1,144 @@
+; ************************************
+; Title
+; ************************************
+;
+;    Title:          tutorial06.68k
+;    Author:         René Richard
+;    Description:
+;        
+;    Target Hardware:
+;        Sega Genesis / Megadrive
+;    Assembler:
+;        ASMX
+;
+; LICENSE
+; 
+;    This file is part of 68kTutorials.
+;    68kTutorials is free software: you can redistribute it and/or modify
+;    it under the terms of the GNU General Public License as published by
+;    the Free Software Foundation, either version 3 of the License, or
+;    (at your option) any later version.
+;    68kTutorials is distributed in the hope that it will be useful,
+;    but WITHOUT ANY WARRANTY; without even the implied warranty of
+;    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;    GNU General Public License for more details.
+;    You should have received a copy of the GNU General Public License
+;    along with 68kTutorials.  If not, see <http://www.gnu.org/licenses/>.
+;
+; ************************************
+; Tutorial 06
+; ************************************
+Tutorial06Entry:
+			
+	lea		VDP_CTRL, a5				; point to VDP port throughout
+	lea		VDP_DATA, a6
+	move.w	#0x8F02, (a5)     			; Set autoincrement to 2 bytes
+	
+	; load font to VRAM
+	jsr		sysLoadFontPatterns			; load fonts
+	
+	; load palettes to VDP
+	lea		Palettes, a0				; a0 points to palettes
+	moveq	#(32-1), d0					; 64 palette entries to write, as 32 longs
+	move.l	#VDP_CRAM_WRITE, (a5)		; VDP write to CRAM address 0x00
+.PalLoop
+	move.l	(a0)+, (a6)					; write 2 palette entries
+	dbra	d0, .PalLoop
+	
+; Convert number to ascii
+	move.w	#0xF012, d0
+	lea		M68K_RAM, a0
+	jsr		sysStringConvWord2Hex
+	
+; Draw Text on Plane A:
+; a0 - start address of string to write
+; d0 - xypos
+; d1 - palette
+	lea		M68K_RAM, a0
+	move.l	#( (12<<16) + (8) ), d0		; place string at 12,8
+	moveq	#0, d1						; use palette 0						
+	jsr		sysDrawTextPlaneA
+	
+	
+	; enable display and vint
+	move.w	#0x8164, (a5)
+	
+Loop:
+	sysMacSyncVint_m					; sync to vint
+	bra.s	Loop
+	
+;}******************************************************************
+
+	align 16
+Palettes:
+PaletteRed:	  ;BGR
+	dc.w 	0x0000 ; transparent
+	dc.w 	0x000E ; red 		0b1110
+	dc.w 	0x000A ; less red	0b1010
+	dc.w 	0x0004 ; lesser red 0b0100
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	
+PaletteGreen: ;BGR
+	dc.w 	0x0000 ; transparent
+	dc.w 	0x00E0 ; green
+	dc.w 	0x00A0 ; less green
+	dc.w 	0x0040 ; lesser green
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+
+PaletteBlue: ;BGR
+	dc.w 	0x0000 ; transparent
+	dc.w 	0x0E00 ; blue
+	dc.w 	0x0A00 ; less blue
+	dc.w 	0x0400 ; lesser blue
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+
+PaletteWhite: ;BGR
+	dc.w 	0x0000 ; transparent
+	dc.w 	0x0EEE ; white
+	dc.w 	0x0AAA ; less white
+	dc.w 	0x0444 ; lesser white
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
+	dc.w 	0x0000
