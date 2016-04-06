@@ -33,19 +33,19 @@
 ; a0 = where to store the result (4 bytes needed - 0x????)
 ;{******************************************************************
 sysStringConvWord2Hex:
-	addq.w	#4, a0						; point a0 to final char location (backwards conversion)
 	moveq	#0x0F, d2					; optimize nibble mask in d2
 	lea		sysStringNumTable, a1		; point a1 to numtable for ascii conv		
 	moveq	#3-1, d3					; repeat 3 times, unrolled last iteration
-
 .loop
-	move.w	d0, d1						; copy in d1
-	and.w	d2, d1						; get first nibble
-	move.b	(a1,d1.w), -(a0)			; d1 nibble is offset into StringNumTable
-	lsr.w	#4, d0						; shift down to next nibble
+	rol.w	#4, d0						; rotate ms nibble into lowest nibble
+	move.w	d0, d1						; copy to d1	
+	and.w	d2, d1						; mask nibble
+	move.b	(a1,d1.w), (a0)+			; d1 nibble is offset into StringNumTable
 	dbra	d3, .loop					; repeat
-.lastOne								
-	move.b	(a1,d0.w), -(a0)			; d0 already contains just the last nibble
+.lastOne
+	rol.w	#4, d0						; rotate
+	and.w	d2, d0						; no need to copy last nibble
+	move.b	(a1,d0.w), (a0)+			; d0 already contains just the last nibble
 	rts
 
 sysStringNumTable:
