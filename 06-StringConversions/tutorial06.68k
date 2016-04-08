@@ -45,7 +45,7 @@ Tutorial06Entry:
 	move.l	(a0)+, (a6)					; write 2 palette entries
 	dbra	d0, .PalLoop
 	
-; Convert number to ascii
+; Convert word to ascii
 	move.w	#0xF012, d0
 	lea		M68K_RAM, a0
 	jsr		sysStringConvWord2Hex
@@ -58,7 +58,20 @@ Tutorial06Entry:
 	move.l	#( (12<<16) + (8) ), d0		; place string at 12,8
 	moveq	#0, d1						; use palette 0						
 	jsr		sysDrawTextPlaneA
+
+; Convert byte to ascii
+	move.b	#0x5A, d0
+	lea		M68K_RAM, a0
+	jsr		sysStringConvByte2Hex
 	
+; Draw Text on Plane A:
+; a0 - start address of string to write
+; d0 - xypos
+; d1 - palette
+	lea		M68K_RAM, a0
+	move.l	#( (12<<16) + (10) ), d0	; place string at 12,10
+	moveq	#1, d1						; use palette 1					
+	jsr		sysDrawTextPlaneA	
 	
 	; enable display and vint
 	move.w	#0x8164, (a5)

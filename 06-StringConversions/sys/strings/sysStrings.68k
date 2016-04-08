@@ -45,10 +45,30 @@ sysStringConvWord2Hex:
 .lastOne
 	rol.w	#4, d0						; rotate
 	and.w	d2, d0						; no need to copy last nibble
-	move.b	(a1,d0.w), (a0)+			; d0 already contains just the last nibble
+	move.b	(a1,d0.w), (a0)+			; last nibble
+	clr.b	(a0)						; null terminate
 	rts
+
+;}******************************************************************
+
+; ******************************************************************
+; Convert Byte to HEX string
+; d0 = byte to convert
+; a0 = where to store the result (2 bytes needed - 0x??)
+;{******************************************************************
+sysStringConvByte2Hex:
+	moveq	#0x0F, d2					; optimize nibble mask in d2
+	lea		sysStringNumTable, a1		; point a1 to numtable for ascii conv		
+	move.w	d0, d1						; copy to d1	
+	rol.b	#4, d1						; rotate ms nibble into lowest nibble
+	and.w	d2, d1						; mask nibble
+	move.b	(a1,d1.w), (a0)+			; d1 nibble is offset into StringNumTable
+	and.w	d2, d0						; no need to copy last nibble
+	move.b	(a1,d0.w), (a0)+			; last nibble
+	clr.b	(a0)						; null terminate
+	rts
+
+;}******************************************************************
 
 sysStringNumTable:
 	dc.b	'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'
-;}******************************************************************
-

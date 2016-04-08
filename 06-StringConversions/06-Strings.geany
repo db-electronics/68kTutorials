@@ -22,9 +22,9 @@ long_line_behaviour=1
 long_line_column=72
 
 [files]
-current_page=3
-FILE_NAME_0=1966;68k;0;EUTF-8;1;1;0;%2Fhome%2Frene%2FGit%2F68kTutorials%2F06-StringConversions%2Ftutorial06.68k;0;4
+current_page=0
+FILE_NAME_0=2421;68k;0;EUTF-8;1;1;0;%2Fhome%2Frene%2FGit%2F68kTutorials%2F06-StringConversions%2Ftutorial06.68k;0;4
 FILE_NAME_1=2318;68k;0;EUTF-8;1;1;0;%2Fhome%2Frene%2FGit%2F68kTutorials%2F06-StringConversions%2Fmain.68k;0;4
 FILE_NAME_2=2742;68k;0;EUTF-8;1;1;0;%2Fhome%2Frene%2FGit%2F68kTutorials%2F06-StringConversions%2Fsys%2Ffont%2FsysFont.68k;0;4
-FILE_NAME_3=1818;68k;0;EUTF-8;1;1;0;%2Fhome%2Frene%2FGit%2F68kTutorials%2F06-StringConversions%2Fsys%2Fstrings%2FsysStrings.68k;0;4
-FILE_NAME_4=3671;68k;0;EUTF-8;1;1;0;%2Fhome%2Frene%2FGit%2F68kTutorials%2F06-StringConversions%2Fsys%2FsysDef.68k;0;4
+FILE_NAME_3=3671;68k;0;EUTF-8;1;1;0;%2Fhome%2Frene%2FGit%2F68kTutorials%2F06-StringConversions%2Fsys%2FsysDef.68k;0;4
+FILE_NAME_4=2635;68k;0;EUTF-8;1;1;0;%2Fhome%2Frene%2FGit%2F68kTutorials%2F06-StringConversions%2Fsys%2Fstrings%2FsysStrings.68k;0;4
