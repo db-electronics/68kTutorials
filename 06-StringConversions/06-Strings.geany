@@ -22,9 +22,19 @@ long_line_behaviour=1
 long_line_column=72
 
 [files]
-current_page=0
+current_page=1
 FILE_NAME_0=2421;68k;0;EUTF-8;1;1;0;%2Fhome%2Frene%2FGit%2F68kTutorials%2F06-StringConversions%2Ftutorial06.68k;0;4
-FILE_NAME_1=2318;68k;0;EUTF-8;1;1;0;%2Fhome%2Frene%2FGit%2F68kTutorials%2F06-StringConversions%2Fmain.68k;0;4
+FILE_NAME_1=2216;68k;0;EUTF-8;1;1;0;%2Fhome%2Frene%2FGit%2F68kTutorials%2F06-StringConversions%2Fmain.68k;0;4
 FILE_NAME_2=2742;68k;0;EUTF-8;1;1;0;%2Fhome%2Frene%2FGit%2F68kTutorials%2F06-StringConversions%2Fsys%2Ffont%2FsysFont.68k;0;4
 FILE_NAME_3=3671;68k;0;EUTF-8;1;1;0;%2Fhome%2Frene%2FGit%2F68kTutorials%2F06-StringConversions%2Fsys%2FsysDef.68k;0;4
 FILE_NAME_4=2635;68k;0;EUTF-8;1;1;0;%2Fhome%2Frene%2FGit%2F68kTutorials%2F06-StringConversions%2Fsys%2Fstrings%2FsysStrings.68k;0;4
+FILE_NAME_5=5616;68k;0;EUTF-8;1;1;0;%2Fhome%2Frene%2FGit%2F68kTutorials%2F06-StringConversions%2Fheader.68k;0;4
+FILE_NAME_6=1432;Sh;0;EUTF-8;1;1;0;%2Fhome%2Frene%2FGit%2F68kTutorials%2F06-StringConversions%2Fbuild.sh;0;4
+
+[editor]
+line_wrapping=false
+line_break_column=72
+auto_continue_multiline=true
+
+[VTE]
+last_dir=/home/rene

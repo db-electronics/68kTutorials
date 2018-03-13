@@ -22,10 +22,18 @@ long_line_behaviour=1
 long_line_column=72
 
 [files]
-current_page=1
+current_page=2
 FILE_NAME_0=5546;68k;0;EUTF-8;1;1;0;%2Fhome%2Frene%2FGit%2F68kTutorials%2F05-Fonts%2Fheader.68k;0;4
-FILE_NAME_1=2279;68k;0;EUTF-8;1;1;0;%2Fhome%2Frene%2FGit%2F68kTutorials%2F05-Fonts%2Fmain.68k;0;4
-FILE_NAME_2=3529;68k;0;EUTF-8;1;1;0;%2Fhome%2Frene%2FGit%2F68kTutorials%2F05-Fonts%2Ftutorial05.68k;0;4
-FILE_NAME_3=7953;68k;0;EUTF-8;1;1;0;%2Fhome%2Frene%2FGit%2F68kTutorials%2F05-Fonts%2Fsys%2Ffont%2FsysFont.68k;0;4
-FILE_NAME_4=6886;68k;0;EUTF-8;1;1;0;%2Fhome%2Frene%2FGit%2F68kTutorials%2F05-Fonts%2Fsys%2FsysInit.68k;0;4
-FILE_NAME_5=1868;68k;0;EUTF-8;1;1;0;%2Fhome%2Frene%2FGit%2F68kTutorials%2F05-Fonts%2Fsys%2FsysMacros.68k;0;4
+FILE_NAME_1=1303;68k;0;EUTF-8;1;1;0;%2Fhome%2Frene%2FGit%2F68kTutorials%2F05-Fonts%2Fmain.68k;0;4
+FILE_NAME_2=3281;68k;0;EUTF-8;1;1;0;%2Fhome%2Frene%2FGit%2F68kTutorials%2F05-Fonts%2Ftutorial05.68k;0;4
+FILE_NAME_3=1045;68k;0;EUTF-8;1;1;0;%2Fhome%2Frene%2FGit%2F68kTutorials%2F05-Fonts%2Fsys%2Ffont%2FsysFont.68k;0;4
+FILE_NAME_4=5530;68k;0;EUTF-8;1;1;0;%2Fhome%2Frene%2FGit%2F68kTutorials%2F05-Fonts%2Fsys%2FsysInit.68k;0;4
+FILE_NAME_5=1309;68k;0;EUTF-8;1;1;0;%2Fhome%2Frene%2FGit%2F68kTutorials%2F05-Fonts%2Fsys%2FsysMacros.68k;0;4
+
+[editor]
+line_wrapping=false
+line_break_column=72
+auto_continue_multiline=true
+
+[VTE]
+last_dir=/home/rene/Git/Python/dbDumper-Interface

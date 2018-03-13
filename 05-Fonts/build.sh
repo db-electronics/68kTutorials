@@ -41,7 +41,8 @@ while getopts ":d" opt; do
     case "$opt" in
     d)
         echo "debug selected - starting mess" >&2
-		mess genesis -cart out/rom.bin -debug
+		gnome-terminal -e "/home/rene/Dev/blastem64-0.5.1/blastem -d out/rom.bin"
+		#mess genesis -cart out/rom.bin -debug
         ;;
 	\?)
 		echo "Invalid Option: -$OPTARG" >&2
